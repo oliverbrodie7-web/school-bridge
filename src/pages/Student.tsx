@@ -146,27 +146,59 @@ const Student = () => {
           </p>
 
           {/* Breakdown rows */}
-          <div className="mt-8 space-y-5">
-            <Row
-              label={`Split the tens: ${QUESTION.tensA} + ${QUESTION.tensB} = `}
-              value={tensInput}
-              onChange={(v) => { setTensInput(v); setFeedback(null); }}
-            />
-            <Row
-              label={`Split the ones: ${QUESTION.onesA} + ${QUESTION.onesB} = `}
-              value={onesInput}
-              onChange={(v) => { setOnesInput(v); setFeedback(null); }}
-            />
-            <Row
-              label="Now add them together: "
-              suffix={
-                <span className="text-muted-foreground">
-                  {tensInput || "?"} + {onesInput || "?"} ={" "}
+          <div className="mt-8 space-y-6">
+            {/* Tens row */}
+            <div className="rounded-xl border border-border bg-card p-4">
+              <p className="mb-3 font-medium text-foreground">Split the tens</p>
+              <div className="flex flex-wrap items-center gap-3">
+                <BubbleGroup count={3} label="10" variant="tens" />
+                <span className="text-lg font-bold text-muted-foreground">+</span>
+                <BubbleGroup count={5} label="10" variant="tens" />
+                <span className="text-lg font-bold text-muted-foreground">=</span>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  value={tensInput}
+                  onChange={(e) => { setTensInput(e.target.value); setFeedback(null); }}
+                  className="w-20 rounded-lg border border-input bg-background px-3 py-2 text-center text-lg font-semibold text-foreground outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-ring/20"
+                />
+              </div>
+            </div>
+
+            {/* Ones row */}
+            <div className="rounded-xl border border-border bg-card p-4">
+              <p className="mb-3 font-medium text-foreground">Split the ones</p>
+              <div className="flex flex-wrap items-center gap-3">
+                <BubbleGroup count={4} label="1" variant="ones" />
+                <span className="text-lg font-bold text-muted-foreground">+</span>
+                <BubbleGroup count={2} label="1" variant="ones" />
+                <span className="text-lg font-bold text-muted-foreground">=</span>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  value={onesInput}
+                  onChange={(e) => { setOnesInput(e.target.value); setFeedback(null); }}
+                  className="w-20 rounded-lg border border-input bg-background px-3 py-2 text-center text-lg font-semibold text-foreground outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-ring/20"
+                />
+              </div>
+            </div>
+
+            {/* Total row */}
+            <div className="rounded-xl border border-border bg-card p-4">
+              <p className="mb-3 font-medium text-foreground">Now add them together</p>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-lg text-muted-foreground">
+                  {tensInput || "?"} + {onesInput || "?"} =
                 </span>
-              }
-              value={totalInput}
-              onChange={(v) => { setTotalInput(v); setFeedback(null); }}
-            />
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  value={totalInput}
+                  onChange={(e) => { setTotalInput(e.target.value); setFeedback(null); }}
+                  className="w-20 rounded-lg border border-input bg-background px-3 py-2 text-center text-lg font-semibold text-foreground outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-ring/20"
+                />
+              </div>
+            </div>
           </div>
 
           {/* Check button */}
