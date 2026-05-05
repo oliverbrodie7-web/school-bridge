@@ -16,9 +16,9 @@ const Index = () => {
           <Link to="/student" className="rounded-xl bg-primary px-8 py-4 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
             I'm a Student
           </Link>
-          <button className="rounded-xl border-2 border-primary px-8 py-4 text-lg font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground">
+          <Link to="/parent" className="rounded-xl border-2 border-primary px-8 py-4 text-lg font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground">
             I'm a Parent
-          </button>
+          </Link>
         </div>
       </div>
     </div>
