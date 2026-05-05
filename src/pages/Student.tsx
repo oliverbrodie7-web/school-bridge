@@ -107,19 +107,27 @@ const Student = () => {
         </Link>
 
         {/* Header area */}
-        <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-6 flex flex-col items-center gap-4">
           <h1
             className="text-2xl font-bold text-foreground sm:text-3xl"
             style={{ fontFamily: "var(--font-heading)" }}
           >
             Split Strategy
           </h1>
-          <button
-            onClick={() => setShowTeach((s) => !s)}
-            className="rounded-xl border-2 border-primary px-5 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
-          >
-            {showTeach ? "Hide Explanation" : "Teach Me First"}
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setShowTeach((s) => !s)}
+              className="rounded-xl border-2 border-primary px-5 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+            >
+              {showTeach ? "Hide Explanation" : "Teach Me First"}
+            </button>
+            <Link
+              to="/parent"
+              className="rounded-xl border-2 border-border px-5 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+            >
+              Parent Guide
+            </Link>
+          </div>
         </div>
 
         {/* Teach me section */}
