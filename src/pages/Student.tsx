@@ -228,27 +228,28 @@ const Student = () => {
   );
 };
 
-const Row = ({
+const BubbleGroup = ({
+  count,
   label,
-  suffix,
-  value,
-  onChange,
+  variant,
 }: {
+  count: number;
   label: string;
-  suffix?: React.ReactNode;
-  value: string;
-  onChange: (v: string) => void;
+  variant: "tens" | "ones";
 }) => (
-  <div className="flex flex-wrap items-center gap-2">
-    <span className="text-foreground font-medium">{label}</span>
-    {suffix}
-    <input
-      type="number"
-      inputMode="numeric"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="w-20 rounded-lg border border-input bg-background px-3 py-2 text-center text-lg font-semibold text-foreground outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-ring/20"
-    />
+  <div className="flex gap-1.5">
+    {Array.from({ length: count }, (_, i) => (
+      <span
+        key={i}
+        className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold ${
+          variant === "tens"
+            ? "bg-primary/15 text-primary"
+            : "bg-accent text-accent-foreground"
+        }`}
+      >
+        {label}
+      </span>
+    ))}
   </div>
 );
 
