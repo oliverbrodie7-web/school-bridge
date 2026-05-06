@@ -87,7 +87,7 @@ const Index = () => {
           {profiles.map((profile, i) => (
             <button
               key={i}
-              onClick={() => handleSelectProfile(profile)}
+              onClick={() => handleSelectProfile(profile, i)}
               className="group flex w-36 flex-col items-center gap-3 rounded-2xl border border-border bg-card p-6 transition-all hover:shadow-md hover:scale-[1.03] active:scale-[0.98]"
             >
               <div
