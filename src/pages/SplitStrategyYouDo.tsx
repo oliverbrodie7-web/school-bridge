@@ -99,7 +99,7 @@ const SplitStrategyYouDo = () => {
                 I'd like more practise
               </button>
               <Link
-                to="/student"
+                to="/practise/split-strategy"
                 onClick={() => localStorage.setItem("splitStrategy_learnComplete", "true")}
                 className="inline-block rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
               >

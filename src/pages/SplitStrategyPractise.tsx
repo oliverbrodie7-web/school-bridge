@@ -63,7 +63,7 @@ const Step = ({ number, title, detail }: { number: number; title: string; detail
 
 type Feedback = null | "correct" | "tens" | "ones" | "total";
 
-const Student = () => {
+const SplitStrategyPractise = () => {
   const [queue, setQueue] = useState(() => buildQueue());
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showTeach, setShowTeach] = useState(false);
@@ -159,7 +159,7 @@ const Student = () => {
       <div className="w-full max-w-xl">
         {/* Back link */}
         <Link
-          to="/"
+          to="/split-strategy"
           className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
           ← Back
@@ -313,4 +313,4 @@ const Row = ({
   </div>
 );
 
-export default Student;
+export default SplitStrategyPractise;
