@@ -111,7 +111,15 @@ const DemoAnimation = () => {
         {a} + {b}
       </p>
 
-      <div className="mt-6 flex items-start justify-center gap-8">
+      {/* Step 1 label - above the boxes */}
+      {showSplitLabel && (
+        <p className="mt-5 text-center text-base font-medium text-foreground animate-fade-in">
+          <span className="text-muted-foreground">Step 1: </span>
+          Split each number into tens and ones
+        </p>
+      )}
+
+      <div className="mt-3 flex items-start justify-center gap-8">
         <SplitBox
           num={blueNum}
           color={BLUE}
@@ -143,14 +151,8 @@ const DemoAnimation = () => {
         </p>
       )}
 
-      {(showSplitLabel || stepIndex >= 0) && (
+      {(stepIndex >= 0) && (
         <div className="mt-5 space-y-2">
-          {showSplitLabel && (
-            <p className="text-center text-base font-medium text-foreground animate-fade-in">
-              <span className="text-muted-foreground">Step 1: </span>
-              Split each number into tens and ones
-            </p>
-          )}
           {stepIndex >= 0 && (
             <p className="text-center text-base font-medium animate-fade-in" style={{ color: BLUE }}>
               <span className="text-muted-foreground">Step 2: </span>
