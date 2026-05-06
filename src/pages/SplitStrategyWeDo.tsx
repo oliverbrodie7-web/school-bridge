@@ -2,16 +2,40 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const BLUE = "#3B82F6";
-const BLUE_BG = "#DBEAFE";
 const ORANGE = "#F97316";
+const BLUE_BG = "#DBEAFE";
 const ORANGE_BG = "#FFF7ED";
 
 const tens = (n: number) => Math.floor(n / 10) * 10;
 const ones = (n: number) => n % 10;
 
+const Block = ({
+  value,
+  color,
+  ghost,
+  size = "normal",
+}: {
+  value: number;
+  color: string;
+  ghost?: boolean;
+  size?: "normal" | "small";
+}) => {
+  const dim = size === "small"
+    ? "h-14 w-14 text-xl sm:h-16 sm:w-16 sm:text-2xl"
+    : "h-16 w-16 text-2xl sm:h-20 sm:w-20 sm:text-3xl";
+  return (
+    <div
+      className={`flex ${dim} items-center justify-center rounded-2xl font-bold text-white transition-opacity duration-500 ${ghost ? "opacity-20" : "opacity-100"}`}
+      style={{ backgroundColor: color }}
+    >
+      {value}
+    </div>
+  );
+};
+
 interface Question {
-  big: number; // blue, computer splits
-  small: number; // orange, child splits
+  big: number;
+  small: number;
 }
 
 const QUESTIONS: Question[] = [
@@ -21,11 +45,11 @@ const QUESTIONS: Question[] = [
 ];
 
 type Phase =
-  | "autoSplit"      // computer is splitting the blue number
-  | "promptChild"    // waiting for child to tap orange
-  | "childInput"     // child entering tens/ones
-  | "childWrong"     // incorrect input
-  | "childCorrect"   // child got it right, short pause
+  | "autoSplit"
+  | "promptChild"
+  | "childInput"
+  | "childWrong"
+  | "childCorrect"
   | "addTens"
   | "addOnes"
   | "combine"
@@ -98,7 +122,6 @@ const QuestionCard = ({
   const sT = tens(q.small), sO = ones(q.small);
   const tSum = bT + sT, oSum = bO + sO, total = q.big + q.small;
 
-  // Auto-split the blue number after a short delay
   useEffect(() => {
     if (phase === "autoSplit") {
       const t = setTimeout(() => setPhase("promptChild"), 1000);
@@ -109,22 +132,28 @@ const QuestionCard = ({
       return () => clearTimeout(t);
     }
     if (phase === "addTens") {
-      const t = setTimeout(() => setPhase("addOnes"), 1000);
+      const t = setTimeout(() => setPhase("addOnes"), 3500);
       return () => clearTimeout(t);
     }
     if (phase === "addOnes") {
-      const t = setTimeout(() => setPhase("combine"), 1000);
+      const t = setTimeout(() => setPhase("combine"), 3500);
       return () => clearTimeout(t);
     }
     if (phase === "combine") {
-      const t = setTimeout(() => setPhase("done"), 1000);
+      const t = setTimeout(() => setPhase("done"), 3000);
       return () => clearTimeout(t);
     }
   }, [phase]);
 
   const blueSplit = phase !== "autoSplit";
-  const showSteps = ["addTens", "addOnes", "combine", "done"].includes(phase);
-  const stepIndex = ["addTens", "addOnes", "combine", "done"].indexOf(phase);
+  const orangeSplit = ["childCorrect", "addTens", "addOnes", "combine", "done"].includes(phase);
+
+  const tensGone = ["addTens", "addOnes", "combine", "done"].includes(phase);
+  const onesGone = ["addOnes", "combine", "done"].includes(phase);
+
+  const showStep2 = tensGone;
+  const showStep3 = onesGone;
+  const showStep4 = ["combine", "done"].includes(phase);
 
   const handleCheck = () => {
     const tOk = Number(tensInput) === sT;
@@ -157,43 +186,44 @@ const QuestionCard = ({
         {q.big} + {q.small}
       </p>
 
-      {/* Number boxes */}
-      <div className="mt-8 flex items-start justify-center gap-8">
-        {/* Blue number — computer splits */}
+      {/* Step 1 label — always visible */}
+      <p className="mt-6 text-center text-lg font-semibold text-foreground">
+        <span className="text-muted-foreground">Step 1: </span>
+        Split each number into tens and ones
+      </p>
+
+      {/* Step 1 — Number boxes */}
+      <div className="mt-4 flex items-start justify-center gap-8">
+        {/* First number — computer splits */}
         {blueSplit ? (
           <div className="flex gap-3">
             <div className="flex flex-col items-center" style={{ animation: "slideLeft 0.4s ease-out" }}>
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl text-2xl font-bold text-white sm:h-20 sm:w-20 sm:text-3xl" style={{ backgroundColor: BLUE }}>
-                {bT}
-              </div>
+              <Block value={bT} color={BLUE} ghost={tensGone} />
               <span className="mt-1 text-xs font-semibold text-muted-foreground">tens</span>
             </div>
             <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl text-2xl font-bold text-white sm:h-20 sm:w-20 sm:text-3xl" style={{ backgroundColor: BLUE }}>
-                {bO}
-              </div>
+              <Block value={bO} color={ORANGE} ghost={onesGone} />
               <span className="mt-1 text-xs font-semibold text-muted-foreground">ones</span>
             </div>
           </div>
         ) : (
-          <div className="flex h-20 w-20 items-center justify-center rounded-2xl text-3xl font-bold text-white sm:h-24 sm:w-24 sm:text-4xl" style={{ backgroundColor: BLUE }}>
+          <div
+            className="flex h-20 w-20 items-center justify-center rounded-2xl text-3xl font-bold text-white sm:h-24 sm:w-24 sm:text-4xl"
+            style={{ background: `linear-gradient(to right, ${BLUE} 50%, ${ORANGE} 50%)` }}
+          >
             {q.big}
           </div>
         )}
 
-        {/* Orange number — child splits */}
-        {phase === "childCorrect" || showSteps || phase === "done" ? (
+        {/* Second number — child splits */}
+        {orangeSplit ? (
           <div className="flex gap-3 animate-fade-in">
             <div className="flex flex-col items-center" style={{ animation: "slideLeft 0.4s ease-out" }}>
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl text-2xl font-bold text-white sm:h-20 sm:w-20 sm:text-3xl" style={{ backgroundColor: ORANGE }}>
-                {sT}
-              </div>
+              <Block value={sT} color={BLUE} ghost={tensGone} />
               <span className="mt-1 text-xs font-semibold text-muted-foreground">tens</span>
             </div>
             <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl text-2xl font-bold text-white sm:h-20 sm:w-20 sm:text-3xl" style={{ backgroundColor: ORANGE }}>
-                {sO}
-              </div>
+              <Block value={sO} color={ORANGE} ghost={onesGone} />
               <span className="mt-1 text-xs font-semibold text-muted-foreground">ones</span>
             </div>
           </div>
@@ -206,7 +236,7 @@ const QuestionCard = ({
                 value={tensInput}
                 onChange={(e) => setTensInput(e.target.value)}
                 className="flex h-16 w-16 items-center justify-center rounded-2xl border-3 text-center text-2xl font-bold outline-none transition-colors focus:ring-2 sm:h-20 sm:w-20 sm:text-3xl"
-                style={{ borderColor: ORANGE, color: ORANGE, background: ORANGE_BG }}
+                style={{ borderColor: BLUE, color: BLUE, background: BLUE_BG }}
                 placeholder="?"
               />
               <span className="mt-1 text-xs font-semibold text-muted-foreground">tens</span>
@@ -231,7 +261,7 @@ const QuestionCard = ({
             className={`flex h-20 w-20 items-center justify-center rounded-2xl text-3xl font-bold text-white transition-transform sm:h-24 sm:w-24 sm:text-4xl ${
               phase === "promptChild" ? "cursor-pointer hover:scale-110 active:scale-95" : ""
             }`}
-            style={{ backgroundColor: ORANGE }}
+            style={{ background: `linear-gradient(to right, ${BLUE} 50%, ${ORANGE} 50%)` }}
           >
             {q.small}
           </button>
@@ -247,12 +277,12 @@ const QuestionCard = ({
         )}
 
         {phase === "promptChild" && (
-          <p className="text-lg font-medium animate-fade-in" style={{ color: BLUE }}>
+          <p className="text-lg font-medium animate-fade-in text-foreground">
             I split {q.big} into {bT} and {bO}. Now you try with {q.small}.
           </p>
         )}
 
-        {(phase === "childInput") && (
+        {phase === "childInput" && (
           <>
             <p className="text-lg font-medium text-muted-foreground">
               Split {q.small} into tens and ones.
@@ -282,32 +312,53 @@ const QuestionCard = ({
         )}
 
         {phase === "childCorrect" && (
-          <p className="text-lg font-semibold animate-fade-in" style={{ color: ORANGE }}>
+          <p className="text-lg font-semibold animate-fade-in text-foreground">
             Yes! {q.small} splits into {sT} and {sO}.
           </p>
         )}
-
-        {/* Reveal steps */}
-        {showSteps && (
-          <div className="space-y-3 pt-2">
-            {stepIndex >= 0 && (
-              <p className="text-lg font-semibold animate-fade-in" style={{ color: BLUE }}>
-                Now add the tens: {bT} + {sT} = {tSum}
-              </p>
-            )}
-            {stepIndex >= 1 && (
-              <p className="text-lg font-semibold animate-fade-in" style={{ color: ORANGE }}>
-                Now add the ones: {bO} + {sO} = {oSum}
-              </p>
-            )}
-            {stepIndex >= 2 && (
-              <p className="text-lg font-semibold animate-fade-in text-primary">
-                Put them together: {tSum} + {oSum} = {total}
-              </p>
-            )}
-          </div>
-        )}
       </div>
+
+      {/* Step 2 — Tens row with blocks */}
+      {showStep2 && (
+        <div className="mt-8 animate-fade-in">
+          <p className="text-center text-lg font-semibold text-muted-foreground mb-3">
+            Step 2: <span style={{ color: BLUE }}>Add the tens</span>
+          </p>
+          <div className="flex items-center justify-center gap-3">
+            <Block value={bT} color={BLUE} size="small" />
+            <span className="text-2xl font-bold text-muted-foreground">+</span>
+            <Block value={sT} color={BLUE} size="small" />
+            <span className="text-2xl font-bold text-muted-foreground">=</span>
+            <span className="text-2xl font-bold text-foreground">{tSum}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Step 3 — Ones row with blocks */}
+      {showStep3 && (
+        <div className="mt-6 animate-fade-in">
+          <p className="text-center text-lg font-semibold text-muted-foreground mb-3">
+            Step 3: <span style={{ color: ORANGE }}>Add the ones</span>
+          </p>
+          <div className="flex items-center justify-center gap-3">
+            <Block value={bO} color={ORANGE} size="small" />
+            <span className="text-2xl font-bold text-muted-foreground">+</span>
+            <Block value={sO} color={ORANGE} size="small" />
+            <span className="text-2xl font-bold text-muted-foreground">=</span>
+            <span className="text-2xl font-bold text-foreground">{oSum}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Step 4 — Combine */}
+      {showStep4 && (
+        <div className="mt-6 animate-fade-in">
+          <p className="text-center text-lg font-semibold animate-fade-in text-primary">
+            <span className="text-muted-foreground">Step 4: </span>
+            Put them together: {tSum} + {oSum} = {total}
+          </p>
+        </div>
+      )}
 
       {/* Next button */}
       {phase === "done" && (

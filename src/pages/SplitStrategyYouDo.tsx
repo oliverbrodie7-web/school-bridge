@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const BLUE = "#3B82F6";
@@ -8,6 +8,30 @@ const BLUE_BG = "#EFF6FF";
 
 const tens = (n: number) => Math.floor(n / 10) * 10;
 const ones = (n: number) => n % 10;
+
+const Block = ({
+  value,
+  color,
+  ghost,
+  size = "normal",
+}: {
+  value: number;
+  color: string;
+  ghost?: boolean;
+  size?: "normal" | "small";
+}) => {
+  const dim = size === "small"
+    ? "h-14 w-14 text-xl sm:h-16 sm:w-16 sm:text-2xl"
+    : "h-16 w-16 text-2xl sm:h-20 sm:w-20 sm:text-3xl";
+  return (
+    <div
+      className={`flex ${dim} items-center justify-center rounded-2xl font-bold text-white transition-opacity duration-500 ${ghost ? "opacity-20" : "opacity-100"}`}
+      style={{ backgroundColor: color }}
+    >
+      {value}
+    </div>
+  );
+};
 
 const BANK = [
   { a: 32, b: 14 },
@@ -36,20 +60,6 @@ const buildQueue = (): Q[] =>
     a >= b ? { big: a, small: b } : { big: b, small: a }
   );
 
-/*
-  Phases:
-  tapBlue      → waiting for child to tap blue
-  inputBlue    → child filling blue tens/ones
-  blueWrong    → incorrect blue split
-  blueDone     → blue split confirmed, prompt to tap orange
-  tapOrange    → waiting for child to tap orange
-  inputOrange  → child filling orange tens/ones
-  orangeWrong  → incorrect orange split
-  orangeDone   → orange split confirmed
-  inputAdd     → child filling tens sum, ones sum, total
-  addWrong     → incorrect addition
-  addTens / addOnes / addCombine / done → reveal steps
-*/
 type Phase =
   | "tapBlue" | "inputBlue" | "blueWrong" | "blueDone"
   | "tapOrange" | "inputOrange" | "orangeWrong" | "orangeDone"
@@ -144,19 +154,6 @@ const SplitInput = ({
   />
 );
 
-/* ─── Filled split box ─── */
-const FilledBox = ({ num, color, label }: { num: number; color: string; label: string }) => (
-  <div className="flex flex-col items-center" style={{ animation: "slideLeft 0.4s ease-out" }}>
-    <div
-      className="flex h-16 w-16 items-center justify-center rounded-2xl text-2xl font-bold text-white sm:h-20 sm:w-20 sm:text-3xl"
-      style={{ backgroundColor: color }}
-    >
-      {num}
-    </div>
-    <span className="mt-1 text-xs font-semibold text-muted-foreground">{label}</span>
-  </div>
-);
-
 /* ─── Addition row ─── */
 const AddRow = ({
   label,
@@ -212,6 +209,14 @@ const QuestionCard = ({ q, onNext }: { q: Q; onNext: () => void }) => {
   // Determine split states
   const blueSplit = !["tapBlue", "inputBlue", "blueWrong"].includes(phase);
   const orangeSplit = ["orangeDone", "inputAdd", "addWrong", "correct", "done"].includes(phase);
+
+  // Ghost states for correct/done reveal
+  const tensGone = ["correct", "done"].includes(phase);
+  const onesGone = ["correct", "done"].includes(phase);
+
+  const showStep2 = tensGone;
+  const showStep3 = onesGone;
+  const showStep4 = ["correct", "done"].includes(phase);
 
   const checkBlue = () => {
     const tOk = Number(blueTens) === bT;
@@ -289,13 +294,25 @@ const QuestionCard = ({ q, onNext }: { q: Q; onNext: () => void }) => {
         {q.big} + {q.small}
       </p>
 
+      {/* Step 1 label — always visible */}
+      <p className="mt-6 text-center text-lg font-semibold text-foreground">
+        <span className="text-muted-foreground">Step 1: </span>
+        Split each number into tens and ones
+      </p>
+
       {/* Number boxes */}
-      <div className="mt-8 flex items-start justify-center gap-8">
-        {/* BLUE number */}
+      <div className="mt-4 flex items-start justify-center gap-8">
+        {/* First number */}
         {blueSplit ? (
           <div className="flex gap-3 animate-fade-in">
-            <FilledBox num={bT} color={BLUE} label="tens" />
-            <FilledBox num={bO} color={BLUE} label="ones" />
+            <div className="flex flex-col items-center" style={{ animation: "slideLeft 0.4s ease-out" }}>
+              <Block value={bT} color={BLUE} ghost={tensGone} />
+              <span className="mt-1 text-xs font-semibold text-muted-foreground">tens</span>
+            </div>
+            <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
+              <Block value={bO} color={ORANGE} ghost={onesGone} />
+              <span className="mt-1 text-xs font-semibold text-muted-foreground">ones</span>
+            </div>
           </div>
         ) : phase === "inputBlue" || phase === "blueWrong" ? (
           <div className="flex gap-3">
@@ -304,7 +321,7 @@ const QuestionCard = ({ q, onNext }: { q: Q; onNext: () => void }) => {
               <span className="mt-1 text-xs font-semibold text-muted-foreground">tens</span>
             </div>
             <div className="flex flex-col items-center">
-              <SplitInput value={blueOnes} onChange={setBlueOnes} color={BLUE} bgColor={BLUE_BG} />
+              <SplitInput value={blueOnes} onChange={setBlueOnes} color={ORANGE} bgColor={ORANGE_BG} />
               <span className="mt-1 text-xs font-semibold text-muted-foreground">ones</span>
             </div>
           </div>
@@ -314,22 +331,28 @@ const QuestionCard = ({ q, onNext }: { q: Q; onNext: () => void }) => {
             className={`flex h-20 w-20 items-center justify-center rounded-2xl text-3xl font-bold text-white transition-transform sm:h-24 sm:w-24 sm:text-4xl ${
               phase === "tapBlue" ? "cursor-pointer hover:scale-110 active:scale-95" : ""
             }`}
-            style={{ backgroundColor: BLUE }}
+            style={{ background: `linear-gradient(to right, ${BLUE} 50%, ${ORANGE} 50%)` }}
           >
             {q.big}
           </button>
         )}
 
-        {/* ORANGE number */}
+        {/* Second number */}
         {orangeSplit ? (
           <div className="flex gap-3 animate-fade-in">
-            <FilledBox num={sT} color={ORANGE} label="tens" />
-            <FilledBox num={sO} color={ORANGE} label="ones" />
+            <div className="flex flex-col items-center" style={{ animation: "slideLeft 0.4s ease-out" }}>
+              <Block value={sT} color={BLUE} ghost={tensGone} />
+              <span className="mt-1 text-xs font-semibold text-muted-foreground">tens</span>
+            </div>
+            <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
+              <Block value={sO} color={ORANGE} ghost={onesGone} />
+              <span className="mt-1 text-xs font-semibold text-muted-foreground">ones</span>
+            </div>
           </div>
         ) : phase === "inputOrange" || phase === "orangeWrong" ? (
           <div className="flex gap-3">
             <div className="flex flex-col items-center">
-              <SplitInput value={orangeTens} onChange={setOrangeTens} color={ORANGE} bgColor={ORANGE_BG} />
+              <SplitInput value={orangeTens} onChange={setOrangeTens} color={BLUE} bgColor={BLUE_BG} />
               <span className="mt-1 text-xs font-semibold text-muted-foreground">tens</span>
             </div>
             <div className="flex flex-col items-center">
@@ -344,7 +367,7 @@ const QuestionCard = ({ q, onNext }: { q: Q; onNext: () => void }) => {
             className={`flex h-20 w-20 items-center justify-center rounded-2xl text-3xl font-bold text-white transition-transform sm:h-24 sm:w-24 sm:text-4xl ${
               phase === "tapOrange" ? "cursor-pointer hover:scale-110 active:scale-95" : ""
             }`}
-            style={{ backgroundColor: ORANGE }}
+            style={{ background: `linear-gradient(to right, ${BLUE} 50%, ${ORANGE} 50%)` }}
           >
             {q.small}
           </button>
@@ -353,14 +376,12 @@ const QuestionCard = ({ q, onNext }: { q: Q; onNext: () => void }) => {
 
       {/* Messages & controls */}
       <div className="mt-6 space-y-4 text-center">
-        {/* Tap prompts */}
         {phase === "tapBlue" && (
           <p className="text-lg font-medium text-muted-foreground animate-fade-in">
-            Tap the blue number to split it.
+            Tap the first number to split it.
           </p>
         )}
 
-        {/* Blue input check */}
         {phase === "inputBlue" && (
           <>
             <p className="text-base font-medium text-muted-foreground">
@@ -376,7 +397,6 @@ const QuestionCard = ({ q, onNext }: { q: Q; onNext: () => void }) => {
           </>
         )}
 
-        {/* Blue wrong */}
         {phase === "blueWrong" && (
           <>
             <p className="text-base font-medium text-destructive animate-fade-in">{hint}</p>
@@ -389,14 +409,12 @@ const QuestionCard = ({ q, onNext }: { q: Q; onNext: () => void }) => {
           </>
         )}
 
-        {/* Tap orange prompt */}
         {phase === "tapOrange" && (
-          <p className="text-lg font-medium animate-fade-in" style={{ color: BLUE }}>
-            Great! Now tap the orange number.
+          <p className="text-lg font-medium animate-fade-in text-foreground">
+            Great! Now tap the next number.
           </p>
         )}
 
-        {/* Orange input check */}
         {phase === "inputOrange" && (
           <>
             <p className="text-base font-medium text-muted-foreground">
@@ -412,7 +430,6 @@ const QuestionCard = ({ q, onNext }: { q: Q; onNext: () => void }) => {
           </>
         )}
 
-        {/* Orange wrong */}
         {phase === "orangeWrong" && (
           <>
             <p className="text-base font-medium text-destructive animate-fade-in">{hint}</p>
@@ -425,7 +442,6 @@ const QuestionCard = ({ q, onNext }: { q: Q; onNext: () => void }) => {
           </>
         )}
 
-        {/* Addition inputs */}
         {(phase === "inputAdd" || phase === "addWrong") && (
           <div className="space-y-4 pt-2">
             <p className="text-base font-medium text-muted-foreground">
@@ -460,22 +476,51 @@ const QuestionCard = ({ q, onNext }: { q: Q; onNext: () => void }) => {
             )}
           </div>
         )}
+      </div>
 
-        {/* Correct */}
-        {(phase === "correct" || phase === "done") && (
-          <div className="space-y-3 pt-2 animate-fade-in">
-            <p className="text-lg font-semibold" style={{ color: BLUE }}>
-              Now add the tens: {bT} + {sT} = {tSum}
-            </p>
-            <p className="text-lg font-semibold" style={{ color: ORANGE }}>
-              Now add the ones: {bO} + {sO} = {oSum}
-            </p>
-            <p className="text-lg font-semibold text-primary">
-              Put them together: {tSum} + {oSum} = {total}
-            </p>
-            <p className="text-lg font-semibold text-foreground pt-2">
-              Great work! You used the split strategy! 🌟
-            </p>
+      {/* Step 2 — Tens row with blocks */}
+      {showStep2 && (
+        <div className="mt-8 animate-fade-in">
+          <p className="text-center text-lg font-semibold text-muted-foreground mb-3">
+            Step 2: <span style={{ color: BLUE }}>Add the tens</span>
+          </p>
+          <div className="flex items-center justify-center gap-3">
+            <Block value={bT} color={BLUE} size="small" />
+            <span className="text-2xl font-bold text-muted-foreground">+</span>
+            <Block value={sT} color={BLUE} size="small" />
+            <span className="text-2xl font-bold text-muted-foreground">=</span>
+            <span className="text-2xl font-bold text-foreground">{tSum}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Step 3 — Ones row with blocks */}
+      {showStep3 && (
+        <div className="mt-6 animate-fade-in">
+          <p className="text-center text-lg font-semibold text-muted-foreground mb-3">
+            Step 3: <span style={{ color: ORANGE }}>Add the ones</span>
+          </p>
+          <div className="flex items-center justify-center gap-3">
+            <Block value={bO} color={ORANGE} size="small" />
+            <span className="text-2xl font-bold text-muted-foreground">+</span>
+            <Block value={sO} color={ORANGE} size="small" />
+            <span className="text-2xl font-bold text-muted-foreground">=</span>
+            <span className="text-2xl font-bold text-foreground">{oSum}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Step 4 — Combine */}
+      {showStep4 && (
+        <div className="mt-6 animate-fade-in">
+          <p className="text-center text-lg font-semibold text-primary">
+            <span className="text-muted-foreground">Step 4: </span>
+            Put them together: {tSum} + {oSum} = {total}
+          </p>
+          <p className="mt-3 text-center text-lg font-semibold text-foreground">
+            Great work! You used the split strategy! 🌟
+          </p>
+          <div className="mt-4 text-center">
             <button
               onClick={onNext}
               className="rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
@@ -483,8 +528,8 @@ const QuestionCard = ({ q, onNext }: { q: Q; onNext: () => void }) => {
               Next Question
             </button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
