@@ -103,13 +103,11 @@ const ExampleCard = ({
         {example.a} + {example.b}
       </p>
 
-      {/* Step 1 label - above the boxes */}
-      {showSplitLabel && (
-        <p className="mt-6 text-center text-lg font-semibold animate-fade-in text-foreground">
-          <span className="text-muted-foreground">Step 1: </span>
-          Split each number into tens and ones
-        </p>
-      )}
+      {/* Step 1 label - always visible */}
+      <p className="mt-6 text-center text-lg font-semibold text-foreground">
+        <span className="text-muted-foreground">Step 1: </span>
+        Split each number into tens and ones
+      </p>
 
       {/* Number boxes */}
       <div className="mt-4 flex items-start justify-center gap-8">
