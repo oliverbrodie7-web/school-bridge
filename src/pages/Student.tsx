@@ -1,20 +1,25 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-const QUESTION = {
-  a: 34,
-  b: 52,
-  tensA: 30,
-  tensB: 50,
-  onesA: 4,
-  onesB: 2,
+const QUESTIONS = [
+  { a: 34, b: 52 },
+  { a: 41, b: 35 },
+  { a: 23, b: 64 },
+  { a: 55, b: 32 },
+  { a: 42, b: 47 },
+];
+
+const buildQuestion = (q: { a: number; b: number }) => {
+  const tensA = Math.floor(q.a / 10) * 10;
+  const tensB = Math.floor(q.b / 10) * 10;
+  const onesA = q.a % 10;
+  const onesB = q.b % 10;
+  return { a: q.a, b: q.b, tensA, tensB, onesA, onesB, tensAnswer: tensA + tensB, onesAnswer: onesA + onesB, totalAnswer: q.a + q.b };
 };
 
-const tensAnswer = QUESTION.tensA + QUESTION.tensB;
-const onesAnswer = QUESTION.onesA + QUESTION.onesB;
-const totalAnswer = tensAnswer + onesAnswer;
+const pickRandom = () => buildQuestion(QUESTIONS[Math.floor(Math.random() * QUESTIONS.length)]);
 
-const TeachMe = () => (
+const TeachMe = ({ q }: { q: ReturnType<typeof buildQuestion> }) => (
   <div className="mt-6 rounded-2xl border border-border bg-secondary/50 p-6 sm:p-8 text-left space-y-5">
     <h3 className="text-xl font-bold text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
       How the Split Strategy works
@@ -25,26 +30,10 @@ const TeachMe = () => (
     </p>
 
     <div className="space-y-4">
-      <Step
-        number={1}
-        title="Split each number"
-        detail={`${QUESTION.a} = ${QUESTION.tensA} + ${QUESTION.onesA}   and   ${QUESTION.b} = ${QUESTION.tensB} + ${QUESTION.onesB}`}
-      />
-      <Step
-        number={2}
-        title="Add the tens"
-        detail={`${QUESTION.tensA} + ${QUESTION.tensB} = ${tensAnswer}`}
-      />
-      <Step
-        number={3}
-        title="Add the ones"
-        detail={`${QUESTION.onesA} + ${QUESTION.onesB} = ${onesAnswer}`}
-      />
-      <Step
-        number={4}
-        title="Combine"
-        detail={`${tensAnswer} + ${onesAnswer} = ${totalAnswer}`}
-      />
+      <Step number={1} title="Split each number" detail={`${q.a} = ${q.tensA} + ${q.onesA}   and   ${q.b} = ${q.tensB} + ${q.onesB}`} />
+      <Step number={2} title="Add the tens" detail={`${q.tensA} + ${q.tensB} = ${q.tensAnswer}`} />
+      <Step number={3} title="Add the ones" detail={`${q.onesA} + ${q.onesB} = ${q.onesAnswer}`} />
+      <Step number={4} title="Combine" detail={`${q.tensAnswer} + ${q.onesAnswer} = ${q.totalAnswer}`} />
     </div>
 
     <p className="text-sm text-muted-foreground pt-2">Now try the question below! 👇</p>
@@ -66,32 +55,45 @@ const Step = ({ number, title, detail }: { number: number; title: string; detail
 type Feedback = null | "correct" | "tens" | "ones" | "total";
 
 const Student = () => {
+  const [question, setQuestion] = useState(() => pickRandom());
   const [showTeach, setShowTeach] = useState(false);
   const [tensInput, setTensInput] = useState("");
   const [onesInput, setOnesInput] = useState("");
   const [totalInput, setTotalInput] = useState("");
   const [feedback, setFeedback] = useState<Feedback>(null);
 
+  const nextQuestion = () => {
+    setQuestion(pickRandom());
+    setTensInput("");
+    setOnesInput("");
+    setTotalInput("");
+    setFeedback(null);
+  };
+
   const handleCheck = () => {
     const t = Number(tensInput);
     const o = Number(onesInput);
     const tot = Number(totalInput);
 
-    if (t !== tensAnswer) {
+    if (t !== question.tensAnswer) {
       setFeedback("tens");
-    } else if (o !== onesAnswer) {
+    } else if (o !== question.onesAnswer) {
       setFeedback("ones");
-    } else if (tot !== totalAnswer) {
+    } else if (tot !== question.totalAnswer) {
       setFeedback("total");
     } else {
       setFeedback("correct");
     }
   };
 
+  const tryAgain = () => {
+    setFeedback(null);
+  };
+
   const feedbackMessage: Record<Exclude<Feedback, null>, { text: string; isCorrect: boolean }> = {
     correct: { text: "Great work! You used the split strategy! 🌟", isCorrect: true },
-    tens: { text: `Not quite — try adding just the tens first: ${QUESTION.tensA} + ${QUESTION.tensB}`, isCorrect: false },
-    ones: { text: `Almost! Now check the ones: ${QUESTION.onesA} + ${QUESTION.onesB}`, isCorrect: false },
+    tens: { text: `Not quite — try adding just the tens first: ${question.tensA} + ${question.tensB}`, isCorrect: false },
+    ones: { text: `Almost! Now check the ones: ${question.onesA} + ${question.onesB}`, isCorrect: false },
     total: { text: `You're so close! Try adding your tens answer and ones answer together.`, isCorrect: false },
   };
 
@@ -131,7 +133,7 @@ const Student = () => {
         </div>
 
         {/* Teach me section */}
-        {showTeach && <TeachMe />}
+        {showTeach && <TeachMe q={question} />}
 
         {/* Question */}
         <div className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
@@ -142,18 +144,18 @@ const Student = () => {
             className="mt-2 text-3xl font-bold text-primary sm:text-4xl"
             style={{ fontFamily: "var(--font-heading)" }}
           >
-            {QUESTION.a} + {QUESTION.b}
+            {question.a} + {question.b}
           </p>
 
           {/* Breakdown rows */}
           <div className="mt-8 space-y-5">
             <Row
-              label={`Split the tens: ${QUESTION.tensA} + ${QUESTION.tensB} = `}
+              label={`Split the tens: ${question.tensA} + ${question.tensB} = `}
               value={tensInput}
               onChange={(v) => { setTensInput(v); setFeedback(null); }}
             />
             <Row
-              label={`Split the ones: ${QUESTION.onesA} + ${QUESTION.onesB} = `}
+              label={`Split the ones: ${question.onesA} + ${question.onesB} = `}
               value={onesInput}
               onChange={(v) => { setOnesInput(v); setFeedback(null); }}
             />
@@ -169,26 +171,54 @@ const Student = () => {
             />
           </div>
 
-          {/* Check button */}
-          <button
-            onClick={handleCheck}
-            disabled={!tensInput || !onesInput || !totalInput}
-            className="mt-8 w-full rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            Check My Answer
-          </button>
+          {/* Check button — hidden once feedback is shown */}
+          {!feedback && (
+            <button
+              onClick={handleCheck}
+              disabled={!tensInput || !onesInput || !totalInput}
+              className="mt-8 w-full rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              Check My Answer
+            </button>
+          )}
 
           {/* Feedback */}
           {feedback && (
-            <div
-              className={`mt-5 rounded-xl p-4 text-center font-medium ${
-                feedbackMessage[feedback].isCorrect
-                  ? "bg-secondary text-secondary-foreground"
-                  : "bg-destructive/10 text-destructive"
-              }`}
-            >
-              {feedbackMessage[feedback].text}
-            </div>
+            <>
+              <div
+                className={`mt-5 rounded-xl p-4 text-center font-medium ${
+                  feedbackMessage[feedback].isCorrect
+                    ? "bg-secondary text-secondary-foreground"
+                    : "bg-destructive/10 text-destructive"
+                }`}
+              >
+                {feedbackMessage[feedback].text}
+              </div>
+
+              {feedbackMessage[feedback].isCorrect ? (
+                <button
+                  onClick={nextQuestion}
+                  className="mt-4 w-full rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+                >
+                  Next Question
+                </button>
+              ) : (
+                <div className="mt-4 flex gap-3">
+                  <button
+                    onClick={tryAgain}
+                    className="flex-1 rounded-xl border-2 border-primary px-4 py-3 text-base font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+                  >
+                    Try Again
+                  </button>
+                  <button
+                    onClick={nextQuestion}
+                    className="flex-1 rounded-xl border-2 border-border px-4 py-3 text-base font-semibold text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                  >
+                    Skip to Next Question
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
