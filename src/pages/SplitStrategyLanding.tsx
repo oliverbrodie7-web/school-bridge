@@ -47,6 +47,13 @@ const SplitStrategyLanding = () => {
               )}
             </div>
           </div>
+
+          <Link
+            to="/parent"
+            className="inline-block rounded-xl bg-muted px-8 py-4 text-lg font-semibold text-muted-foreground transition-colors hover:bg-muted/80 hover:text-foreground"
+          >
+            Parent Guide
+          </Link>
         </div>
       </div>
     </div>
