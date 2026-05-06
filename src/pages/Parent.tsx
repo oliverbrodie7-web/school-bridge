@@ -98,7 +98,7 @@ const DemoAnimation = () => {
             className={`flex h-16 w-16 items-center justify-center rounded-xl text-2xl font-bold text-white transition-transform sm:h-20 sm:w-20 sm:text-3xl ${
               phase === "prompt" ? "cursor-pointer hover:scale-105 active:scale-95" : ""
             }`}
-            style={{ backgroundColor: BLUE }}
+            style={{ background: `linear-gradient(to right, ${BLUE} 50%, ${ORANGE} 50%)` }}
           >
             {blueNum}
           </button>
@@ -109,7 +109,7 @@ const DemoAnimation = () => {
               <span className="mt-1 text-xs font-medium text-muted-foreground">tens</span>
             </div>
             <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
-              <Block value={bO} color={BLUE} ghost={onesGone} />
+              <Block value={bO} color={ORANGE} ghost={onesGone} />
               <span className="mt-1 text-xs font-medium text-muted-foreground">ones</span>
             </div>
           </div>
@@ -122,14 +122,14 @@ const DemoAnimation = () => {
             className={`flex h-16 w-16 items-center justify-center rounded-xl text-2xl font-bold text-white transition-transform sm:h-20 sm:w-20 sm:text-3xl ${
               phase === "splitA" ? "cursor-pointer hover:scale-105 active:scale-95" : ""
             }`}
-            style={{ backgroundColor: ORANGE }}
+            style={{ background: `linear-gradient(to right, ${BLUE} 50%, ${ORANGE} 50%)` }}
           >
             {orangeNum}
           </button>
         ) : (
           <div className="flex gap-3">
             <div className="flex flex-col items-center" style={{ animation: "slideLeft 0.4s ease-out" }}>
-              <Block value={oT} color={ORANGE} ghost={tensGone} />
+              <Block value={oT} color={BLUE} ghost={tensGone} />
               <span className="mt-1 text-xs font-medium text-muted-foreground">tens</span>
             </div>
             <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
@@ -147,7 +147,7 @@ const DemoAnimation = () => {
       )}
       {phase === "splitA" && (
         <p className="mt-4 text-center text-sm text-muted-foreground animate-fade-in">
-          Now tap the orange number.
+          Now tap the next number.
         </p>
       )}
 
@@ -160,7 +160,7 @@ const DemoAnimation = () => {
           <div className="flex items-center justify-center gap-3">
             <Block value={bT} color={BLUE} size="small" />
             <span className="text-xl font-bold text-muted-foreground">+</span>
-            <Block value={oT} color={ORANGE} size="small" />
+            <Block value={oT} color={BLUE} size="small" />
             <span className="text-xl font-bold text-muted-foreground">=</span>
             <span className="text-xl font-bold text-foreground">{tSum}</span>
           </div>
@@ -174,7 +174,7 @@ const DemoAnimation = () => {
             Step 3: <span style={{ color: ORANGE }}>Add the ones</span>
           </p>
           <div className="flex items-center justify-center gap-3">
-            <Block value={bO} color={BLUE} size="small" />
+            <Block value={bO} color={ORANGE} size="small" />
             <span className="text-xl font-bold text-muted-foreground">+</span>
             <Block value={oO} color={ORANGE} size="small" />
             <span className="text-xl font-bold text-muted-foreground">=</span>
@@ -275,7 +275,7 @@ const PracticeQuestion = () => {
             className={`flex h-16 w-16 items-center justify-center rounded-xl text-2xl font-bold text-white transition-transform sm:h-20 sm:w-20 sm:text-3xl ${
               phase === "prompt" ? "cursor-pointer hover:scale-105 active:scale-95" : ""
             }`}
-            style={{ backgroundColor: BLUE }}
+            style={{ background: `linear-gradient(to right, ${BLUE} 50%, ${ORANGE} 50%)` }}
           >
             {blueNum}
           </button>
@@ -286,7 +286,7 @@ const PracticeQuestion = () => {
               <span className="mt-1 text-xs font-medium text-muted-foreground">tens</span>
             </div>
             <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
-              <Block value={bO} color={BLUE} />
+              <Block value={bO} color={ORANGE} />
               <span className="mt-1 text-xs font-medium text-muted-foreground">ones</span>
             </div>
           </div>
@@ -299,14 +299,14 @@ const PracticeQuestion = () => {
             className={`flex h-16 w-16 items-center justify-center rounded-xl text-2xl font-bold text-white transition-transform sm:h-20 sm:w-20 sm:text-3xl ${
               phase === "splitA" ? "cursor-pointer hover:scale-105 active:scale-95" : ""
             }`}
-            style={{ backgroundColor: ORANGE }}
+            style={{ background: `linear-gradient(to right, ${BLUE} 50%, ${ORANGE} 50%)` }}
           >
             {orangeNum}
           </button>
         ) : (
           <div className="flex gap-3">
             <div className="flex flex-col items-center" style={{ animation: "slideLeft 0.4s ease-out" }}>
-              <Block value={oT} color={ORANGE} />
+              <Block value={oT} color={BLUE} />
               <span className="mt-1 text-xs font-medium text-muted-foreground">tens</span>
             </div>
             <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
@@ -324,7 +324,7 @@ const PracticeQuestion = () => {
       )}
       {phase === "splitA" && (
         <p className="mt-4 text-center text-sm text-muted-foreground animate-fade-in">
-          Now tap the smaller number.
+          Now tap the next number.
         </p>
       )}
 
