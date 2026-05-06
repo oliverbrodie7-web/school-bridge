@@ -61,7 +61,7 @@ const SplitStrategyWeDo = () => {
               Great teamwork! 🎉
             </p>
             <Link
-              to="/student"
+              to="/learn/split-strategy/you-do"
               className="inline-block rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
             >
               I think you're ready — let's see what you can do!
