@@ -103,8 +103,16 @@ const ExampleCard = ({
         {example.a} + {example.b}
       </p>
 
+      {/* Step 1 label - above the boxes */}
+      {showSplitLabel && (
+        <p className="mt-6 text-center text-lg font-semibold animate-fade-in text-foreground">
+          <span className="text-muted-foreground">Step 1: </span>
+          Split each number into tens and ones
+        </p>
+      )}
+
       {/* Number boxes */}
-      <div className="mt-8 flex items-start justify-center gap-8">
+      <div className="mt-4 flex items-start justify-center gap-8">
         <SplitBox
           num={blueNum}
           color={BLUE}
@@ -137,15 +145,9 @@ const ExampleCard = ({
         </p>
       )}
 
-      {/* Reveal steps */}
-      {(showSplitLabel || showSteps) && (
+      {/* Reveal steps 2-4 */}
+      {showSteps && (
         <div className="mt-6 space-y-3">
-          {showSplitLabel && (
-            <p className="text-center text-lg font-semibold animate-fade-in text-foreground">
-              <span className="text-muted-foreground">Step 1: </span>
-              Split each number into tens and ones
-            </p>
-          )}
           {stepIndex >= 0 && (
             <p className="text-center text-lg font-semibold animate-fade-in" style={{ color: BLUE }}>
               <span className="text-muted-foreground">Step 2: </span>
