@@ -162,7 +162,7 @@ const ExampleCard = ({
         <div className="mt-6 text-center animate-fade-in">
           {isLast ? (
             <Link
-              to="/student"
+              to="/learn/split-strategy/we-do"
               className="inline-block rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
             >
               We're going to try one together

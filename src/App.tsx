@@ -7,6 +7,7 @@ import Index from "./pages/Index.tsx";
 import Student from "./pages/Student.tsx";
 import Parent from "./pages/Parent.tsx";
 import SplitStrategyLearn from "./pages/SplitStrategyLearn.tsx";
+import SplitStrategyWeDo from "./pages/SplitStrategyWeDo.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/student" element={<Student />} />
           <Route path="/parent" element={<Parent />} />
           <Route path="/learn/split-strategy" element={<SplitStrategyLearn />} />
+          <Route path="/learn/split-strategy/we-do" element={<SplitStrategyWeDo />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
