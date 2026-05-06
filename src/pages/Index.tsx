@@ -36,13 +36,9 @@ const Index = () => {
     setShowSetup(false);
   };
 
-  const handleSelectProfile = (profile: Profile) => {
-    // Navigate to the year level content home
-    if (profile.yearLevel === 2) {
-      navigate("/student");
-    } else {
-      navigate("/student");
-    }
+  const handleSelectProfile = (profile: Profile, index: number) => {
+    localStorage.setItem("selectedProfileIndex", String(index));
+    navigate("/home");
   };
 
   if (showSetup || !hasProfiles) {
