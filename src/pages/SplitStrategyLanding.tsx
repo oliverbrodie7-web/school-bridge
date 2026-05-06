@@ -7,7 +7,7 @@ const SplitStrategyLanding = () => {
     <div className="flex min-h-screen flex-col items-center px-6 py-12">
       <div className="w-full max-w-md">
         <Link
-          to="/student"
+          to="/student/addition"
           className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
           ← Back
