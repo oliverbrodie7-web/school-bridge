@@ -593,7 +593,9 @@ const SplitStrategyPractise = () => {
   const [level, setLevel] = useState(1);
   const [queue, setQueue] = useState(() => buildQueue());
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [l2Correct, setL2Correct] = useState(() => getL2Count());
   const finished = currentIndex >= queue.length;
+  const l3Unlocked = l2Correct >= L2_THRESHOLD;
 
   const handleLevelChange = (l: number) => {
     setLevel(l);
@@ -601,7 +603,13 @@ const SplitStrategyPractise = () => {
     setCurrentIndex(0);
   };
 
-  const nextQuestion = () => setCurrentIndex((i) => i + 1);
+  const nextQuestion = () => {
+    if (level === 2) {
+      const newCount = incL2Count();
+      setL2Correct(newCount);
+    }
+    setCurrentIndex((i) => i + 1);
+  };
 
   const resetAll = () => {
     setQueue(buildQueue());
