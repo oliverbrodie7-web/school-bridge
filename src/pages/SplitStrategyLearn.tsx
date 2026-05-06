@@ -49,6 +49,29 @@ const SplitStrategyLearn = () => {
   );
 };
 
+/* ─── Small coloured block used everywhere ─── */
+const Block = ({
+  value,
+  color,
+  ghost,
+  size = "normal",
+}: {
+  value: number;
+  color: string;
+  ghost?: boolean;
+  size?: "normal" | "small";
+}) => {
+  const dim = size === "small" ? "h-14 w-14 text-xl sm:h-16 sm:w-16 sm:text-2xl" : "h-16 w-16 text-2xl sm:h-20 sm:w-20 sm:text-3xl";
+  return (
+    <div
+      className={`flex ${dim} items-center justify-center rounded-2xl font-bold text-white transition-opacity duration-500 ${ghost ? "opacity-20" : "opacity-100"}`}
+      style={{ backgroundColor: color }}
+    >
+      {value}
+    </div>
+  );
+};
+
 const ExampleCard = ({
   example,
   isLast,
@@ -89,9 +112,14 @@ const ExampleCard = ({
 
   const blueSplit = phase !== "prompt";
   const orangeSplit = !["prompt", "splitA"].includes(phase);
-  const showSplitLabel = !["prompt", "splitA"].includes(phase);
-  const showSteps = ["addTens", "addOnes", "combine", "done"].indexOf(phase) >= 0;
-  const stepIndex = ["addTens", "addOnes", "combine", "done"].indexOf(phase);
+
+  // Which blocks have "moved" to step rows
+  const tensGone = ["addTens", "addOnes", "combine", "done"].includes(phase);
+  const onesGone = ["addOnes", "combine", "done"].includes(phase);
+
+  const showStep2 = tensGone;
+  const showStep3 = onesGone;
+  const showStep4 = ["combine", "done"].includes(phase);
 
   return (
     <div className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
@@ -109,26 +137,57 @@ const ExampleCard = ({
         Split each number into tens and ones
       </p>
 
-      {/* Number boxes */}
+      {/* Step 1 — Number boxes */}
       <div className="mt-4 flex items-start justify-center gap-8">
-        <SplitBox
-          num={blueNum}
-          color={BLUE}
-          isSplit={blueSplit}
-          t={bT}
-          o={bO}
-          canTap={phase === "prompt"}
-          onTap={() => phase === "prompt" && setPhase("splitA")}
-        />
-        <SplitBox
-          num={orangeNum}
-          color={ORANGE}
-          isSplit={orangeSplit}
-          t={oT}
-          o={oO}
-          canTap={phase === "splitA"}
-          onTap={() => phase === "splitA" && setPhase("splitB")}
-        />
+        {/* Blue number */}
+        {!blueSplit ? (
+          <button
+            onClick={() => phase === "prompt" && setPhase("splitA")}
+            disabled={phase !== "prompt"}
+            className={`flex h-20 w-20 items-center justify-center rounded-2xl text-3xl font-bold text-white transition-transform sm:h-24 sm:w-24 sm:text-4xl ${
+              phase === "prompt" ? "cursor-pointer hover:scale-110 active:scale-95" : ""
+            }`}
+            style={{ backgroundColor: BLUE }}
+          >
+            {blueNum}
+          </button>
+        ) : (
+          <div className="flex gap-3">
+            <div className="flex flex-col items-center" style={{ animation: "slideLeft 0.4s ease-out" }}>
+              <Block value={bT} color={BLUE} ghost={tensGone} />
+              <span className="mt-1 text-xs font-semibold text-muted-foreground">tens</span>
+            </div>
+            <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
+              <Block value={bO} color={BLUE} ghost={onesGone} />
+              <span className="mt-1 text-xs font-semibold text-muted-foreground">ones</span>
+            </div>
+          </div>
+        )}
+
+        {/* Orange number */}
+        {!orangeSplit ? (
+          <button
+            onClick={() => phase === "splitA" && setPhase("splitB")}
+            disabled={phase !== "splitA"}
+            className={`flex h-20 w-20 items-center justify-center rounded-2xl text-3xl font-bold text-white transition-transform sm:h-24 sm:w-24 sm:text-4xl ${
+              phase === "splitA" ? "cursor-pointer hover:scale-110 active:scale-95" : ""
+            }`}
+            style={{ backgroundColor: ORANGE }}
+          >
+            {orangeNum}
+          </button>
+        ) : (
+          <div className="flex gap-3">
+            <div className="flex flex-col items-center" style={{ animation: "slideLeft 0.4s ease-out" }}>
+              <Block value={oT} color={ORANGE} ghost={tensGone} />
+              <span className="mt-1 text-xs font-semibold text-muted-foreground">tens</span>
+            </div>
+            <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
+              <Block value={oO} color={ORANGE} ghost={onesGone} />
+              <span className="mt-1 text-xs font-semibold text-muted-foreground">ones</span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Prompt text */}
@@ -143,27 +202,45 @@ const ExampleCard = ({
         </p>
       )}
 
-      {/* Reveal steps 2-4 */}
-      {showSteps && (
-        <div className="mt-6 space-y-3">
-          {stepIndex >= 0 && (
-            <p className="text-center text-lg font-semibold animate-fade-in" style={{ color: BLUE }}>
-              <span className="text-muted-foreground">Step 2: </span>
-              Add the tens: {bT} + {oT} = {tSum}
-            </p>
-          )}
-          {stepIndex >= 1 && (
-            <p className="text-center text-lg font-semibold animate-fade-in" style={{ color: ORANGE }}>
-              <span className="text-muted-foreground">Step 3: </span>
-              Add the ones: {bO} + {oO} = {oSum}
-            </p>
-          )}
-          {stepIndex >= 2 && (
-            <p className="text-center text-lg font-semibold animate-fade-in text-primary">
-              <span className="text-muted-foreground">Step 4: </span>
-              Put them together: {tSum} + {oSum} = {total}
-            </p>
-          )}
+      {/* Step 2 — Tens row with blocks */}
+      {showStep2 && (
+        <div className="mt-8 animate-fade-in">
+          <p className="text-center text-lg font-semibold text-muted-foreground mb-3">
+            Step 2: <span style={{ color: BLUE }}>Add the tens</span>
+          </p>
+          <div className="flex items-center justify-center gap-3">
+            <Block value={bT} color={BLUE} size="small" />
+            <span className="text-2xl font-bold text-muted-foreground">+</span>
+            <Block value={oT} color={ORANGE} size="small" />
+            <span className="text-2xl font-bold text-muted-foreground">=</span>
+            <span className="text-2xl font-bold text-foreground">{tSum}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Step 3 — Ones row with blocks */}
+      {showStep3 && (
+        <div className="mt-6 animate-fade-in">
+          <p className="text-center text-lg font-semibold text-muted-foreground mb-3">
+            Step 3: <span style={{ color: ORANGE }}>Add the ones</span>
+          </p>
+          <div className="flex items-center justify-center gap-3">
+            <Block value={bO} color={BLUE} size="small" />
+            <span className="text-2xl font-bold text-muted-foreground">+</span>
+            <Block value={oO} color={ORANGE} size="small" />
+            <span className="text-2xl font-bold text-muted-foreground">=</span>
+            <span className="text-2xl font-bold text-foreground">{oSum}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Step 4 — Combine */}
+      {showStep4 && (
+        <div className="mt-6 animate-fade-in">
+          <p className="text-center text-lg font-semibold animate-fade-in text-primary">
+            <span className="text-muted-foreground">Step 4: </span>
+            Put them together: {tSum} + {oSum} = {total}
+          </p>
         </div>
       )}
 
@@ -188,62 +265,6 @@ const ExampleCard = ({
         </div>
       )}
     </div>
-  );
-};
-
-const SplitBox = ({
-  num,
-  color,
-  isSplit,
-  t,
-  o,
-  canTap,
-  onTap,
-}: {
-  num: number;
-  color: string;
-  isSplit: boolean;
-  t: number;
-  o: number;
-  canTap: boolean;
-  onTap: () => void;
-}) => {
-  if (isSplit) {
-    return (
-      <div className="flex gap-3">
-        <div className="flex flex-col items-center" style={{ animation: "slideLeft 0.4s ease-out" }}>
-          <div
-            className="flex h-16 w-16 items-center justify-center rounded-2xl text-2xl font-bold text-white sm:h-20 sm:w-20 sm:text-3xl"
-            style={{ backgroundColor: color }}
-          >
-            {t}
-          </div>
-          <span className="mt-1 text-xs font-semibold text-muted-foreground">tens</span>
-        </div>
-        <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
-          <div
-            className="flex h-16 w-16 items-center justify-center rounded-2xl text-2xl font-bold text-white sm:h-20 sm:w-20 sm:text-3xl"
-            style={{ backgroundColor: color }}
-          >
-            {o}
-          </div>
-          <span className="mt-1 text-xs font-semibold text-muted-foreground">ones</span>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <button
-      onClick={onTap}
-      disabled={!canTap}
-      className={`flex h-20 w-20 items-center justify-center rounded-2xl text-3xl font-bold text-white transition-transform sm:h-24 sm:w-24 sm:text-4xl ${
-        canTap ? "cursor-pointer hover:scale-110 active:scale-95" : ""
-      }`}
-      style={{ backgroundColor: color }}
-    >
-      {num}
-    </button>
   );
 };
 
