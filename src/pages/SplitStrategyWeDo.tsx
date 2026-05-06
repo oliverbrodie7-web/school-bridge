@@ -92,6 +92,7 @@ const QuestionCard = ({
   const [phase, setPhase] = useState<Phase>("autoSplit");
   const [tensInput, setTensInput] = useState("");
   const [onesInput, setOnesInput] = useState("");
+  const [hint, setHint] = useState("");
 
   const bT = tens(q.big), bO = ones(q.big);
   const sT = tens(q.small), sO = ones(q.small);
@@ -126,9 +127,16 @@ const QuestionCard = ({
   const stepIndex = ["addTens", "addOnes", "combine", "done"].indexOf(phase);
 
   const handleCheck = () => {
-    if (Number(tensInput) === sT && Number(onesInput) === sO) {
+    const tOk = Number(tensInput) === sT;
+    const oOk = Number(onesInput) === sO;
+    if (tOk && oOk) {
       setPhase("childCorrect");
+      setHint("");
+    } else if (!tOk) {
+      setHint(`Almost — how many tens are hiding in ${q.small}?`);
+      setPhase("childWrong");
     } else {
+      setHint(`Check the ones — how many ones are in ${q.small}?`);
       setPhase("childWrong");
     }
   };
@@ -262,7 +270,7 @@ const QuestionCard = ({
         {phase === "childWrong" && (
           <>
             <p className="text-base font-medium text-destructive animate-fade-in">
-              Almost — how many tens are hiding in {q.small}?
+              {hint}
             </p>
             <button
               onClick={handleTryAgain}
