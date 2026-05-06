@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index.tsx";
 import Student from "./pages/Student.tsx";
 import Parent from "./pages/Parent.tsx";
+import SplitStrategyLanding from "./pages/SplitStrategyLanding.tsx";
 import SplitStrategyLearn from "./pages/SplitStrategyLearn.tsx";
 import SplitStrategyWeDo from "./pages/SplitStrategyWeDo.tsx";
 import SplitStrategyYouDo from "./pages/SplitStrategyYouDo.tsx";
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/student" element={<Student />} />
           <Route path="/parent" element={<Parent />} />
+          <Route path="/split-strategy" element={<SplitStrategyLanding />} />
           <Route path="/learn/split-strategy" element={<SplitStrategyLearn />} />
           <Route path="/learn/split-strategy/we-do" element={<SplitStrategyWeDo />} />
           <Route path="/learn/split-strategy/you-do" element={<SplitStrategyYouDo />} />
