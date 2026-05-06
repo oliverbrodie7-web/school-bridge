@@ -1,25 +1,17 @@
 
-## Create Student Hub and fix navigation flow
+## Add step labels and increase animation delays in Phase 1 (I Do)
 
-### What changes
+### Changes to `src/pages/SplitStrategyLearn.tsx`:
 
-1. **New Student Hub at `/student`** — Replace the current practise page with a hub listing topics. Shows "Split Strategy" as a clickable card linking to `/split-strategy`.
+1. **Add "Step 1: Split the numbers" line** — appears after both numbers are split (when phase enters `splitB`), showing e.g. "Step 1: Split each number into tens and ones"
 
-2. **Move Practise to `/practise/split-strategy`** — Current Student.tsx practise content moves to a new `SplitStrategyPractise.tsx` file at a dedicated route.
+2. **Add step labels to existing lines:**
+   - "Step 2: Now add the tens: 30 + 10 = 40" (blue)
+   - "Step 3: Now add the ones: 4 + 2 = 6" (orange)
+   - "Step 4: Put them together: 40 + 6 = 46" (teal)
 
-3. **Update all internal links:**
-   - Split Strategy Landing "Practise" button → `/practise/split-strategy`
-   - Phase 3 "I'm ready to try on my own" → `/practise/split-strategy`
-   - Phase 1 back link → `/split-strategy`
-   - Split Strategy Landing gets a back link → `/student`
-
-### Files
-
-| File | Action |
-|------|--------|
-| `src/pages/SplitStrategyPractise.tsx` | Create — move current Student.tsx practise content here |
-| `src/pages/Student.tsx` | Rewrite — becomes a hub page with topic cards |
-| `src/App.tsx` | Add `/practise/split-strategy` route |
-| `src/pages/SplitStrategyLanding.tsx` | Update Practise link, add back link to `/student` |
-| `src/pages/SplitStrategyYouDo.tsx` | Update "ready" link to `/practise/split-strategy` |
-| `src/pages/SplitStrategyLearn.tsx` | Update back link to `/split-strategy` |
+3. **Increase delays between each step** — currently 2000–2500ms. Increase to:
+   - `splitB` → `addTens`: 3000ms
+   - `addTens` → `addOnes`: 3500ms
+   - `addOnes` → `combine`: 3500ms
+   - `combine` → `done`: 3000ms

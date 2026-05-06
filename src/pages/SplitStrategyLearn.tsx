@@ -70,25 +70,26 @@ const ExampleCard = ({
   // Auto-advance through reveal phases
   useEffect(() => {
     if (phase === "splitB") {
-      const t = setTimeout(() => setPhase("addTens"), 2000);
+      const t = setTimeout(() => setPhase("addTens"), 3000);
       return () => clearTimeout(t);
     }
     if (phase === "addTens") {
-      const t = setTimeout(() => setPhase("addOnes"), 2500);
+      const t = setTimeout(() => setPhase("addOnes"), 3500);
       return () => clearTimeout(t);
     }
     if (phase === "addOnes") {
-      const t = setTimeout(() => setPhase("combine"), 2500);
+      const t = setTimeout(() => setPhase("combine"), 3500);
       return () => clearTimeout(t);
     }
     if (phase === "combine") {
-      const t = setTimeout(() => setPhase("done"), 2000);
+      const t = setTimeout(() => setPhase("done"), 3000);
       return () => clearTimeout(t);
     }
   }, [phase]);
 
   const blueSplit = phase !== "prompt";
   const orangeSplit = !["prompt", "splitA"].includes(phase);
+  const showSplitLabel = !["prompt", "splitA"].includes(phase);
   const showSteps = ["addTens", "addOnes", "combine", "done"].indexOf(phase) >= 0;
   const stepIndex = ["addTens", "addOnes", "combine", "done"].indexOf(phase);
 
@@ -137,20 +138,29 @@ const ExampleCard = ({
       )}
 
       {/* Reveal steps */}
-      {showSteps && (
+      {(showSplitLabel || showSteps) && (
         <div className="mt-6 space-y-3">
+          {showSplitLabel && (
+            <p className="text-center text-lg font-semibold animate-fade-in text-foreground">
+              <span className="text-muted-foreground">Step 1: </span>
+              Split each number into tens and ones
+            </p>
+          )}
           {stepIndex >= 0 && (
             <p className="text-center text-lg font-semibold animate-fade-in" style={{ color: BLUE }}>
-              Now add the tens: {bT} + {oT} = {tSum}
+              <span className="text-muted-foreground">Step 2: </span>
+              Add the tens: {bT} + {oT} = {tSum}
             </p>
           )}
           {stepIndex >= 1 && (
             <p className="text-center text-lg font-semibold animate-fade-in" style={{ color: ORANGE }}>
-              Now add the ones: {bO} + {oO} = {oSum}
+              <span className="text-muted-foreground">Step 3: </span>
+              Add the ones: {bO} + {oO} = {oSum}
             </p>
           )}
           {stepIndex >= 2 && (
             <p className="text-center text-lg font-semibold animate-fade-in text-primary">
+              <span className="text-muted-foreground">Step 4: </span>
               Put them together: {tSum} + {oSum} = {total}
             </p>
           )}
