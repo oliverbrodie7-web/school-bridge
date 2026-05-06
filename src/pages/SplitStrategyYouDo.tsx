@@ -213,21 +213,31 @@ const QuestionCard = ({ q, onNext }: { q: Q; onNext: () => void }) => {
   const orangeSplit = ["orangeDone", "inputAdd", "addWrong", "correct", "done"].includes(phase);
 
   const checkBlue = () => {
-    if (Number(blueTens) === bT && Number(blueOnes) === bO) {
+    const tOk = Number(blueTens) === bT;
+    const oOk = Number(blueOnes) === bO;
+    if (tOk && oOk) {
       setPhase("tapOrange");
       setHint("");
+    } else if (!tOk) {
+      setHint(`Almost — how many tens are hiding in ${q.big}?`);
+      setPhase("blueWrong");
     } else {
-      setHint(`How many tens are hiding in ${q.big}?`);
+      setHint(`Check the ones — how many ones are in ${q.big}?`);
       setPhase("blueWrong");
     }
   };
 
   const checkOrange = () => {
-    if (Number(orangeTens) === sT && Number(orangeOnes) === sO) {
+    const tOk = Number(orangeTens) === sT;
+    const oOk = Number(orangeOnes) === sO;
+    if (tOk && oOk) {
       setPhase("inputAdd");
       setHint("");
+    } else if (!tOk) {
+      setHint(`Almost — how many tens are hiding in ${q.small}?`);
+      setPhase("orangeWrong");
     } else {
-      setHint(`How many tens are hiding in ${q.small}?`);
+      setHint(`Check the ones — how many ones are in ${q.small}?`);
       setPhase("orangeWrong");
     }
   };
