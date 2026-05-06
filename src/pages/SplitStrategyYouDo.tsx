@@ -63,7 +63,7 @@ const buildQueue = (): Q[] =>
 type Phase =
   | "tapBlue" | "inputBlue" | "blueWrong" | "blueDone"
   | "tapOrange" | "inputOrange" | "orangeWrong" | "orangeDone"
-  | "inputAdd" | "addWrong"
+  | "inputAdd" | "addWrong" | "inputTotal" | "totalWrong"
   | "correct" | "done";
 
 const SplitStrategyYouDo = () => {
@@ -208,7 +208,7 @@ const QuestionCard = ({ q, onNext }: { q: Q; onNext: () => void }) => {
 
   // Determine split states
   const blueSplit = !["tapBlue", "inputBlue", "blueWrong"].includes(phase);
-  const orangeSplit = ["orangeDone", "inputAdd", "addWrong", "correct", "done"].includes(phase);
+  const orangeSplit = ["orangeDone", "inputAdd", "addWrong", "inputTotal", "totalWrong", "correct", "done"].includes(phase);
 
   // Ghost states for correct/done reveal
   const tensGone = ["correct", "done"].includes(phase);
@@ -249,16 +249,24 @@ const QuestionCard = ({ q, onNext }: { q: Q; onNext: () => void }) => {
   };
 
   const checkAdd = () => {
-    const t = Number(addTens), o = Number(addOnes), tot = Number(addTotal);
+    const t = Number(addTens), o = Number(addOnes);
     if (t !== tSum) {
       setHint(`Try adding just the tens: ${bT} + ${sT}`);
       setPhase("addWrong");
     } else if (o !== oSum) {
       setHint(`Now check the ones: ${bO} + ${sO}`);
       setPhase("addWrong");
-    } else if (tot !== total) {
+    } else {
+      setHint("");
+      setPhase("inputTotal");
+    }
+  };
+
+  const checkTotal = () => {
+    const tot = Number(addTotal);
+    if (tot !== total) {
       setHint(`Almost! Add your tens and ones together: ${tSum} + ${oSum}`);
-      setPhase("addWrong");
+      setPhase("totalWrong");
     } else {
       setHint("");
       setPhase("correct");
@@ -450,7 +458,6 @@ const QuestionCard = ({ q, onNext }: { q: Q; onNext: () => void }) => {
             <div className="space-y-3">
               <AddRow label="Tens" a={bT} b={sT} value={addTens} onChange={setAddTens} />
               <AddRow label="Ones" a={bO} b={sO} value={addOnes} onChange={setAddOnes} />
-              <AddRow label="Answer" a={tSum} b={oSum} value={addTotal} onChange={setAddTotal} />
             </div>
 
             {phase === "addWrong" && (
@@ -468,7 +475,42 @@ const QuestionCard = ({ q, onNext }: { q: Q; onNext: () => void }) => {
             {phase === "inputAdd" && (
               <button
                 onClick={checkAdd}
-                disabled={!addTens || !addOnes || !addTotal}
+                disabled={!addTens || !addOnes}
+                className="rounded-xl bg-primary px-6 py-3 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Check
+              </button>
+            )}
+          </div>
+        )}
+
+        {(phase === "inputTotal" || phase === "totalWrong") && (
+          <div className="space-y-4 pt-2 animate-fade-in">
+            <p className="text-base font-medium text-muted-foreground">
+              Now put them together!
+            </p>
+            <div className="space-y-3">
+              <AddRow label="Tens" a={bT} b={sT} value={String(tSum)} onChange={() => {}} />
+              <AddRow label="Ones" a={bO} b={sO} value={String(oSum)} onChange={() => {}} />
+              <AddRow label="Answer" a={tSum} b={oSum} value={addTotal} onChange={setAddTotal} />
+            </div>
+
+            {phase === "totalWrong" && (
+              <>
+                <p className="text-base font-medium text-destructive animate-fade-in">{hint}</p>
+                <button
+                  onClick={() => { setHint(""); setPhase("inputTotal"); }}
+                  className="rounded-xl border-2 border-primary px-5 py-2.5 text-base font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+                >
+                  Try again
+                </button>
+              </>
+            )}
+
+            {phase === "inputTotal" && (
+              <button
+                onClick={checkTotal}
+                disabled={!addTotal}
                 className="rounded-xl bg-primary px-6 py-3 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 Check
