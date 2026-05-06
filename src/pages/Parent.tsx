@@ -270,24 +270,53 @@ const PracticeQuestion = () => {
       </p>
 
       <div className="mt-6 flex items-start justify-center gap-8">
-        <SplitBox
-          num={blueNum}
-          color={BLUE}
-          isSplit={blueSplit}
-          t={bT}
-          o={bO}
-          canTap={phase === "prompt"}
-          onTap={() => setPhase("splitA")}
-        />
-        <SplitBox
-          num={orangeNum}
-          color={ORANGE}
-          isSplit={orangeSplit}
-          t={oT}
-          o={oO}
-          canTap={phase === "splitA"}
-          onTap={() => setPhase("splitB")}
-        />
+        {!blueSplit ? (
+          <button
+            onClick={() => setPhase("splitA")}
+            disabled={phase !== "prompt"}
+            className={`flex h-16 w-16 items-center justify-center rounded-xl text-2xl font-bold text-white transition-transform sm:h-20 sm:w-20 sm:text-3xl ${
+              phase === "prompt" ? "cursor-pointer hover:scale-105 active:scale-95" : ""
+            }`}
+            style={{ backgroundColor: BLUE }}
+          >
+            {blueNum}
+          </button>
+        ) : (
+          <div className="flex gap-3">
+            <div className="flex flex-col items-center" style={{ animation: "slideLeft 0.4s ease-out" }}>
+              <Block value={bT} color={BLUE} />
+              <span className="mt-1 text-xs font-medium text-muted-foreground">tens</span>
+            </div>
+            <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
+              <Block value={bO} color={BLUE} />
+              <span className="mt-1 text-xs font-medium text-muted-foreground">ones</span>
+            </div>
+          </div>
+        )}
+
+        {!orangeSplit ? (
+          <button
+            onClick={() => setPhase("splitB")}
+            disabled={phase !== "splitA"}
+            className={`flex h-16 w-16 items-center justify-center rounded-xl text-2xl font-bold text-white transition-transform sm:h-20 sm:w-20 sm:text-3xl ${
+              phase === "splitA" ? "cursor-pointer hover:scale-105 active:scale-95" : ""
+            }`}
+            style={{ backgroundColor: ORANGE }}
+          >
+            {orangeNum}
+          </button>
+        ) : (
+          <div className="flex gap-3">
+            <div className="flex flex-col items-center" style={{ animation: "slideLeft 0.4s ease-out" }}>
+              <Block value={oT} color={ORANGE} />
+              <span className="mt-1 text-xs font-medium text-muted-foreground">tens</span>
+            </div>
+            <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
+              <Block value={oO} color={ORANGE} />
+              <span className="mt-1 text-xs font-medium text-muted-foreground">ones</span>
+            </div>
+          </div>
+        )}
       </div>
 
       {phase === "prompt" && (
