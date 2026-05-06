@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import SiteHeader from "./components/SiteHeader.tsx";
 import Index from "./pages/Index.tsx";
 import Student from "./pages/Student.tsx";
+import ContentHome from "./pages/ContentHome.tsx";
 import Parent from "./pages/Parent.tsx";
 import AdditionStrategies from "./pages/AdditionStrategies.tsx";
 import SubtractionStrategies from "./pages/SubtractionStrategies.tsx";
@@ -27,6 +28,7 @@ const App = () => (
         <SiteHeader />
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/home" element={<ContentHome />} />
           <Route path="/student" element={<Student />} />
           <Route path="/parent" element={<Parent />} />
           <Route path="/student/addition" element={<AdditionStrategies />} />
