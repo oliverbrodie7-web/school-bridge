@@ -249,16 +249,24 @@ const QuestionCard = ({ q, onNext }: { q: Q; onNext: () => void }) => {
   };
 
   const checkAdd = () => {
-    const t = Number(addTens), o = Number(addOnes), tot = Number(addTotal);
+    const t = Number(addTens), o = Number(addOnes);
     if (t !== tSum) {
       setHint(`Try adding just the tens: ${bT} + ${sT}`);
       setPhase("addWrong");
     } else if (o !== oSum) {
       setHint(`Now check the ones: ${bO} + ${sO}`);
       setPhase("addWrong");
-    } else if (tot !== total) {
+    } else {
+      setHint("");
+      setPhase("inputTotal");
+    }
+  };
+
+  const checkTotal = () => {
+    const tot = Number(addTotal);
+    if (tot !== total) {
       setHint(`Almost! Add your tens and ones together: ${tSum} + ${oSum}`);
-      setPhase("addWrong");
+      setPhase("totalWrong");
     } else {
       setHint("");
       setPhase("correct");
