@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import SiteHeader from "./components/SiteHeader.tsx";
 import Index from "./pages/Index.tsx";
 import Student from "./pages/Student.tsx";
 import Parent from "./pages/Parent.tsx";
@@ -23,6 +24,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <SiteHeader />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/student" element={<Student />} />
