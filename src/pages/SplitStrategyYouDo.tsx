@@ -208,7 +208,7 @@ const QuestionCard = ({ q, onNext }: { q: Q; onNext: () => void }) => {
 
   // Determine split states
   const blueSplit = !["tapBlue", "inputBlue", "blueWrong"].includes(phase);
-  const orangeSplit = ["orangeDone", "inputAdd", "addWrong", "correct", "done"].includes(phase);
+  const orangeSplit = ["orangeDone", "inputAdd", "addWrong", "inputTotal", "totalWrong", "correct", "done"].includes(phase);
 
   // Ghost states for correct/done reveal
   const tensGone = ["correct", "done"].includes(phase);
