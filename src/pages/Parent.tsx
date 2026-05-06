@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const BLUE = "#3B82F6";
@@ -65,7 +65,7 @@ const SplitBox = ({
 };
 
 /* ─── Demo animation for Section 2 ─── */
-type DemoPhase = "prompt" | "splitA" | "splitB" | "done";
+type DemoPhase = "prompt" | "splitA" | "splitB" | "addTens" | "addOnes" | "answer" | "done";
 
 const DemoAnimation = () => {
   const [phase, setPhase] = useState<DemoPhase>("prompt");
@@ -79,12 +79,29 @@ const DemoAnimation = () => {
 
   const blueSplit = phase !== "prompt";
   const orangeSplit = !["prompt", "splitA"].includes(phase);
-  const showResults = phase === "done";
 
-  // Auto-advance after both split
-  if (phase === "splitB") {
-    setTimeout(() => setPhase("done"), 1200);
-  }
+  // Auto-advance through phases with delays matching student experience
+  useEffect(() => {
+    if (phase === "splitB") {
+      const t = setTimeout(() => setPhase("addTens"), 3000);
+      return () => clearTimeout(t);
+    }
+    if (phase === "addTens") {
+      const t = setTimeout(() => setPhase("addOnes"), 3500);
+      return () => clearTimeout(t);
+    }
+    if (phase === "addOnes") {
+      const t = setTimeout(() => setPhase("answer"), 3500);
+      return () => clearTimeout(t);
+    }
+    if (phase === "answer") {
+      const t = setTimeout(() => setPhase("done"), 3000);
+      return () => clearTimeout(t);
+    }
+  }, [phase]);
+
+  const stepIndex = ["addTens", "addOnes", "answer", "done"].indexOf(phase);
+  const showSplitLabel = !["prompt", "splitA"].includes(phase);
 
   const reset = () => setPhase("prompt");
 
@@ -126,25 +143,43 @@ const DemoAnimation = () => {
         </p>
       )}
 
-      {showResults && (
-        <div className="mt-5 space-y-2 animate-fade-in">
-          <p className="text-center text-base font-medium" style={{ color: BLUE }}>
-            Tens: {bT} + {oT} = {tSum}
-          </p>
-          <p className="text-center text-base font-medium" style={{ color: ORANGE }}>
-            Ones: {bO} + {oO} = {oSum}
-          </p>
-          <p className="text-center text-base font-semibold text-foreground">
-            Answer: {tSum} + {oSum} = {total}
-          </p>
-          <div className="pt-2 text-center">
-            <button
-              onClick={reset}
-              className="text-sm text-muted-foreground underline hover:text-foreground transition-colors"
-            >
-              Try again
-            </button>
-          </div>
+      {(showSplitLabel || stepIndex >= 0) && (
+        <div className="mt-5 space-y-2">
+          {showSplitLabel && (
+            <p className="text-center text-base font-medium text-foreground animate-fade-in">
+              <span className="text-muted-foreground">Step 1: </span>
+              Split each number into tens and ones
+            </p>
+          )}
+          {stepIndex >= 0 && (
+            <p className="text-center text-base font-medium animate-fade-in" style={{ color: BLUE }}>
+              <span className="text-muted-foreground">Step 2: </span>
+              Tens: {bT} + {oT} = {tSum}
+            </p>
+          )}
+          {stepIndex >= 1 && (
+            <p className="text-center text-base font-medium animate-fade-in" style={{ color: ORANGE }}>
+              <span className="text-muted-foreground">Step 3: </span>
+              Ones: {bO} + {oO} = {oSum}
+            </p>
+          )}
+          {stepIndex >= 2 && (
+            <p className="text-center text-base font-semibold text-foreground animate-fade-in">
+              <span className="text-muted-foreground">Step 4: </span>
+              Answer: {tSum} + {oSum} = {total}
+            </p>
+          )}
+        </div>
+      )}
+
+      {phase === "done" && (
+        <div className="mt-4 text-center animate-fade-in">
+          <button
+            onClick={reset}
+            className="text-sm text-muted-foreground underline hover:text-foreground transition-colors"
+          >
+            Try again
+          </button>
         </div>
       )}
     </div>
