@@ -1,15 +1,25 @@
 
-## Increase animation delays in Split Strategy — I Do
+## Create Student Hub and fix navigation flow
 
-The three colored lines ("Now add the tens", "Now add the ones", "Put them together") appear too quickly. 
+### What changes
 
-### Change
+1. **New Student Hub at `/student`** — Replace the current practise page with a hub listing topics. Shows "Split Strategy" as a clickable card linking to `/split-strategy`.
 
-In `src/pages/SplitStrategyLearn.tsx`, increase the timeouts in the `useEffect` (lines 71-87):
+2. **Move Practise to `/practise/split-strategy`** — Current Student.tsx practise content moves to a new `SplitStrategyPractise.tsx` file at a dedicated route.
 
-- `splitB → addTens`: 800ms → 2000ms  
-- `addTens → addOnes`: 1000ms → 2500ms  
-- `addOnes → combine`: 1000ms → 2500ms  
-- `combine → done`: 1000ms → 2000ms  
+3. **Update all internal links:**
+   - Split Strategy Landing "Practise" button → `/practise/split-strategy`
+   - Phase 3 "I'm ready to try on my own" → `/practise/split-strategy`
+   - Phase 1 back link → `/split-strategy`
+   - Split Strategy Landing gets a back link → `/student`
 
-This gives children time to read and absorb each step before the next one appears.
+### Files
+
+| File | Action |
+|------|--------|
+| `src/pages/SplitStrategyPractise.tsx` | Create — move current Student.tsx practise content here |
+| `src/pages/Student.tsx` | Rewrite — becomes a hub page with topic cards |
+| `src/App.tsx` | Add `/practise/split-strategy` route |
+| `src/pages/SplitStrategyLanding.tsx` | Update Practise link, add back link to `/student` |
+| `src/pages/SplitStrategyYouDo.tsx` | Update "ready" link to `/practise/split-strategy` |
+| `src/pages/SplitStrategyLearn.tsx` | Update back link to `/split-strategy` |
