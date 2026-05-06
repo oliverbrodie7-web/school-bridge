@@ -17,7 +17,16 @@ const buildQuestion = (q: { a: number; b: number }) => {
   return { a: q.a, b: q.b, tensA, tensB, onesA, onesB, tensAnswer: tensA + tensB, onesAnswer: onesA + onesB, totalAnswer: q.a + q.b };
 };
 
-const pickRandom = () => buildQuestion(QUESTIONS[Math.floor(Math.random() * QUESTIONS.length)]);
+const shuffle = <T,>(arr: T[]): T[] => {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+};
+
+const buildQueue = () => shuffle(QUESTIONS).map(buildQuestion);
 
 const TeachMe = ({ q }: { q: ReturnType<typeof buildQuestion> }) => (
   <div className="mt-6 rounded-2xl border border-border bg-secondary/50 p-6 sm:p-8 text-left space-y-5">
