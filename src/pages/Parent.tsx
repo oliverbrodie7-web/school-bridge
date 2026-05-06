@@ -111,13 +111,11 @@ const DemoAnimation = () => {
         {a} + {b}
       </p>
 
-      {/* Step 1 label - above the boxes */}
-      {showSplitLabel && (
-        <p className="mt-5 text-center text-base font-medium text-foreground animate-fade-in">
-          <span className="text-muted-foreground">Step 1: </span>
-          Split each number into tens and ones
-        </p>
-      )}
+      {/* Step 1 label - always visible */}
+      <p className="mt-5 text-center text-base font-medium text-foreground">
+        <span className="text-muted-foreground">Step 1: </span>
+        Split each number into tens and ones
+      </p>
 
       <div className="mt-3 flex items-start justify-center gap-8">
         <SplitBox
