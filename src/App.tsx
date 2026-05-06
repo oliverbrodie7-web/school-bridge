@@ -28,6 +28,7 @@ const App = () => (
         <SiteHeader />
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/home" element={<ContentHome />} />
           <Route path="/student" element={<Student />} />
           <Route path="/parent" element={<Parent />} />
           <Route path="/student/addition" element={<AdditionStrategies />} />
