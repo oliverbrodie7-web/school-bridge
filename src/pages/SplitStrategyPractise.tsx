@@ -65,26 +65,41 @@ const Block = ({
 };
 
 /* ─── Difficulty selector ─── */
-const DifficultySelector = ({ level, onChange }: { level: number; onChange: (l: number) => void }) => {
+const L2_KEY = "splitStrategy_l2Correct";
+const L2_THRESHOLD = 20;
+
+const getL2Count = () => Number(localStorage.getItem(L2_KEY) || "0");
+const incL2Count = () => {
+  const n = getL2Count() + 1;
+  localStorage.setItem(L2_KEY, String(n));
+  return n;
+};
+
+const DifficultySelector = ({ level, onChange, l3Unlocked }: { level: number; onChange: (l: number) => void; l3Unlocked: boolean }) => {
   const levels = [
-    { n: 1, label: "Level 1", desc: "Guided with visuals" },
-    { n: 2, label: "Level 2", desc: "Type your answers" },
-    { n: 3, label: "Level 3", desc: "Do it yourself" },
+    { n: 1, label: "Level 1", desc: "Guided with visuals", locked: false },
+    { n: 2, label: "Level 2", desc: "Type your answers", locked: false },
+    { n: 3, label: "Level 3", desc: "Do it yourself", locked: !l3Unlocked },
   ];
   return (
     <div className="flex gap-3 justify-center flex-wrap">
       {levels.map((l) => (
         <button
           key={l.n}
-          onClick={() => onChange(l.n)}
+          onClick={() => !l.locked && onChange(l.n)}
+          disabled={l.locked}
           className={`rounded-xl px-5 py-3 text-sm font-semibold transition-colors border-2 ${
-            level === l.n
-              ? "border-primary bg-primary text-primary-foreground"
-              : "border-border text-muted-foreground hover:border-primary hover:text-primary"
+            l.locked
+              ? "border-border text-muted-foreground opacity-50 cursor-not-allowed"
+              : level === l.n
+                ? "border-primary bg-primary text-primary-foreground"
+                : "border-border text-muted-foreground hover:border-primary hover:text-primary"
           }`}
         >
-          <span className="block">{l.label}</span>
-          <span className="block text-xs font-normal opacity-70">{l.desc}</span>
+          <span className="block">{l.label} {l.locked ? "🔒" : ""}</span>
+          <span className="block text-xs font-normal opacity-70">
+            {l.locked ? `Complete ${L2_THRESHOLD - getL2Count()} more Level 2 Qs` : l.desc}
+          </span>
         </button>
       ))}
     </div>
@@ -578,7 +593,9 @@ const SplitStrategyPractise = () => {
   const [level, setLevel] = useState(1);
   const [queue, setQueue] = useState(() => buildQueue());
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [l2Correct, setL2Correct] = useState(() => getL2Count());
   const finished = currentIndex >= queue.length;
+  const l3Unlocked = l2Correct >= L2_THRESHOLD;
 
   const handleLevelChange = (l: number) => {
     setLevel(l);
@@ -586,7 +603,13 @@ const SplitStrategyPractise = () => {
     setCurrentIndex(0);
   };
 
-  const nextQuestion = () => setCurrentIndex((i) => i + 1);
+  const nextQuestion = () => {
+    if (level === 2) {
+      const newCount = incL2Count();
+      setL2Correct(newCount);
+    }
+    setCurrentIndex((i) => i + 1);
+  };
 
   const resetAll = () => {
     setQueue(buildQueue());
@@ -612,7 +635,7 @@ const SplitStrategyPractise = () => {
           Choose your difficulty level.
         </p>
 
-        <DifficultySelector level={level} onChange={handleLevelChange} />
+        <DifficultySelector level={level} onChange={handleLevelChange} l3Unlocked={l3Unlocked} />
 
         {finished ? (
           <div className="mt-10 text-center space-y-6 animate-fade-in">
