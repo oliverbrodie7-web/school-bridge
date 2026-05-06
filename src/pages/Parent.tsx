@@ -275,7 +275,7 @@ const PracticeQuestion = () => {
             className={`flex h-16 w-16 items-center justify-center rounded-xl text-2xl font-bold text-white transition-transform sm:h-20 sm:w-20 sm:text-3xl ${
               phase === "prompt" ? "cursor-pointer hover:scale-105 active:scale-95" : ""
             }`}
-            style={{ backgroundColor: BLUE }}
+            style={{ background: `linear-gradient(to right, ${BLUE} 50%, ${ORANGE} 50%)` }}
           >
             {blueNum}
           </button>
@@ -286,7 +286,7 @@ const PracticeQuestion = () => {
               <span className="mt-1 text-xs font-medium text-muted-foreground">tens</span>
             </div>
             <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
-              <Block value={bO} color={BLUE} />
+              <Block value={bO} color={ORANGE} />
               <span className="mt-1 text-xs font-medium text-muted-foreground">ones</span>
             </div>
           </div>
@@ -299,14 +299,14 @@ const PracticeQuestion = () => {
             className={`flex h-16 w-16 items-center justify-center rounded-xl text-2xl font-bold text-white transition-transform sm:h-20 sm:w-20 sm:text-3xl ${
               phase === "splitA" ? "cursor-pointer hover:scale-105 active:scale-95" : ""
             }`}
-            style={{ backgroundColor: ORANGE }}
+            style={{ background: `linear-gradient(to right, ${BLUE} 50%, ${ORANGE} 50%)` }}
           >
             {orangeNum}
           </button>
         ) : (
           <div className="flex gap-3">
             <div className="flex flex-col items-center" style={{ animation: "slideLeft 0.4s ease-out" }}>
-              <Block value={oT} color={ORANGE} />
+              <Block value={oT} color={BLUE} />
               <span className="mt-1 text-xs font-medium text-muted-foreground">tens</span>
             </div>
             <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
@@ -324,7 +324,7 @@ const PracticeQuestion = () => {
       )}
       {phase === "splitA" && (
         <p className="mt-4 text-center text-sm text-muted-foreground animate-fade-in">
-          Now tap the smaller number.
+          Now tap the next number.
         </p>
       )}
 
