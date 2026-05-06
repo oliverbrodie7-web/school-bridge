@@ -635,7 +635,7 @@ const SplitStrategyPractise = () => {
           Choose your difficulty level.
         </p>
 
-        <DifficultySelector level={level} onChange={handleLevelChange} />
+        <DifficultySelector level={level} onChange={handleLevelChange} l3Unlocked={l3Unlocked} />
 
         {finished ? (
           <div className="mt-10 text-center space-y-6 animate-fade-in">
