@@ -63,7 +63,7 @@ const buildQueue = (): Q[] =>
 type Phase =
   | "tapBlue" | "inputBlue" | "blueWrong" | "blueDone"
   | "tapOrange" | "inputOrange" | "orangeWrong" | "orangeDone"
-  | "inputAdd" | "addWrong"
+  | "inputAdd" | "addWrong" | "inputTotal" | "totalWrong"
   | "correct" | "done";
 
 const SplitStrategyYouDo = () => {
