@@ -64,15 +64,28 @@ const Step = ({ number, title, detail }: { number: number; title: string; detail
 type Feedback = null | "correct" | "tens" | "ones" | "total";
 
 const Student = () => {
-  const [question, setQuestion] = useState(() => pickRandom());
+  const [queue, setQueue] = useState(() => buildQueue());
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [showTeach, setShowTeach] = useState(false);
   const [tensInput, setTensInput] = useState("");
   const [onesInput, setOnesInput] = useState("");
   const [totalInput, setTotalInput] = useState("");
   const [feedback, setFeedback] = useState<Feedback>(null);
 
+  const finished = currentIndex >= queue.length;
+  const question = finished ? queue[0] : queue[currentIndex];
+
   const nextQuestion = () => {
-    setQuestion(pickRandom());
+    setCurrentIndex((i) => i + 1);
+    setTensInput("");
+    setOnesInput("");
+    setTotalInput("");
+    setFeedback(null);
+  };
+
+  const resetAll = () => {
+    setQueue(buildQueue());
+    setCurrentIndex(0);
     setTensInput("");
     setOnesInput("");
     setTotalInput("");
