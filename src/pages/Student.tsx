@@ -17,7 +17,16 @@ const buildQuestion = (q: { a: number; b: number }) => {
   return { a: q.a, b: q.b, tensA, tensB, onesA, onesB, tensAnswer: tensA + tensB, onesAnswer: onesA + onesB, totalAnswer: q.a + q.b };
 };
 
-const pickRandom = () => buildQuestion(QUESTIONS[Math.floor(Math.random() * QUESTIONS.length)]);
+const shuffle = <T,>(arr: T[]): T[] => {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+};
+
+const buildQueue = () => shuffle(QUESTIONS).map(buildQuestion);
 
 const TeachMe = ({ q }: { q: ReturnType<typeof buildQuestion> }) => (
   <div className="mt-6 rounded-2xl border border-border bg-secondary/50 p-6 sm:p-8 text-left space-y-5">
@@ -55,15 +64,28 @@ const Step = ({ number, title, detail }: { number: number; title: string; detail
 type Feedback = null | "correct" | "tens" | "ones" | "total";
 
 const Student = () => {
-  const [question, setQuestion] = useState(() => pickRandom());
+  const [queue, setQueue] = useState(() => buildQueue());
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [showTeach, setShowTeach] = useState(false);
   const [tensInput, setTensInput] = useState("");
   const [onesInput, setOnesInput] = useState("");
   const [totalInput, setTotalInput] = useState("");
   const [feedback, setFeedback] = useState<Feedback>(null);
 
+  const finished = currentIndex >= queue.length;
+  const question = finished ? queue[0] : queue[currentIndex];
+
   const nextQuestion = () => {
-    setQuestion(pickRandom());
+    setCurrentIndex((i) => i + 1);
+    setTensInput("");
+    setOnesInput("");
+    setTotalInput("");
+    setFeedback(null);
+  };
+
+  const resetAll = () => {
+    setQueue(buildQueue());
+    setCurrentIndex(0);
     setTensInput("");
     setOnesInput("");
     setTotalInput("");
@@ -96,6 +118,41 @@ const Student = () => {
     ones: { text: `Almost! Now check the ones: ${question.onesA} + ${question.onesB}`, isCorrect: false },
     total: { text: `You're so close! Try adding your tens answer and ones answer together.`, isCorrect: false },
   };
+
+  if (finished) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center px-6 py-12">
+        <div className="w-full max-w-md text-center space-y-6">
+          <h1
+            className="text-2xl font-bold text-foreground sm:text-3xl"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            Great work!
+          </h1>
+          <p className="text-lg text-foreground">
+            You just practised the split strategy like a Year 2 superstar.
+          </p>
+          <p className="text-muted-foreground">
+            Parents — your child just practised the split strategy. Want to understand what they learned?
+          </p>
+          <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+            <Link
+              to="/parent"
+              className="rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              Show my parent
+            </Link>
+            <button
+              onClick={resetAll}
+              className="rounded-xl border-2 border-primary px-6 py-3.5 text-lg font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+            >
+              Practise again
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col items-center px-6 py-12">
