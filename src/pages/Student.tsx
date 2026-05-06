@@ -1,18 +1,23 @@
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Link } from "react-router-dom";
 
-const QUESTION = {
-  a: 34,
-  b: 52,
-  tensA: 30,
-  tensB: 50,
-  onesA: 4,
-  onesB: 2,
+const QUESTIONS = [
+  { a: 34, b: 52 },
+  { a: 41, b: 35 },
+  { a: 23, b: 64 },
+  { a: 55, b: 32 },
+  { a: 42, b: 47 },
+];
+
+const buildQuestion = (q: { a: number; b: number }) => {
+  const tensA = Math.floor(q.a / 10) * 10;
+  const tensB = Math.floor(q.b / 10) * 10;
+  const onesA = q.a % 10;
+  const onesB = q.b % 10;
+  return { ...q, tensA, tensB, onesA, onesB, tensAnswer: tensA + tensB, onesAnswer: onesA + onesB, totalAnswer: q.a + q.b };
 };
 
-const tensAnswer = QUESTION.tensA + QUESTION.tensB;
-const onesAnswer = QUESTION.onesA + QUESTION.onesB;
-const totalAnswer = tensAnswer + onesAnswer;
+const pickRandom = () => QUESTIONS[Math.floor(Math.random() * QUESTIONS.length)];
 
 const TeachMe = () => (
   <div className="mt-6 rounded-2xl border border-border bg-secondary/50 p-6 sm:p-8 text-left space-y-5">
