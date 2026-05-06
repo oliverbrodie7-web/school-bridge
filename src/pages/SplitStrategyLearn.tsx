@@ -147,7 +147,7 @@ const ExampleCard = ({
             className={`flex h-20 w-20 items-center justify-center rounded-2xl text-3xl font-bold text-white transition-transform sm:h-24 sm:w-24 sm:text-4xl ${
               phase === "prompt" ? "cursor-pointer hover:scale-110 active:scale-95" : ""
             }`}
-            style={{ backgroundColor: BLUE }}
+            style={{ background: `linear-gradient(to right, ${BLUE} 50%, ${ORANGE} 50%)` }}
           >
             {blueNum}
           </button>
@@ -158,7 +158,7 @@ const ExampleCard = ({
               <span className="mt-1 text-xs font-semibold text-muted-foreground">tens</span>
             </div>
             <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
-              <Block value={bO} color={BLUE} ghost={onesGone} />
+              <Block value={bO} color={ORANGE} ghost={onesGone} />
               <span className="mt-1 text-xs font-semibold text-muted-foreground">ones</span>
             </div>
           </div>
@@ -172,14 +172,14 @@ const ExampleCard = ({
             className={`flex h-20 w-20 items-center justify-center rounded-2xl text-3xl font-bold text-white transition-transform sm:h-24 sm:w-24 sm:text-4xl ${
               phase === "splitA" ? "cursor-pointer hover:scale-110 active:scale-95" : ""
             }`}
-            style={{ backgroundColor: ORANGE }}
+            style={{ background: `linear-gradient(to right, ${BLUE} 50%, ${ORANGE} 50%)` }}
           >
             {orangeNum}
           </button>
         ) : (
           <div className="flex gap-3">
             <div className="flex flex-col items-center" style={{ animation: "slideLeft 0.4s ease-out" }}>
-              <Block value={oT} color={ORANGE} ghost={tensGone} />
+              <Block value={oT} color={BLUE} ghost={tensGone} />
               <span className="mt-1 text-xs font-semibold text-muted-foreground">tens</span>
             </div>
             <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
@@ -198,7 +198,7 @@ const ExampleCard = ({
       )}
       {phase === "splitA" && (
         <p className="mt-6 text-center text-lg font-medium text-muted-foreground animate-fade-in">
-          Now tap the orange number.
+          Now tap the next number.
         </p>
       )}
 
@@ -211,7 +211,7 @@ const ExampleCard = ({
           <div className="flex items-center justify-center gap-3">
             <Block value={bT} color={BLUE} size="small" />
             <span className="text-2xl font-bold text-muted-foreground">+</span>
-            <Block value={oT} color={ORANGE} size="small" />
+            <Block value={oT} color={BLUE} size="small" />
             <span className="text-2xl font-bold text-muted-foreground">=</span>
             <span className="text-2xl font-bold text-foreground">{tSum}</span>
           </div>
@@ -225,7 +225,7 @@ const ExampleCard = ({
             Step 3: <span style={{ color: ORANGE }}>Add the ones</span>
           </p>
           <div className="flex items-center justify-center gap-3">
-            <Block value={bO} color={BLUE} size="small" />
+            <Block value={bO} color={ORANGE} size="small" />
             <span className="text-2xl font-bold text-muted-foreground">+</span>
             <Block value={oO} color={ORANGE} size="small" />
             <span className="text-2xl font-bold text-muted-foreground">=</span>
