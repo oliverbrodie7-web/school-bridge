@@ -68,8 +68,6 @@ const DemoAnimation = () => {
     }
   }, [phase]);
 
-  const stepIndex = ["addTens", "addOnes", "answer", "done"].indexOf(phase);
-  const showSplitLabel = !["prompt", "splitA"].includes(phase);
 
   const tensGone = ["addTens", "addOnes", "answer", "done"].includes(phase);
   const onesGone = ["addOnes", "answer", "done"].includes(phase);
