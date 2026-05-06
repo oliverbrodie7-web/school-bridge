@@ -7,60 +7,28 @@ const ORANGE = "#F97316";
 const tens = (n: number) => Math.floor(n / 10) * 10;
 const ones = (n: number) => n % 10;
 
-/* ─── Reusable split-box animation (clean adult styling) ─── */
-const SplitBox = ({
-  num,
+/* ─── Small coloured block ─── */
+const Block = ({
+  value,
   color,
-  isSplit,
-  t,
-  o,
-  canTap,
-  onTap,
+  ghost,
+  size = "normal",
 }: {
-  num: number;
+  value: number;
   color: string;
-  isSplit: boolean;
-  t: number;
-  o: number;
-  canTap: boolean;
-  onTap: () => void;
+  ghost?: boolean;
+  size?: "normal" | "small";
 }) => {
-  if (isSplit) {
-    return (
-      <div className="flex gap-3">
-        <div className="flex flex-col items-center" style={{ animation: "slideLeft 0.4s ease-out" }}>
-          <div
-            className="flex h-14 w-14 items-center justify-center rounded-xl text-xl font-bold text-white sm:h-16 sm:w-16 sm:text-2xl"
-            style={{ backgroundColor: color }}
-          >
-            {t}
-          </div>
-          <span className="mt-1 text-xs font-medium text-muted-foreground">tens</span>
-        </div>
-        <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
-          <div
-            className="flex h-14 w-14 items-center justify-center rounded-xl text-xl font-bold text-white sm:h-16 sm:w-16 sm:text-2xl"
-            style={{ backgroundColor: color }}
-          >
-            {o}
-          </div>
-          <span className="mt-1 text-xs font-medium text-muted-foreground">ones</span>
-        </div>
-      </div>
-    );
-  }
-
+  const dim = size === "small"
+    ? "h-12 w-12 text-lg sm:h-14 sm:w-14 sm:text-xl"
+    : "h-14 w-14 text-xl sm:h-16 sm:w-16 sm:text-2xl";
   return (
-    <button
-      onClick={onTap}
-      disabled={!canTap}
-      className={`flex h-16 w-16 items-center justify-center rounded-xl text-2xl font-bold text-white transition-transform sm:h-20 sm:w-20 sm:text-3xl ${
-        canTap ? "cursor-pointer hover:scale-105 active:scale-95" : ""
-      }`}
+    <div
+      className={`flex ${dim} items-center justify-center rounded-xl font-bold text-white transition-opacity duration-500 ${ghost ? "opacity-20" : "opacity-100"}`}
       style={{ backgroundColor: color }}
     >
-      {num}
-    </button>
+      {value}
+    </div>
   );
 };
 
