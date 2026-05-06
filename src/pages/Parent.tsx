@@ -7,60 +7,28 @@ const ORANGE = "#F97316";
 const tens = (n: number) => Math.floor(n / 10) * 10;
 const ones = (n: number) => n % 10;
 
-/* ─── Reusable split-box animation (clean adult styling) ─── */
-const SplitBox = ({
-  num,
+/* ─── Small coloured block ─── */
+const Block = ({
+  value,
   color,
-  isSplit,
-  t,
-  o,
-  canTap,
-  onTap,
+  ghost,
+  size = "normal",
 }: {
-  num: number;
+  value: number;
   color: string;
-  isSplit: boolean;
-  t: number;
-  o: number;
-  canTap: boolean;
-  onTap: () => void;
+  ghost?: boolean;
+  size?: "normal" | "small";
 }) => {
-  if (isSplit) {
-    return (
-      <div className="flex gap-3">
-        <div className="flex flex-col items-center" style={{ animation: "slideLeft 0.4s ease-out" }}>
-          <div
-            className="flex h-14 w-14 items-center justify-center rounded-xl text-xl font-bold text-white sm:h-16 sm:w-16 sm:text-2xl"
-            style={{ backgroundColor: color }}
-          >
-            {t}
-          </div>
-          <span className="mt-1 text-xs font-medium text-muted-foreground">tens</span>
-        </div>
-        <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
-          <div
-            className="flex h-14 w-14 items-center justify-center rounded-xl text-xl font-bold text-white sm:h-16 sm:w-16 sm:text-2xl"
-            style={{ backgroundColor: color }}
-          >
-            {o}
-          </div>
-          <span className="mt-1 text-xs font-medium text-muted-foreground">ones</span>
-        </div>
-      </div>
-    );
-  }
-
+  const dim = size === "small"
+    ? "h-12 w-12 text-lg sm:h-14 sm:w-14 sm:text-xl"
+    : "h-14 w-14 text-xl sm:h-16 sm:w-16 sm:text-2xl";
   return (
-    <button
-      onClick={onTap}
-      disabled={!canTap}
-      className={`flex h-16 w-16 items-center justify-center rounded-xl text-2xl font-bold text-white transition-transform sm:h-20 sm:w-20 sm:text-3xl ${
-        canTap ? "cursor-pointer hover:scale-105 active:scale-95" : ""
-      }`}
+    <div
+      className={`flex ${dim} items-center justify-center rounded-xl font-bold text-white transition-opacity duration-500 ${ghost ? "opacity-20" : "opacity-100"}`}
       style={{ backgroundColor: color }}
     >
-      {num}
-    </button>
+      {value}
+    </div>
   );
 };
 
@@ -100,8 +68,12 @@ const DemoAnimation = () => {
     }
   }, [phase]);
 
-  const stepIndex = ["addTens", "addOnes", "answer", "done"].indexOf(phase);
-  const showSplitLabel = !["prompt", "splitA"].includes(phase);
+
+  const tensGone = ["addTens", "addOnes", "answer", "done"].includes(phase);
+  const onesGone = ["addOnes", "answer", "done"].includes(phase);
+  const showStep2 = tensGone;
+  const showStep3 = onesGone;
+  const showStep4 = ["answer", "done"].includes(phase);
 
   const reset = () => setPhase("prompt");
 
@@ -117,25 +89,55 @@ const DemoAnimation = () => {
         Split each number into tens and ones
       </p>
 
+      {/* Step 1 blocks */}
       <div className="mt-3 flex items-start justify-center gap-8">
-        <SplitBox
-          num={blueNum}
-          color={BLUE}
-          isSplit={blueSplit}
-          t={bT}
-          o={bO}
-          canTap={phase === "prompt"}
-          onTap={() => setPhase("splitA")}
-        />
-        <SplitBox
-          num={orangeNum}
-          color={ORANGE}
-          isSplit={orangeSplit}
-          t={oT}
-          o={oO}
-          canTap={phase === "splitA"}
-          onTap={() => setPhase("splitB")}
-        />
+        {!blueSplit ? (
+          <button
+            onClick={() => setPhase("splitA")}
+            disabled={phase !== "prompt"}
+            className={`flex h-16 w-16 items-center justify-center rounded-xl text-2xl font-bold text-white transition-transform sm:h-20 sm:w-20 sm:text-3xl ${
+              phase === "prompt" ? "cursor-pointer hover:scale-105 active:scale-95" : ""
+            }`}
+            style={{ backgroundColor: BLUE }}
+          >
+            {blueNum}
+          </button>
+        ) : (
+          <div className="flex gap-3">
+            <div className="flex flex-col items-center" style={{ animation: "slideLeft 0.4s ease-out" }}>
+              <Block value={bT} color={BLUE} ghost={tensGone} />
+              <span className="mt-1 text-xs font-medium text-muted-foreground">tens</span>
+            </div>
+            <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
+              <Block value={bO} color={BLUE} ghost={onesGone} />
+              <span className="mt-1 text-xs font-medium text-muted-foreground">ones</span>
+            </div>
+          </div>
+        )}
+
+        {!orangeSplit ? (
+          <button
+            onClick={() => setPhase("splitB")}
+            disabled={phase !== "splitA"}
+            className={`flex h-16 w-16 items-center justify-center rounded-xl text-2xl font-bold text-white transition-transform sm:h-20 sm:w-20 sm:text-3xl ${
+              phase === "splitA" ? "cursor-pointer hover:scale-105 active:scale-95" : ""
+            }`}
+            style={{ backgroundColor: ORANGE }}
+          >
+            {orangeNum}
+          </button>
+        ) : (
+          <div className="flex gap-3">
+            <div className="flex flex-col items-center" style={{ animation: "slideLeft 0.4s ease-out" }}>
+              <Block value={oT} color={ORANGE} ghost={tensGone} />
+              <span className="mt-1 text-xs font-medium text-muted-foreground">tens</span>
+            </div>
+            <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
+              <Block value={oO} color={ORANGE} ghost={onesGone} />
+              <span className="mt-1 text-xs font-medium text-muted-foreground">ones</span>
+            </div>
+          </div>
+        )}
       </div>
 
       {phase === "prompt" && (
@@ -149,26 +151,45 @@ const DemoAnimation = () => {
         </p>
       )}
 
-      {(stepIndex >= 0) && (
-        <div className="mt-5 space-y-2">
-          {stepIndex >= 0 && (
-            <p className="text-center text-base font-medium animate-fade-in" style={{ color: BLUE }}>
-              <span className="text-muted-foreground">Step 2: </span>
-              Tens: {bT} + {oT} = {tSum}
-            </p>
-          )}
-          {stepIndex >= 1 && (
-            <p className="text-center text-base font-medium animate-fade-in" style={{ color: ORANGE }}>
-              <span className="text-muted-foreground">Step 3: </span>
-              Ones: {bO} + {oO} = {oSum}
-            </p>
-          )}
-          {stepIndex >= 2 && (
-            <p className="text-center text-base font-semibold text-foreground animate-fade-in">
-              <span className="text-muted-foreground">Step 4: </span>
-              Answer: {tSum} + {oSum} = {total}
-            </p>
-          )}
+      {/* Step 2 — Tens row with blocks */}
+      {showStep2 && (
+        <div className="mt-6 animate-fade-in">
+          <p className="text-center text-base font-medium text-muted-foreground mb-2">
+            Step 2: <span style={{ color: BLUE }}>Add the tens</span>
+          </p>
+          <div className="flex items-center justify-center gap-3">
+            <Block value={bT} color={BLUE} size="small" />
+            <span className="text-xl font-bold text-muted-foreground">+</span>
+            <Block value={oT} color={ORANGE} size="small" />
+            <span className="text-xl font-bold text-muted-foreground">=</span>
+            <span className="text-xl font-bold text-foreground">{tSum}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Step 3 — Ones row with blocks */}
+      {showStep3 && (
+        <div className="mt-5 animate-fade-in">
+          <p className="text-center text-base font-medium text-muted-foreground mb-2">
+            Step 3: <span style={{ color: ORANGE }}>Add the ones</span>
+          </p>
+          <div className="flex items-center justify-center gap-3">
+            <Block value={bO} color={BLUE} size="small" />
+            <span className="text-xl font-bold text-muted-foreground">+</span>
+            <Block value={oO} color={ORANGE} size="small" />
+            <span className="text-xl font-bold text-muted-foreground">=</span>
+            <span className="text-xl font-bold text-foreground">{oSum}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Step 4 */}
+      {showStep4 && (
+        <div className="mt-5 animate-fade-in">
+          <p className="text-center text-base font-semibold text-foreground">
+            <span className="text-muted-foreground">Step 4: </span>
+            Answer: {tSum} + {oSum} = {total}
+          </p>
         </div>
       )}
 
@@ -247,24 +268,53 @@ const PracticeQuestion = () => {
       </p>
 
       <div className="mt-6 flex items-start justify-center gap-8">
-        <SplitBox
-          num={blueNum}
-          color={BLUE}
-          isSplit={blueSplit}
-          t={bT}
-          o={bO}
-          canTap={phase === "prompt"}
-          onTap={() => setPhase("splitA")}
-        />
-        <SplitBox
-          num={orangeNum}
-          color={ORANGE}
-          isSplit={orangeSplit}
-          t={oT}
-          o={oO}
-          canTap={phase === "splitA"}
-          onTap={() => setPhase("splitB")}
-        />
+        {!blueSplit ? (
+          <button
+            onClick={() => setPhase("splitA")}
+            disabled={phase !== "prompt"}
+            className={`flex h-16 w-16 items-center justify-center rounded-xl text-2xl font-bold text-white transition-transform sm:h-20 sm:w-20 sm:text-3xl ${
+              phase === "prompt" ? "cursor-pointer hover:scale-105 active:scale-95" : ""
+            }`}
+            style={{ backgroundColor: BLUE }}
+          >
+            {blueNum}
+          </button>
+        ) : (
+          <div className="flex gap-3">
+            <div className="flex flex-col items-center" style={{ animation: "slideLeft 0.4s ease-out" }}>
+              <Block value={bT} color={BLUE} />
+              <span className="mt-1 text-xs font-medium text-muted-foreground">tens</span>
+            </div>
+            <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
+              <Block value={bO} color={BLUE} />
+              <span className="mt-1 text-xs font-medium text-muted-foreground">ones</span>
+            </div>
+          </div>
+        )}
+
+        {!orangeSplit ? (
+          <button
+            onClick={() => setPhase("splitB")}
+            disabled={phase !== "splitA"}
+            className={`flex h-16 w-16 items-center justify-center rounded-xl text-2xl font-bold text-white transition-transform sm:h-20 sm:w-20 sm:text-3xl ${
+              phase === "splitA" ? "cursor-pointer hover:scale-105 active:scale-95" : ""
+            }`}
+            style={{ backgroundColor: ORANGE }}
+          >
+            {orangeNum}
+          </button>
+        ) : (
+          <div className="flex gap-3">
+            <div className="flex flex-col items-center" style={{ animation: "slideLeft 0.4s ease-out" }}>
+              <Block value={oT} color={ORANGE} />
+              <span className="mt-1 text-xs font-medium text-muted-foreground">tens</span>
+            </div>
+            <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
+              <Block value={oO} color={ORANGE} />
+              <span className="mt-1 text-xs font-medium text-muted-foreground">ones</span>
+            </div>
+          </div>
+        )}
       </div>
 
       {phase === "prompt" && (
