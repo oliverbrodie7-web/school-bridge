@@ -173,7 +173,13 @@ const Student = () => {
           >
             Split Strategy
           </h1>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap justify-center gap-3">
+            <Link
+              to="/learn/split-strategy"
+              className="rounded-xl border-2 border-primary px-5 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+            >
+              Learn It First
+            </Link>
             <button
               onClick={() => setShowTeach((s) => !s)}
               className="rounded-xl border-2 border-primary px-5 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
