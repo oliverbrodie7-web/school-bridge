@@ -10,6 +10,7 @@ import SplitStrategyLanding from "./pages/SplitStrategyLanding.tsx";
 import SplitStrategyLearn from "./pages/SplitStrategyLearn.tsx";
 import SplitStrategyWeDo from "./pages/SplitStrategyWeDo.tsx";
 import SplitStrategyYouDo from "./pages/SplitStrategyYouDo.tsx";
+import SplitStrategyPractise from "./pages/SplitStrategyPractise.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/learn/split-strategy" element={<SplitStrategyLearn />} />
           <Route path="/learn/split-strategy/we-do" element={<SplitStrategyWeDo />} />
           <Route path="/learn/split-strategy/you-do" element={<SplitStrategyYouDo />} />
+          <Route path="/practise/split-strategy" element={<SplitStrategyPractise />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
