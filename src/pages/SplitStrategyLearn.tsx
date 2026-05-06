@@ -70,19 +70,19 @@ const ExampleCard = ({
   // Auto-advance through reveal phases
   useEffect(() => {
     if (phase === "splitB") {
-      const t = setTimeout(() => setPhase("addTens"), 800);
+      const t = setTimeout(() => setPhase("addTens"), 2000);
       return () => clearTimeout(t);
     }
     if (phase === "addTens") {
-      const t = setTimeout(() => setPhase("addOnes"), 1000);
+      const t = setTimeout(() => setPhase("addOnes"), 2500);
       return () => clearTimeout(t);
     }
     if (phase === "addOnes") {
-      const t = setTimeout(() => setPhase("combine"), 1000);
+      const t = setTimeout(() => setPhase("combine"), 2500);
       return () => clearTimeout(t);
     }
     if (phase === "combine") {
-      const t = setTimeout(() => setPhase("done"), 1000);
+      const t = setTimeout(() => setPhase("done"), 2000);
       return () => clearTimeout(t);
     }
   }, [phase]);
