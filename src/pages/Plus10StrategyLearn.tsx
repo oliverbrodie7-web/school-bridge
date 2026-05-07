@@ -10,7 +10,7 @@ const EXAMPLES = [
   { number: 45, label: "4 tens and 5 ones", resultLabel: "5 tens and 5 ones", result: 55 },
 ];
 
-type Phase = "show-number" | "show-plus10" | "tap-prompt" | "animating" | "result" | "insight";
+type Phase = "show-number" | "show-plus10" | "tap-prompt" | "animating" | "counting" | "result" | "insight";
 
 /* ─── Narration per phase ─── */
 const getNarration = (example: (typeof EXAMPLES)[number], phase: Phase) => {
