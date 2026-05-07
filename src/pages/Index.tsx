@@ -65,6 +65,7 @@ const Index = () => {
   const handleCancelEdit = () => {
     setEditingIndex(null);
     setEditName("");
+    setEditYear(2);
   };
 
   if (showSetup || !hasProfiles) {
