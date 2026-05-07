@@ -2,8 +2,17 @@ import { Link } from "react-router-dom";
 
 const strategies = [
   {
+    className: "strategy-card-plus10",
+    label: "+10 Strategy",
+    symbol: "+10",
+    description: "Learn how adding 10s is faster than counting by 1s",
+    to: "/plus10-strategy",
+  },
+  {
+    className: "strategy-card-split",
     label: "Split Strategy",
-    description: "Break numbers into tens and ones to make addition easier.",
+    symbol: "+",
+    description: "Break numbers into tens and ones to make adding easier",
     to: "/split-strategy",
   },
 ];
@@ -27,16 +36,16 @@ const AdditionStrategies = () => {
             Addition
           </h1>
           <p className="mt-3 text-lg text-muted-foreground">
-            Pick a strategy to learn or practise.
+            Choose a strategy to learn or practise
           </p>
         </div>
 
-        <div className="mt-10 grid gap-4 sm:grid-cols-2">
+        <div className="mt-10 grid gap-4 grid-cols-1 sm:grid-cols-2">
           {strategies.map((s) => (
             <Link
               key={s.label}
               to={s.to}
-              className="group flex flex-col items-center text-center hover:bg-[var(--colour-card-hover-active)]"
+              className={`${s.className} group flex flex-col items-center text-center hover:bg-[var(--colour-card-hover-active)]`}
               style={{
                 backgroundColor: "var(--colour-card-bg)",
                 border: "0.5px solid var(--colour-active-border)",
@@ -46,15 +55,41 @@ const AdditionStrategies = () => {
                 cursor: "pointer",
               }}
             >
+              {/* Icon tile */}
+              <div
+                className="flex items-center justify-center"
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 12,
+                  backgroundColor: "var(--colour-active-light)",
+                }}
+              >
+                <span
+                  className="font-bold"
+                  style={{ color: "var(--colour-active-dark)", fontSize: 16 }}
+                >
+                  {s.symbol}
+                </span>
+              </div>
+
               <h2
-                className="font-semibold text-foreground group-hover:text-primary transition-colors"
-                style={{ fontFamily: "var(--font-heading)", fontSize: "var(--font-topic-name-size)", fontWeight: "var(--font-topic-name)" }}
+                className="mt-3 font-semibold text-foreground"
+                style={{
+                  fontFamily: "var(--font-heading)",
+                  fontSize: "var(--font-topic-name-size)",
+                  fontWeight: "var(--font-topic-name)",
+                }}
               >
                 {s.label}
               </h2>
               <p
-                className="mt-2 text-muted-foreground"
-                style={{ fontSize: "var(--font-description-size)", lineHeight: "var(--font-description-lh)", fontWeight: "var(--font-description-weight)" }}
+                className="mt-1 text-muted-foreground"
+                style={{
+                  fontSize: "var(--font-description-size)",
+                  lineHeight: "var(--font-description-lh)",
+                  fontWeight: "var(--font-description-weight)",
+                }}
               >
                 {s.description}
               </p>
