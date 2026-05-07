@@ -20,15 +20,15 @@ const getNarration = (example: (typeof EXAMPLES)[number], phase: Phase) => {
 
   switch (phase) {
     case "show-number":
-      return `Let's look at the number ${example.number}. It has ${t} tens and ${o} ones.`;
+      return `The question is asking us to add 10 to ${example.number}. Rather than counting one at a time, we can add a whole ten at once. Let's see how. ${example.number} has ${t} tens and ${o} ones.`;
     case "show-plus10":
-      return `We want to add 10. That's the same as adding 1 more ten.`;
+      return `Adding 10 is the same as adding 1 more ten. So we just need to put 1 extra ten with our tens.`;
     case "tap-prompt":
       return `Tap the green ten block to add it to our tens.`;
     case "animating":
-      return `Watch — the new ten joins the other tens…`;
+      return `Watch — the new ten slides in with the other tens…`;
     case "result":
-      return `Now we have ${resultTens} tens and ${o} ones. That makes ${example.result}!`;
+      return `We had ${t} tens, now we have ${resultTens} tens. The ${o} ones didn't change at all. So ${example.number} + 10 = ${example.result}.`;
     case "insight":
       return "";
   }
