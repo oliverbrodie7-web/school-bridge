@@ -150,17 +150,21 @@ const ExampleCard = ({
   onNext: () => void;
 }) => {
   const [phase, setPhase] = useState<Phase>("show-number");
+  const [countedTens, setCountedTens] = useState(0);
 
   const t = Math.floor(example.number / 10);
   const o = example.number % 10;
   const resultTens = t + 1;
 
-  const merged = phase === "animating" || phase === "result" || phase === "insight";
+  const merged = phase === "animating" || phase === "counting" || phase === "result" || phase === "insight";
 
-  // Auto-advance: animating → result (insight is tap-to-advance)
+  // Auto-advance: animating → counting
   useEffect(() => {
     if (phase === "animating") {
-      const t1 = setTimeout(() => setPhase("result"), 1200);
+      const t1 = setTimeout(() => {
+        setCountedTens(0);
+        setPhase("counting");
+      }, 1200);
       return () => clearTimeout(t1);
     }
   }, [phase]);
@@ -168,6 +172,17 @@ const ExampleCard = ({
   const handleTapGreenBlock = () => {
     if (phase !== "tap-prompt") return;
     setPhase("animating");
+  };
+
+  const handleTapTensBlock = (index: number) => {
+    if (phase !== "counting") return;
+    if (index === countedTens) {
+      const next = countedTens + 1;
+      setCountedTens(next);
+      if (next === resultTens) {
+        setTimeout(() => setPhase("result"), 600);
+      }
+    }
   };
 
   const narration = getNarration(example, phase);
