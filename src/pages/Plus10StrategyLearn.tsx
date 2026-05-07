@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const BLUE = "#3B82F6";
@@ -20,7 +20,6 @@ const TensBlock = ({ color, className = "" }: { color: string; className?: strin
       width: 24,
       height: 64,
       backgroundColor: color,
-      transition: "transform 0.8s ease-in-out, opacity 0.5s ease",
     }}
   />
 );
@@ -37,7 +36,7 @@ const OnesBlock = ({ color }: { color: string }) => (
   />
 );
 
-/* ─── Block row for a number ─── */
+/* ─── Block visualisation for a number ─── */
 const NumberBlocks = ({
   number,
   color,
@@ -52,7 +51,10 @@ const NumberBlocks = ({
 
   return (
     <div className="flex flex-col items-center gap-3">
-      <span className="text-4xl font-bold sm:text-5xl" style={{ color, fontFamily: "var(--font-heading)" }}>
+      <span
+        className="text-4xl font-bold sm:text-5xl"
+        style={{ color, fontFamily: "var(--font-heading)" }}
+      >
         {number}
       </span>
       <div className="flex items-end gap-1.5">
@@ -70,6 +72,7 @@ const NumberBlocks = ({
   );
 };
 
+/* ─── Main page ─── */
 const Plus10StrategyLearn = () => {
   const [exIndex, setExIndex] = useState(0);
 
@@ -120,22 +123,23 @@ const ExampleCard = ({
   const o = example.number % 10;
   const resultTens = t + 1;
 
-  /* Auto-advance from show-number → show-plus10 after 2s */
-  useState(() => {
-    const timer = setTimeout(() => setPhase("show-plus10"), 2000);
-    return () => clearTimeout(timer);
-  });
-
-  /* Auto-advance from show-plus10 → tap-prompt after 1.5s */
-  if (phase === "show-number") {
-    // handled by initial timer
-  }
+  // Auto-advance: show-number → show-plus10 → tap-prompt
+  useEffect(() => {
+    if (phase === "show-number") {
+      const timer = setTimeout(() => setPhase("show-plus10"), 2000);
+      return () => clearTimeout(timer);
+    }
+    if (phase === "show-plus10") {
+      const timer = setTimeout(() => setPhase("tap-prompt"), 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [phase]);
 
   const handleTapGreenBlock = () => {
     if (phase !== "tap-prompt") return;
     setPhase("animating");
     setTimeout(() => setPhase("result"), 1200);
-    setTimeout(() => setPhase("insight"), 3000);
+    setTimeout(() => setPhase("insight"), 3200);
   };
 
   return (
@@ -148,17 +152,19 @@ const ExampleCard = ({
         {example.number} + 10
       </p>
 
-      {/* Main visual area */}
       <div className="mt-8">
-        {/* Step 1: Starting number */}
+        {/* Step 1: Starting number with blocks */}
         <div className="animate-fade-in">
           <NumberBlocks number={example.number} color={BLUE} label={example.label} />
         </div>
 
-        {/* Step 2: +10 appears */}
+        {/* Step 2: +10 appears with green block */}
         {phase !== "show-number" && (
           <div className="mt-8 flex items-center justify-center gap-6 animate-fade-in">
-            <span className="text-3xl font-bold sm:text-4xl" style={{ color: GREEN, fontFamily: "var(--font-heading)" }}>
+            <span
+              className="text-3xl font-bold sm:text-4xl"
+              style={{ color: GREEN, fontFamily: "var(--font-heading)" }}
+            >
               +10
             </span>
             <div className="flex flex-col items-center gap-2">
@@ -168,42 +174,44 @@ const ExampleCard = ({
                   className="cursor-pointer transition-transform hover:scale-110 active:scale-95"
                   aria-label="Tap to add the green ten block"
                 >
-                  <TensBlock color={GREEN} className="ring-2 ring-green-400 ring-offset-2 ring-offset-card animate-pulse" />
+                  <TensBlock
+                    color={GREEN}
+                    className="ring-2 ring-green-400 ring-offset-2 ring-offset-card"
+                  />
+                  <span
+                    className="mt-1 block h-1 w-full animate-pulse rounded-full"
+                    style={{ backgroundColor: GREEN }}
+                  />
                 </button>
               ) : phase === "animating" || phase === "result" || phase === "insight" ? (
-                /* Block has "left" — show nothing here */
                 <div style={{ width: 24, height: 64, opacity: 0 }} />
               ) : (
                 <TensBlock color={GREEN} />
               )}
-              <span className="text-sm font-medium text-muted-foreground">1 ten</span>
+              {phase !== "animating" && phase !== "result" && phase !== "insight" && (
+                <span className="text-sm font-medium text-muted-foreground">1 ten</span>
+              )}
             </div>
           </div>
         )}
 
-        {/* Tap prompt text */}
+        {/* Tap prompt */}
         {phase === "tap-prompt" && (
           <p className="mt-6 text-center text-lg font-medium text-muted-foreground animate-fade-in">
             Tap the green ten block to add it.
           </p>
         )}
 
-        {/* Step 3: Result — blocks rearranged */}
+        {/* Step 3: Combined result */}
         {(phase === "animating" || phase === "result" || phase === "insight") && (
           <div className="mt-8 animate-fade-in">
             <div className="flex flex-col items-center gap-3">
-              {/* Combined blocks */}
+              {/* Combined block row */}
               <div className="flex items-end gap-1.5">
-                {/* Original blue tens */}
                 {Array.from({ length: t }).map((_, i) => (
                   <TensBlock key={`bt${i}`} color={NEUTRAL} />
                 ))}
-                {/* The green ten that slid in */}
-                <TensBlock
-                  color={GREEN}
-                  className="animate-fade-in"
-                />
-                {/* Ones stay the same */}
+                <TensBlock color={GREEN} className="animate-fade-in" />
                 <div className="ml-2 flex flex-wrap items-end gap-1">
                   {Array.from({ length: o }).map((_, i) => (
                     <OnesBlock key={`bo${i}`} color={NEUTRAL} />
@@ -211,6 +219,7 @@ const ExampleCard = ({
                 </div>
               </div>
 
+              {/* Result text */}
               {(phase === "result" || phase === "insight") && (
                 <div className="mt-4 text-center animate-fade-in">
                   <p className="text-base font-medium text-muted-foreground">
@@ -249,169 +258,7 @@ const ExampleCard = ({
           </div>
         )}
 
-        {/* Navigation button */}
-        {phase === "insight" && (
-          <div className="mt-8 text-center animate-fade-in">
-            {isLast ? (
-              <Link
-                to="/learn/plus10-strategy/we-do"
-                className="inline-block rounded-xl bg-primary px-8 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
-              >
-                Let's try one together
-              </Link>
-            ) : (
-              <button
-                onClick={onNext}
-                className="rounded-xl bg-primary px-8 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
-              >
-                Next Example
-              </button>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-/* ─── Phase auto-advance hook ─── */
-/* We use useEffect-style logic inside ExampleCard via a wrapper */
-
-/* Re-implement ExampleCard with proper useEffect for phase transitions */
-import { useEffect } from "react";
-
-const ExampleCardWithEffects = ({
-  example,
-  isLast,
-  onNext,
-}: {
-  example: (typeof EXAMPLES)[number];
-  isLast: boolean;
-  onNext: () => void;
-}) => {
-  const [phase, setPhase] = useState<Phase>("show-number");
-
-  const t = Math.floor(example.number / 10);
-  const o = example.number % 10;
-  const resultTens = t + 1;
-
-  useEffect(() => {
-    if (phase === "show-number") {
-      const timer = setTimeout(() => setPhase("show-plus10"), 2000);
-      return () => clearTimeout(timer);
-    }
-    if (phase === "show-plus10") {
-      const timer = setTimeout(() => setPhase("tap-prompt"), 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [phase]);
-
-  const handleTapGreenBlock = () => {
-    if (phase !== "tap-prompt") return;
-    setPhase("animating");
-    setTimeout(() => setPhase("result"), 1200);
-    setTimeout(() => setPhase("insight"), 3200);
-  };
-
-  return (
-    <div className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
-      <p
-        className="text-center text-3xl font-bold text-foreground sm:text-4xl"
-        style={{ fontFamily: "var(--font-heading)" }}
-      >
-        {example.number} + 10
-      </p>
-
-      <div className="mt-8">
-        <div className="animate-fade-in">
-          <NumberBlocks number={example.number} color={BLUE} label={example.label} />
-        </div>
-
-        {phase !== "show-number" && (
-          <div className="mt-8 flex items-center justify-center gap-6 animate-fade-in">
-            <span className="text-3xl font-bold sm:text-4xl" style={{ color: GREEN, fontFamily: "var(--font-heading)" }}>
-              +10
-            </span>
-            <div className="flex flex-col items-center gap-2">
-              {phase === "tap-prompt" ? (
-                <button
-                  onClick={handleTapGreenBlock}
-                  className="cursor-pointer transition-transform hover:scale-110 active:scale-95"
-                  aria-label="Tap to add the green ten block"
-                >
-                  <TensBlock color={GREEN} className="ring-2 ring-green-400 ring-offset-2 ring-offset-card" />
-                  <span className="mt-1 block h-1 w-full animate-pulse rounded-full" style={{ backgroundColor: GREEN }} />
-                </button>
-              ) : phase === "animating" || phase === "result" || phase === "insight" ? (
-                <div style={{ width: 24, height: 64, opacity: 0 }} />
-              ) : (
-                <TensBlock color={GREEN} />
-              )}
-              {phase !== "animating" && phase !== "result" && phase !== "insight" && (
-                <span className="text-sm font-medium text-muted-foreground">1 ten</span>
-              )}
-            </div>
-          </div>
-        )}
-
-        {phase === "tap-prompt" && (
-          <p className="mt-6 text-center text-lg font-medium text-muted-foreground animate-fade-in">
-            Tap the green ten block to add it.
-          </p>
-        )}
-
-        {(phase === "animating" || phase === "result" || phase === "insight") && (
-          <div className="mt-8 animate-fade-in">
-            <div className="flex flex-col items-center gap-3">
-              <div className="flex items-end gap-1.5">
-                {Array.from({ length: t }).map((_, i) => (
-                  <TensBlock key={`bt${i}`} color={NEUTRAL} />
-                ))}
-                <TensBlock color={GREEN} className="animate-fade-in" />
-                <div className="ml-2 flex flex-wrap items-end gap-1">
-                  {Array.from({ length: o }).map((_, i) => (
-                    <OnesBlock key={`bo${i}`} color={NEUTRAL} />
-                  ))}
-                </div>
-              </div>
-
-              {(phase === "result" || phase === "insight") && (
-                <div className="mt-4 text-center animate-fade-in">
-                  <p className="text-base font-medium text-muted-foreground">
-                    Now we have {resultTens} tens and {o} ones
-                  </p>
-                  <p
-                    className="mt-2 text-2xl font-bold text-foreground sm:text-3xl"
-                    style={{ fontFamily: "var(--font-heading)" }}
-                  >
-                    {example.number} + 10 = {example.result}
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {phase === "insight" && (
-          <div
-            className="mt-8 rounded-xl border-2 p-5 text-center animate-fade-in"
-            style={{
-              borderColor: GREEN,
-              backgroundColor: "#F0FDF4",
-            }}
-          >
-            <p className="text-base font-semibold text-foreground leading-relaxed sm:text-lg">
-              Did you notice? Only the tens changed.
-              <br />
-              The ones stayed exactly the same.
-              <br />
-              <span className="mt-1 inline-block font-bold" style={{ color: GREEN }}>
-                That's what always happens when we add 10.
-              </span>
-            </p>
-          </div>
-        )}
-
+        {/* Navigation */}
         {phase === "insight" && (
           <div className="mt-8 text-center animate-fade-in">
             {isLast ? (
