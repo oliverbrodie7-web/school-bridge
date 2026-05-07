@@ -296,6 +296,18 @@ const ExampleCard = ({
           {!merged && (
             <span className="text-sm font-medium text-muted-foreground">{example.label}</span>
           )}
+
+          {/* Counting progress */}
+          {phase === "counting" && countedTens > 0 && countedTens < resultTens && (
+            <p className="text-lg font-bold text-foreground animate-fade-in" style={{ fontFamily: "var(--font-heading)" }}>
+              {countedTens}…
+            </p>
+          )}
+          {phase === "counting" && countedTens === resultTens && (
+            <p className="text-lg font-bold animate-fade-in" style={{ color: GREEN, fontFamily: "var(--font-heading)" }}>
+              {resultTens} tens! 🎉
+            </p>
+          )}
         </div>
 
         {/* "Next" button after show-number */}
