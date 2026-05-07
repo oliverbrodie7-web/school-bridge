@@ -42,6 +42,7 @@ const App = () => (
           <Route path="/learn/plus10-strategy" element={<Plus10StrategyLearn />} />
           <Route path="/learn/plus10-strategy/we-do" element={<Plus10StrategyWeDo />} />
           <Route path="/learn/plus10-strategy/you-do" element={<Plus10StrategyYouDo />} />
+          <Route path="/practise/plus10-strategy" element={<Plus10StrategyPractise />} />
           <Route path="/split-strategy" element={<SplitStrategyLanding />} />
           <Route path="/learn/split-strategy" element={<SplitStrategyLearn />} />
           <Route path="/learn/split-strategy/we-do" element={<SplitStrategyWeDo />} />
