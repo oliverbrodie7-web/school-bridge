@@ -27,6 +27,7 @@ const Index = () => {
   const [showSetup, setShowSetup] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editName, setEditName] = useState("");
+  const [editYear, setEditYear] = useState<number>(2);
   const navigate = useNavigate();
 
   const hasProfiles = profiles.length > 0;
@@ -48,12 +49,13 @@ const Index = () => {
     e.stopPropagation();
     setEditingIndex(index);
     setEditName(profiles[index].name);
+    setEditYear(profiles[index].yearLevel);
   };
 
   const handleSaveEdit = () => {
     if (editingIndex === null || !editName.trim()) return;
     const updated = [...profiles];
-    updated[editingIndex] = { ...updated[editingIndex], name: editName.trim() };
+    updated[editingIndex] = { ...updated[editingIndex], name: editName.trim(), yearLevel: editYear };
     saveProfiles(updated);
     setProfiles(updated);
     setEditingIndex(null);
@@ -63,6 +65,7 @@ const Index = () => {
   const handleCancelEdit = () => {
     setEditingIndex(null);
     setEditName("");
+    setEditYear(2);
   };
 
   if (showSetup || !hasProfiles) {
@@ -141,6 +144,15 @@ const Index = () => {
                         autoFocus
                         className="w-full rounded-lg border border-border bg-background px-2 py-1 text-center text-sm text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
                       />
+                      <select
+                        value={editYear}
+                        onChange={(e) => setEditYear(Number(e.target.value))}
+                        className="w-full rounded-lg border border-border bg-background px-2 py-1 text-center text-sm text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
+                      >
+                        {YEAR_LEVELS.map((yr) => (
+                          <option key={yr.value} value={yr.value}>{yr.label}</option>
+                        ))}
+                      </select>
                       <div className="flex gap-2">
                         <button
                           onClick={handleSaveEdit}
