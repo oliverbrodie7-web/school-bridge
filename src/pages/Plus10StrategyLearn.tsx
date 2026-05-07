@@ -155,12 +155,11 @@ const ExampleCard = ({
 
   const merged = phase === "animating" || phase === "result" || phase === "insight";
 
-  // Auto-advance: animating → result → insight
+  // Auto-advance: animating → result (insight is tap-to-advance)
   useEffect(() => {
     if (phase === "animating") {
       const t1 = setTimeout(() => setPhase("result"), 1200);
-      const t2 = setTimeout(() => setPhase("insight"), 3200);
-      return () => { clearTimeout(t1); clearTimeout(t2); };
+      return () => clearTimeout(t1);
     }
   }, [phase]);
 
