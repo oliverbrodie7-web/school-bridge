@@ -38,6 +38,7 @@ const App = () => (
           <Route path="/student/subtraction" element={<SubtractionStrategies />} />
           <Route path="/plus10-strategy" element={<Plus10StrategyLanding />} />
           <Route path="/learn/plus10-strategy" element={<Plus10StrategyLearn />} />
+          <Route path="/learn/plus10-strategy/we-do" element={<Plus10StrategyWeDo />} />
           <Route path="/split-strategy" element={<SplitStrategyLanding />} />
           <Route path="/learn/split-strategy" element={<SplitStrategyLearn />} />
           <Route path="/learn/split-strategy/we-do" element={<SplitStrategyWeDo />} />
