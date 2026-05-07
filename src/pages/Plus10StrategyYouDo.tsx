@@ -5,11 +5,26 @@ const BLUE = "#3B82F6";
 const GREEN = "#22C55E";
 const NEUTRAL = "#64748B";
 
-/* ─── Question banks ─── */
-const INITIAL_QUESTIONS = [24, 53, 41, 67, 35];
-const EXTRA_BANK = [14, 32, 56, 71, 48];
+/* ─── Question type ─── */
+type QuestionData = { a: number; b: number };
 
-const shuffle = (arr: number[]) => {
+const INITIAL_QUESTIONS: QuestionData[] = [
+  { a: 24, b: 10 },
+  { a: 53, b: 10 },
+  { a: 41, b: 10 },
+  { a: 34, b: 23 },
+  { a: 67, b: 31 },
+];
+
+const EXTRA_BANK: QuestionData[] = [
+  { a: 14, b: 10 },
+  { a: 32, b: 10 },
+  { a: 56, b: 10 },
+  { a: 45, b: 22 },
+  { a: 28, b: 31 },
+];
+
+const shuffle = (arr: QuestionData[]) => {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -42,35 +57,55 @@ const OnesBlock = ({ color }: { color: string }) => (
   />
 );
 
-/* ─── Block row ─── */
+/* ─── Block row (supports multiple green tens + green ones) ─── */
 const BlockRow = ({
   tens,
   ones,
   tensColor,
   onesColor,
-  showGreen,
+  greenTens,
+  greenOnes,
   greenAnimating,
 }: {
   tens: number;
   ones: number;
   tensColor: string;
   onesColor: string;
-  showGreen: boolean;
+  greenTens: number;
+  greenOnes: number;
   greenAnimating: boolean;
 }) => (
   <div className="flex items-end gap-1.5">
     {Array.from({ length: tens }).map((_, i) => (
       <TensBlock key={`t${i}`} color={tensColor} />
     ))}
-    {showGreen && (
-      <div style={greenAnimating ? { animation: "slideDown 0.8s ease-out forwards" } : undefined}>
-        <TensBlock color={GREEN} />
-      </div>
-    )}
+    {greenTens > 0 &&
+      Array.from({ length: greenTens }).map((_, i) => (
+        <div
+          key={`gt${i}`}
+          style={
+            greenAnimating
+              ? { animation: `slideDown 0.8s ease-out ${i * 0.15}s both` }
+              : undefined
+          }
+        >
+          <TensBlock color={GREEN} />
+        </div>
+      ))}
     <div className="ml-2 flex flex-wrap items-end gap-1">
       {Array.from({ length: ones }).map((_, i) => (
         <OnesBlock key={`o${i}`} color={onesColor} />
       ))}
+      {greenOnes > 0 &&
+        Array.from({ length: greenOnes }).map((_, i) => (
+          <div
+            key={`go${i}`}
+            className="animate-fade-in"
+            style={{ animationDelay: `${(greenAnimating ? 0.8 : 0) + i * 0.12}s`, animationFillMode: "both" }}
+          >
+            <OnesBlock color={GREEN} />
+          </div>
+        ))}
     </div>
   </div>
 );
@@ -81,12 +116,13 @@ const BlockRow = ({
 type QPhase = "show" | "tap-prompt" | "sliding" | "count-input" | "answer-input" | "correct";
 
 const Question = ({
-  number,
+  question,
   onComplete,
 }: {
-  number: number;
+  question: QuestionData;
   onComplete: () => void;
 }) => {
+  const { a, b } = question;
   const [phase, setPhase] = useState<QPhase>("show");
   const [tensInput, setTensInput] = useState("");
   const [onesInput, setOnesInput] = useState("");
@@ -96,12 +132,20 @@ const Question = ({
   const tensRef = useRef<HTMLInputElement>(null);
   const answerRef = useRef<HTMLInputElement>(null);
 
-  const t = Math.floor(number / 10);
-  const o = number % 10;
-  const resultTens = t + 1;
-  const result = number + 10;
+  const at = Math.floor(a / 10);
+  const ao = a % 10;
+  const bt = Math.floor(b / 10);
+  const bo = b % 10;
+  const resultTens = at + bt;
+  const resultOnes = ao + bo;
+  const result = a + b;
+  const isPlus10 = b === 10;
 
-  const merged = phase === "sliding" || phase === "count-input" || phase === "answer-input" || phase === "correct";
+  const merged =
+    phase === "sliding" ||
+    phase === "count-input" ||
+    phase === "answer-input" ||
+    phase === "correct";
 
   // Auto: show → tap-prompt
   useEffect(() => {
@@ -112,15 +156,16 @@ const Question = ({
   // After slide → count-input
   useEffect(() => {
     if (phase === "sliding") {
+      const delay = 1000 + bt * 150; // extra time for multiple tens
       const timer = setTimeout(() => {
         setPhase("count-input");
         setTimeout(() => tensRef.current?.focus(), 100);
-      }, 1000);
+      }, delay);
       return () => clearTimeout(timer);
     }
-  }, [phase]);
+  }, [phase, bt]);
 
-  // Focus answer input when entering answer phase
+  // Focus answer input
   useEffect(() => {
     if (phase === "answer-input") {
       setTimeout(() => answerRef.current?.focus(), 100);
@@ -134,7 +179,7 @@ const Question = ({
 
   const handleCountSubmit = () => {
     const tensCorrect = Number(tensInput) === resultTens;
-    const onesCorrect = Number(onesInput) === o;
+    const onesCorrect = Number(onesInput) === resultOnes;
     if (tensCorrect && onesCorrect) {
       setCountHint("");
       setPhase("answer-input");
@@ -144,7 +189,11 @@ const Question = ({
       } else if (!tensCorrect) {
         setCountHint("Count the tens blocks — how many are there now?");
       } else {
-        setCountHint("The tens are right! Now look at the ones — did they change?");
+        setCountHint(
+          isPlus10
+            ? "The tens are right! Now look at the ones — did they change?"
+            : "The tens are right! Now count all the ones blocks."
+        );
       }
     }
   };
@@ -173,12 +222,22 @@ const Question = ({
 
   const narration = (() => {
     switch (phase) {
-      case "show": return `Here's ${number}. Let's add 10.`;
-      case "tap-prompt": return "Tap the green ten block to add it.";
-      case "sliding": return "Watch it slide in…";
-      case "count-input": return "Now count the blocks.";
-      case "answer-input": return "Now put the tens and ones together.";
-      case "correct": return `Perfect! You added 10 like a pro.`;
+      case "show":
+        return `Here's ${a}. Let's add ${b}.`;
+      case "tap-prompt":
+        return isPlus10
+          ? "Tap the green ten block to add it."
+          : "Tap the green blocks to add them.";
+      case "sliding":
+        return "Watch them slide in…";
+      case "count-input":
+        return "Now count the blocks.";
+      case "answer-input":
+        return "Now put the tens and ones together.";
+      case "correct":
+        return isPlus10
+          ? "Perfect! You added 10 like a pro."
+          : `Perfect! ${a} + ${b} = ${result}`;
     }
   })();
 
@@ -189,7 +248,7 @@ const Question = ({
         className="text-center text-3xl font-bold text-foreground sm:text-4xl"
         style={{ fontFamily: "var(--font-heading)" }}
       >
-        {number} + 10
+        {a} + {b}
       </p>
 
       {/* Narration */}
@@ -203,35 +262,66 @@ const Question = ({
 
       {/* Blocks */}
       <BlockRow
-        tens={t}
-        ones={o}
+        tens={at}
+        ones={ao}
         tensColor={merged ? NEUTRAL : BLUE}
         onesColor={merged ? NEUTRAL : BLUE}
-        showGreen={merged}
+        greenTens={merged ? bt : 0}
+        greenOnes={merged ? bo : 0}
         greenAnimating={phase === "sliding"}
       />
 
-      {/* +10 with tappable green block */}
+      {/* Tappable green blocks (before merge) */}
       {(phase === "show" || phase === "tap-prompt") && (
         <div className="flex items-center justify-center gap-4 animate-fade-in">
-          <span className="text-2xl font-bold" style={{ color: GREEN, fontFamily: "var(--font-heading)" }}>+10</span>
+          <span
+            className="text-2xl font-bold"
+            style={{ color: GREEN, fontFamily: "var(--font-heading)" }}
+          >
+            +{b}
+          </span>
           {phase === "tap-prompt" ? (
             <button
               onClick={handleTap}
-              className="cursor-pointer transition-transform hover:scale-110 active:scale-95"
-              aria-label="Tap to add the green ten block"
+              className="flex items-end gap-1.5 cursor-pointer transition-transform hover:scale-110 active:scale-95"
+              aria-label={`Tap to add ${b}`}
             >
-              <TensBlock
-                color={GREEN}
-                className="ring-2 ring-green-400 ring-offset-2 ring-offset-card"
-              />
+              {Array.from({ length: bt }).map((_, i) => (
+                <TensBlock
+                  key={`tapT${i}`}
+                  color={GREEN}
+                  className="ring-2 ring-green-400 ring-offset-2 ring-offset-card"
+                />
+              ))}
+              {bo > 0 && (
+                <div className="ml-1 flex flex-wrap items-end gap-1">
+                  {Array.from({ length: bo }).map((_, i) => (
+                    <div
+                      key={`tapO${i}`}
+                      className="rounded-sm ring-2 ring-green-400 ring-offset-1 ring-offset-card"
+                      style={{ width: 24, height: 24, backgroundColor: GREEN }}
+                    />
+                  ))}
+                </div>
+              )}
               <span
-                className="mt-1 block h-1 w-full animate-pulse rounded-full"
+                className="absolute -bottom-2 left-0 right-0 h-1 animate-pulse rounded-full"
                 style={{ backgroundColor: GREEN }}
               />
             </button>
           ) : (
-            <TensBlock color={GREEN} />
+            <div className="flex items-end gap-1.5">
+              {Array.from({ length: bt }).map((_, i) => (
+                <TensBlock key={`sT${i}`} color={GREEN} />
+              ))}
+              {bo > 0 && (
+                <div className="ml-1 flex flex-wrap items-end gap-1">
+                  {Array.from({ length: bo }).map((_, i) => (
+                    <OnesBlock key={`sO${i}`} color={GREEN} />
+                  ))}
+                </div>
+              )}
+            </div>
           )}
         </div>
       )}
@@ -239,7 +329,10 @@ const Question = ({
       {/* Count input: tens and ones */}
       {phase === "count-input" && (
         <div className="mt-2 flex flex-col items-center gap-3 animate-fade-in">
-          <p className="text-lg font-medium text-foreground" style={{ fontFamily: "var(--font-body)" }}>
+          <p
+            className="text-lg font-medium text-foreground"
+            style={{ fontFamily: "var(--font-body)" }}
+          >
             Now we have{" "}
             <input
               ref={tensRef}
@@ -264,7 +357,10 @@ const Question = ({
           </p>
 
           {countHint && (
-            <p className="text-base font-medium animate-fade-in" style={{ color: "#E88D30", fontFamily: "var(--font-body)" }}>
+            <p
+              className="text-base font-medium animate-fade-in"
+              style={{ color: "#E88D30", fontFamily: "var(--font-body)" }}
+            >
               {countHint}
             </p>
           )}
@@ -291,10 +387,16 @@ const Question = ({
       {/* Answer input */}
       {phase === "answer-input" && (
         <div className="mt-2 flex flex-col items-center gap-3 animate-fade-in">
-          <p className="text-lg font-medium text-foreground" style={{ fontFamily: "var(--font-body)" }}>
-            ✓ {resultTens} tens and {o} ones
+          <p
+            className="text-lg font-medium text-foreground"
+            style={{ fontFamily: "var(--font-body)" }}
+          >
+            ✓ {resultTens} tens and {resultOnes} ones
           </p>
-          <p className="text-lg font-medium text-foreground" style={{ fontFamily: "var(--font-body)" }}>
+          <p
+            className="text-lg font-medium text-foreground"
+            style={{ fontFamily: "var(--font-body)" }}
+          >
             So the answer is{" "}
             <input
               ref={answerRef}
@@ -309,7 +411,10 @@ const Question = ({
           </p>
 
           {answerHint && (
-            <p className="text-base font-medium animate-fade-in" style={{ color: "#E88D30", fontFamily: "var(--font-body)" }}>
+            <p
+              className="text-base font-medium animate-fade-in"
+              style={{ color: "#E88D30", fontFamily: "var(--font-body)" }}
+            >
               {answerHint}
             </p>
           )}
@@ -340,14 +445,19 @@ const Question = ({
             className="text-2xl font-bold text-foreground sm:text-3xl"
             style={{ fontFamily: "var(--font-heading)" }}
           >
-            {number} + 10 = {result}
+            {a} + {b} = {result}
           </p>
           <div
             className="mt-4 rounded-xl border-2 p-4 text-center"
             style={{ borderColor: GREEN, backgroundColor: "#F0FDF4" }}
           >
-            <p className="text-base font-semibold text-foreground" style={{ fontFamily: "var(--font-body)" }}>
-              The ones never change when we add 10.
+            <p
+              className="text-base font-semibold text-foreground"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              {isPlus10
+                ? "The ones never change when we add 10."
+                : "Add the tens first, then the ones — you've got this strategy!"}
             </p>
           </div>
           <button
@@ -367,7 +477,7 @@ const Question = ({
    ═══════════════════════════════════════ */
 const Plus10StrategyYouDo = () => {
   const navigate = useNavigate();
-  const [questions, setQuestions] = useState<number[]>(INITIAL_QUESTIONS);
+  const [questions, setQuestions] = useState<QuestionData[]>(INITIAL_QUESTIONS);
   const [qIndex, setQIndex] = useState(0);
   const [finished, setFinished] = useState(false);
 
@@ -406,7 +516,10 @@ const Plus10StrategyYouDo = () => {
         >
           +10 Strategy — You Do
         </h1>
-        <p className="mt-2 text-center text-muted-foreground" style={{ fontFamily: "var(--font-body)" }}>
+        <p
+          className="mt-2 text-center text-muted-foreground"
+          style={{ fontFamily: "var(--font-body)" }}
+        >
           Your turn — you've got this.
         </p>
 
@@ -442,8 +555,8 @@ const Plus10StrategyYouDo = () => {
             </div>
           ) : (
             <Question
-              key={`${questions[qIndex]}-${qIndex}`}
-              number={questions[qIndex]}
+              key={`${questions[qIndex].a}-${questions[qIndex].b}-${qIndex}`}
+              question={questions[qIndex]}
               onComplete={handleQuestionComplete}
             />
           )}

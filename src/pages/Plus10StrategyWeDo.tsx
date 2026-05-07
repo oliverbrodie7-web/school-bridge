@@ -7,9 +7,10 @@ const NEUTRAL = "#64748B";
 
 /* ─── Question data ─── */
 const QUESTIONS = [
-  { computer: { number: 34, result: 44 }, child: { number: 62, result: 72 } },
-  { computer: { number: 51, result: 61 }, child: { number: 27, result: 37 } },
-  { computer: { number: 43, result: 53 }, child: { number: 75, result: 85 } },
+  { computer: { number: 34, addend: 10 }, child: { number: 62, addend: 10 } },
+  { computer: { number: 51, addend: 10 }, child: { number: 27, addend: 10 } },
+  { computer: { number: 43, addend: 10 }, child: { number: 75, addend: 10 } },
+  { computer: { number: 52, addend: 21 }, child: { number: 43, addend: 32 } },
 ];
 
 /* ─── Dienes-style tens block ─── */
@@ -36,35 +37,58 @@ const OnesBlock = ({ color }: { color: string }) => (
   />
 );
 
-/* ─── Block row showing tens + ones ─── */
+/* ─── Block row (supports multiple green tens + green ones) ─── */
 const BlockRow = ({
   tens,
   ones,
   tensColor,
   onesColor,
-  showGreen,
+  greenTens,
+  greenOnes,
   greenAnimating,
 }: {
   tens: number;
   ones: number;
   tensColor: string;
   onesColor: string;
-  showGreen: boolean;
+  greenTens: number;
+  greenOnes: number;
   greenAnimating: boolean;
 }) => (
   <div className="flex items-end gap-1.5">
     {Array.from({ length: tens }).map((_, i) => (
       <TensBlock key={`t${i}`} color={tensColor} />
     ))}
-    {showGreen && (
-      <div style={greenAnimating ? { animation: "slideDown 0.8s ease-out forwards" } : undefined}>
-        <TensBlock color={GREEN} />
-      </div>
-    )}
+    {greenTens > 0 &&
+      Array.from({ length: greenTens }).map((_, i) => (
+        <div
+          key={`gt${i}`}
+          style={
+            greenAnimating
+              ? { animation: `slideDown 0.8s ease-out ${i * 0.15}s both` }
+              : undefined
+          }
+        >
+          <TensBlock color={GREEN} />
+        </div>
+      ))}
     <div className="ml-2 flex flex-wrap items-end gap-1">
       {Array.from({ length: ones }).map((_, i) => (
         <OnesBlock key={`o${i}`} color={onesColor} />
       ))}
+      {greenOnes > 0 &&
+        Array.from({ length: greenOnes }).map((_, i) => (
+          <div
+            key={`go${i}`}
+            className="animate-fade-in"
+            style={{
+              animationDelay: `${(greenAnimating ? 0.8 : 0) + i * 0.12}s`,
+              animationFillMode: "both",
+            }}
+          >
+            <OnesBlock color={GREEN} />
+          </div>
+        ))}
     </div>
   </div>
 );
@@ -76,23 +100,32 @@ type DemoPhase = "show" | "sliding" | "done";
 
 const ComputerDemo = ({
   number,
-  result,
+  addend,
   onComplete,
 }: {
   number: number;
-  result: number;
+  addend: number;
   onComplete: () => void;
 }) => {
   const [phase, setPhase] = useState<DemoPhase>("show");
   const t = Math.floor(number / 10);
   const o = number % 10;
-  const resultTens = t + 1;
+  const bt = Math.floor(addend / 10);
+  const bo = addend % 10;
+  const resultTens = t + bt;
+  const resultOnes = o + bo;
+  const result = number + addend;
 
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase("sliding"), 2000);
-    const t2 = setTimeout(() => setPhase("done"), 3200);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
-  }, []);
+    const slideDelay = 2000;
+    const doneDelay = slideDelay + 1200 + bt * 150;
+    const t1 = setTimeout(() => setPhase("sliding"), slideDelay);
+    const t2 = setTimeout(() => setPhase("done"), doneDelay);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, [bt]);
 
   const merged = phase === "sliding" || phase === "done";
 
@@ -103,14 +136,18 @@ const ComputerDemo = ({
         className="text-center text-3xl font-bold text-foreground sm:text-4xl"
         style={{ fontFamily: "var(--font-heading)" }}
       >
-        {number} + 10
+        {number} + {addend}
       </p>
 
       {/* Narration */}
-      <p className="text-center text-base text-muted-foreground" style={{ fontFamily: "var(--font-body)" }}>
-        {phase === "show" && "Watch — the computer will add 10."}
-        {phase === "sliding" && "Adding the ten…"}
-        {phase === "done" && `I added the ten. Now we have ${resultTens} tens and ${o} ones.`}
+      <p
+        className="text-center text-base text-muted-foreground"
+        style={{ fontFamily: "var(--font-body)" }}
+      >
+        {phase === "show" && `Watch — the computer will add ${addend}.`}
+        {phase === "sliding" && "Adding the blocks…"}
+        {phase === "done" &&
+          `I added them. Now we have ${resultTens} tens and ${resultOnes} ones.`}
       </p>
 
       {/* Blocks */}
@@ -119,15 +156,32 @@ const ComputerDemo = ({
         ones={o}
         tensColor={merged ? NEUTRAL : BLUE}
         onesColor={merged ? NEUTRAL : BLUE}
-        showGreen={merged}
+        greenTens={merged ? bt : 0}
+        greenOnes={merged ? bo : 0}
         greenAnimating={phase === "sliding"}
       />
 
-      {/* +10 label (before merge) */}
+      {/* Addend label (before merge) */}
       {!merged && (
         <div className="flex items-center justify-center gap-4 animate-fade-in">
-          <span className="text-2xl font-bold" style={{ color: GREEN, fontFamily: "var(--font-heading)" }}>+10</span>
-          <TensBlock color={GREEN} />
+          <span
+            className="text-2xl font-bold"
+            style={{ color: GREEN, fontFamily: "var(--font-heading)" }}
+          >
+            +{addend}
+          </span>
+          <div className="flex items-end gap-1.5">
+            {Array.from({ length: bt }).map((_, i) => (
+              <TensBlock key={`dt${i}`} color={GREEN} />
+            ))}
+            {bo > 0 && (
+              <div className="ml-1 flex flex-wrap items-end gap-1">
+                {Array.from({ length: bo }).map((_, i) => (
+                  <OnesBlock key={`do${i}`} color={GREEN} />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       )}
 
@@ -138,7 +192,7 @@ const ComputerDemo = ({
             className="text-2xl font-bold text-foreground sm:text-3xl"
             style={{ fontFamily: "var(--font-heading)" }}
           >
-            {number} + 10 = {result}
+            {number} + {addend} = {result}
           </p>
           <button
             onClick={onComplete}
@@ -159,11 +213,11 @@ type ChildPhase = "show" | "tap-prompt" | "sliding" | "input" | "correct";
 
 const ChildTurn = ({
   number,
-  result,
+  addend,
   onComplete,
 }: {
   number: number;
-  result: number;
+  addend: number;
   onComplete: () => void;
 }) => {
   const [phase, setPhase] = useState<ChildPhase>("show");
@@ -175,7 +229,12 @@ const ChildTurn = ({
 
   const t = Math.floor(number / 10);
   const o = number % 10;
-  const resultTens = t + 1;
+  const bt = Math.floor(addend / 10);
+  const bo = addend % 10;
+  const resultTens = t + bt;
+  const resultOnes = o + bo;
+  const result = number + addend;
+  const isPlus10 = addend === 10;
 
   // Auto show tap prompt after brief display
   useEffect(() => {
@@ -186,13 +245,14 @@ const ChildTurn = ({
   // After slide, show input
   useEffect(() => {
     if (phase === "sliding") {
+      const delay = 1000 + bt * 150;
       const timer = setTimeout(() => {
         setPhase("input");
         setTimeout(() => tensRef.current?.focus(), 100);
-      }, 1000);
+      }, delay);
       return () => clearTimeout(timer);
     }
-  }, [phase]);
+  }, [phase, bt]);
 
   const handleTap = () => {
     if (phase !== "tap-prompt") return;
@@ -203,18 +263,24 @@ const ChildTurn = ({
 
   const handleSubmit = () => {
     const tensCorrect = Number(tensInput) === resultTens;
-    const onesCorrect = Number(onesInput) === o;
+    const onesCorrect = Number(onesInput) === resultOnes;
     if (tensCorrect && onesCorrect) {
       setShowHint(false);
       setPhase("correct");
     } else {
       setShowHint(true);
       if (!tensCorrect && !onesCorrect) {
-        setHintMessage("Not quite — count the tens blocks again, and check the ones too.");
+        setHintMessage(
+          "Not quite — count the tens blocks again, and check the ones too."
+        );
       } else if (!tensCorrect) {
         setHintMessage("Look at the tens blocks — how many are there now?");
       } else {
-        setHintMessage("The tens are right! Now look at the ones — did they change?");
+        setHintMessage(
+          isPlus10
+            ? "The tens are right! Now look at the ones — did they change?"
+            : "The tens are right! Now count all the ones blocks."
+        );
       }
     }
   };
@@ -233,7 +299,7 @@ const ChildTurn = ({
         className="text-center text-3xl font-bold text-foreground sm:text-4xl"
         style={{ fontFamily: "var(--font-heading)" }}
       >
-        {number} + 10
+        {number} + {addend}
       </p>
 
       {/* Narration */}
@@ -243,10 +309,16 @@ const ChildTurn = ({
         style={{ fontFamily: "var(--font-body)" }}
       >
         {phase === "show" && `Your turn! Here's ${number}.`}
-        {phase === "tap-prompt" && "Tap the green ten block to add it."}
-        {phase === "sliding" && "Great — watch it slide in…"}
+        {phase === "tap-prompt" &&
+          (isPlus10
+            ? "Tap the green ten block to add it."
+            : "Tap the green blocks to add them.")}
+        {phase === "sliding" && "Great — watch them slide in…"}
         {phase === "input" && "Now count the blocks."}
-        {phase === "correct" && `Yes! ${number} + 10 = ${result}. The ones never change when we add 10.`}
+        {phase === "correct" &&
+          (isPlus10
+            ? `Yes! ${number} + ${addend} = ${result}. The ones never change when we add 10.`
+            : `Yes! ${number} + ${addend} = ${result}.`)}
       </p>
 
       {/* Blocks */}
@@ -255,31 +327,58 @@ const ChildTurn = ({
         ones={o}
         tensColor={merged ? NEUTRAL : BLUE}
         onesColor={merged ? NEUTRAL : BLUE}
-        showGreen={merged}
+        greenTens={merged ? bt : 0}
+        greenOnes={merged ? bo : 0}
         greenAnimating={phase === "sliding"}
       />
 
-      {/* +10 with tappable green block */}
+      {/* Tappable green blocks */}
       {(phase === "show" || phase === "tap-prompt") && (
         <div className="flex items-center justify-center gap-4 animate-fade-in">
-          <span className="text-2xl font-bold" style={{ color: GREEN, fontFamily: "var(--font-heading)" }}>+10</span>
+          <span
+            className="text-2xl font-bold"
+            style={{ color: GREEN, fontFamily: "var(--font-heading)" }}
+          >
+            +{addend}
+          </span>
           {phase === "tap-prompt" ? (
             <button
               onClick={handleTap}
-              className="cursor-pointer transition-transform hover:scale-110 active:scale-95"
-              aria-label="Tap to add the green ten block"
+              className="flex items-end gap-1.5 cursor-pointer transition-transform hover:scale-110 active:scale-95"
+              aria-label={`Tap to add ${addend}`}
             >
-              <TensBlock
-                color={GREEN}
-                className="ring-2 ring-green-400 ring-offset-2 ring-offset-card"
-              />
-              <span
-                className="mt-1 block h-1 w-full animate-pulse rounded-full"
-                style={{ backgroundColor: GREEN }}
-              />
+              {Array.from({ length: bt }).map((_, i) => (
+                <TensBlock
+                  key={`tapT${i}`}
+                  color={GREEN}
+                  className="ring-2 ring-green-400 ring-offset-2 ring-offset-card"
+                />
+              ))}
+              {bo > 0 && (
+                <div className="ml-1 flex flex-wrap items-end gap-1">
+                  {Array.from({ length: bo }).map((_, i) => (
+                    <div
+                      key={`tapO${i}`}
+                      className="rounded-sm ring-2 ring-green-400 ring-offset-1 ring-offset-card"
+                      style={{ width: 24, height: 24, backgroundColor: GREEN }}
+                    />
+                  ))}
+                </div>
+              )}
             </button>
           ) : (
-            <TensBlock color={GREEN} />
+            <div className="flex items-end gap-1.5">
+              {Array.from({ length: bt }).map((_, i) => (
+                <TensBlock key={`sT${i}`} color={GREEN} />
+              ))}
+              {bo > 0 && (
+                <div className="ml-1 flex flex-wrap items-end gap-1">
+                  {Array.from({ length: bo }).map((_, i) => (
+                    <OnesBlock key={`sO${i}`} color={GREEN} />
+                  ))}
+                </div>
+              )}
+            </div>
           )}
         </div>
       )}
@@ -287,7 +386,10 @@ const ChildTurn = ({
       {/* Input boxes */}
       {phase === "input" && (
         <div className="mt-2 flex flex-col items-center gap-3 animate-fade-in">
-          <p className="text-lg font-medium text-foreground" style={{ fontFamily: "var(--font-body)" }}>
+          <p
+            className="text-lg font-medium text-foreground"
+            style={{ fontFamily: "var(--font-body)" }}
+          >
             Now we have{" "}
             <input
               ref={tensRef}
@@ -312,7 +414,10 @@ const ChildTurn = ({
           </p>
 
           {showHint && (
-            <p className="text-base font-medium animate-fade-in" style={{ color: "#E88D30", fontFamily: "var(--font-body)" }}>
+            <p
+              className="text-base font-medium animate-fade-in"
+              style={{ color: "#E88D30", fontFamily: "var(--font-body)" }}
+            >
               {hintMessage}
             </p>
           )}
@@ -339,21 +444,30 @@ const ChildTurn = ({
       {/* Correct result */}
       {phase === "correct" && (
         <div className="mt-2 text-center animate-fade-in">
-          <p className="text-lg font-medium text-foreground" style={{ fontFamily: "var(--font-body)" }}>
-            Now we have <span className="font-bold">{resultTens}</span> tens and <span className="font-bold">{o}</span> ones
+          <p
+            className="text-lg font-medium text-foreground"
+            style={{ fontFamily: "var(--font-body)" }}
+          >
+            Now we have <span className="font-bold">{resultTens}</span> tens and{" "}
+            <span className="font-bold">{resultOnes}</span> ones
           </p>
           <p
             className="mt-2 text-2xl font-bold text-foreground sm:text-3xl"
             style={{ fontFamily: "var(--font-heading)" }}
           >
-            {number} + 10 = {result}
+            {number} + {addend} = {result}
           </p>
           <div
             className="mt-4 rounded-xl border-2 p-4 text-center"
             style={{ borderColor: GREEN, backgroundColor: "#F0FDF4" }}
           >
-            <p className="text-base font-semibold text-foreground" style={{ fontFamily: "var(--font-body)" }}>
-              The ones never change when we add 10.
+            <p
+              className="text-base font-semibold text-foreground"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              {isPlus10
+                ? "The ones never change when we add 10."
+                : "Add the tens first, then the ones — you've got this strategy!"}
             </p>
           </div>
           <button
@@ -407,7 +521,10 @@ const Plus10StrategyWeDo = () => {
         >
           +10 Strategy — We Do
         </h1>
-        <p className="mt-2 text-center text-muted-foreground" style={{ fontFamily: "var(--font-body)" }}>
+        <p
+          className="mt-2 text-center text-muted-foreground"
+          style={{ fontFamily: "var(--font-body)" }}
+        >
           This time, the computer goes first. Then it's your turn.
         </p>
 
@@ -421,14 +538,14 @@ const Plus10StrategyWeDo = () => {
             <ComputerDemo
               key={`demo-${qIndex}`}
               number={question.computer.number}
-              result={question.computer.result}
+              addend={question.computer.addend}
               onComplete={handleComputerDone}
             />
           ) : (
             <ChildTurnWrapper
               key={`child-${qIndex}`}
               number={question.child.number}
-              result={question.child.result}
+              addend={question.child.addend}
               isLast={isLast}
               onNext={handleChildDone}
             />
@@ -442,12 +559,12 @@ const Plus10StrategyWeDo = () => {
 /* Wrapper that swaps the "Next" button on the last question */
 const ChildTurnWrapper = ({
   number,
-  result,
+  addend,
   isLast,
   onNext,
 }: {
   number: number;
-  result: number;
+  addend: number;
   isLast: boolean;
   onNext: () => void;
 }) => {
@@ -471,7 +588,7 @@ const ChildTurnWrapper = ({
   ) : (
     <ChildTurn
       number={number}
-      result={result}
+      addend={addend}
       onComplete={() => {
         if (isLast) {
           setDone(true);
