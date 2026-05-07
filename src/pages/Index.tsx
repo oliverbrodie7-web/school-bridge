@@ -27,6 +27,7 @@ const Index = () => {
   const [showSetup, setShowSetup] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editName, setEditName] = useState("");
+  const [editYear, setEditYear] = useState<number>(2);
   const navigate = useNavigate();
 
   const hasProfiles = profiles.length > 0;
