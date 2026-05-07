@@ -25,6 +25,8 @@ const saveProfiles = (profiles: Profile[]) => {
 const Index = () => {
   const [profiles, setProfiles] = useState<Profile[]>(getProfiles);
   const [showSetup, setShowSetup] = useState(false);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editName, setEditName] = useState("");
   const navigate = useNavigate();
 
   const hasProfiles = profiles.length > 0;
@@ -37,8 +39,30 @@ const Index = () => {
   };
 
   const handleSelectProfile = (profile: Profile, index: number) => {
+    if (editingIndex !== null) return;
     localStorage.setItem("selectedProfileIndex", String(index));
     navigate("/home");
+  };
+
+  const handleStartEdit = (e: React.MouseEvent, index: number) => {
+    e.stopPropagation();
+    setEditingIndex(index);
+    setEditName(profiles[index].name);
+  };
+
+  const handleSaveEdit = () => {
+    if (editingIndex === null || !editName.trim()) return;
+    const updated = [...profiles];
+    updated[editingIndex] = { ...updated[editingIndex], name: editName.trim() };
+    saveProfiles(updated);
+    setProfiles(updated);
+    setEditingIndex(null);
+    setEditName("");
+  };
+
+  const handleCancelEdit = () => {
+    setEditingIndex(null);
+    setEditName("");
   };
 
   if (showSetup || !hasProfiles) {
@@ -85,30 +109,76 @@ const Index = () => {
 
         <div className="mt-10 flex flex-wrap justify-center gap-6">
           {profiles.map((profile, i) => (
-            <button
-              key={i}
-              onClick={() => handleSelectProfile(profile, i)}
-              className="group flex w-36 flex-col items-center gap-3 p-4 transition-colors hover:bg-[var(--colour-card-hover-inactive)] active:scale-[0.98]"
-              style={{
-                backgroundColor: "var(--colour-card-bg)",
-                border: "0.5px solid hsl(var(--colour-card-border))",
-                borderRadius: "var(--colour-card-radius)",
-                cursor: "pointer",
-              }}
-            >
-              <div
-                className="flex h-16 w-16 items-center justify-center rounded-full text-2xl font-bold text-white"
-                style={{ backgroundColor: profile.colour }}
+            <div key={i} className="relative">
+              <button
+                onClick={() => handleSelectProfile(profile, i)}
+                className="group flex w-36 flex-col items-center gap-3 p-4 transition-colors hover:bg-[var(--colour-card-hover-inactive)] active:scale-[0.98]"
+                style={{
+                  backgroundColor: "var(--colour-card-bg)",
+                  border: "0.5px solid hsl(var(--colour-card-border))",
+                  borderRadius: "var(--colour-card-radius)",
+                  cursor: "pointer",
+                  width: "100%",
+                }}
               >
-                {profile.name.charAt(0).toUpperCase()}
-              </div>
-              <div className="text-center">
-                <p className="text-lg font-semibold text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
-                  {profile.name}
-                </p>
-                <p className="text-sm text-muted-foreground">Year {profile.yearLevel}</p>
-              </div>
-            </button>
+                <div
+                  className="flex h-16 w-16 items-center justify-center rounded-full text-2xl font-bold text-white"
+                  style={{ backgroundColor: profile.colour }}
+                >
+                  {(editingIndex === i ? editName : profile.name).charAt(0).toUpperCase()}
+                </div>
+                <div className="text-center w-full">
+                  {editingIndex === i ? (
+                    <div className="flex flex-col items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                      <input
+                        type="text"
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") handleSaveEdit();
+                          if (e.key === "Escape") handleCancelEdit();
+                        }}
+                        autoFocus
+                        className="w-full rounded-lg border border-border bg-background px-2 py-1 text-center text-sm text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={handleSaveEdit}
+                          className="rounded-md bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
+                        >
+                          Save
+                        </button>
+                        <button
+                          onClick={handleCancelEdit}
+                          className="rounded-md border border-border px-3 py-1 text-xs text-muted-foreground hover:text-foreground"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <p className="text-lg font-semibold text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
+                        {profile.name}
+                      </p>
+                      <p className="text-sm text-muted-foreground">Year {profile.yearLevel}</p>
+                    </>
+                  )}
+                </div>
+              </button>
+              {editingIndex !== i && (
+                <button
+                  onClick={(e) => handleStartEdit(e, i)}
+                  className="absolute top-2 right-2 rounded-full p-1 text-muted-foreground/50 hover:text-foreground hover:bg-muted transition-colors"
+                  title="Edit name"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                    <path d="m15 5 4 4" />
+                  </svg>
+                </button>
+              )}
+            </div>
           ))}
         </div>
 
