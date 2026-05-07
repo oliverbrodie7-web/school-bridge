@@ -324,6 +324,46 @@ const Question = ({
             </p>
           )}
 
+          {/* Hint section */}
+          {!showHint && (
+            <button
+              onClick={() => { setShowHint(true); setHintStep(1); }}
+              className="rounded-xl border-2 border-muted px-5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              Need a hint? 💡
+            </button>
+          )}
+
+          {showHint && (
+            <div className="w-full rounded-xl border-2 border-dashed p-4 text-center animate-fade-in" style={{ borderColor: BLUE, backgroundColor: "#EFF6FF" }}>
+              <p className="text-sm font-semibold text-muted-foreground mb-2" style={{ fontFamily: "var(--font-body)" }}>
+                Let's count the tens by 10s:
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                {Array.from({ length: hintStep }).map((_, i) => (
+                  <span
+                    key={i}
+                    className="text-xl font-bold animate-fade-in"
+                    style={{ color: BLUE, fontFamily: "var(--font-heading)" }}
+                  >
+                    {(i + 1) * 10}{i < hintStep - 1 ? "…" : ""}
+                  </span>
+                ))}
+              </div>
+              {hintStep >= resultTens && (
+                <div className="mt-3 animate-fade-in">
+                  <p className="text-base font-semibold text-foreground" style={{ fontFamily: "var(--font-body)" }}>
+                    That's {resultTens * 10}!
+                  </p>
+                  <p className="text-base font-medium text-foreground mt-1" style={{ fontFamily: "var(--font-body)" }}>
+                    Now add the {o} ones: {resultTens * 10} + {o} = <span className="font-bold" style={{ color: BLUE }}>{result}</span>
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="flex gap-3">
             <button
               onClick={handleAnswerSubmit}
