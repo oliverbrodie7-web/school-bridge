@@ -49,6 +49,7 @@ const Index = () => {
     e.stopPropagation();
     setEditingIndex(index);
     setEditName(profiles[index].name);
+    setEditYear(profiles[index].yearLevel);
   };
 
   const handleSaveEdit = () => {
