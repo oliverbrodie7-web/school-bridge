@@ -34,16 +34,24 @@ const getNarration = (example: (typeof EXAMPLES)[number], phase: Phase) => {
   }
 };
 
-/* ─── Tens block: tall narrow rectangle ─── */
+/* ─── Tens block: Dienes-style segmented rod (10 units) ─── */
 const TensBlock = ({ color, className = "" }: { color: string; className?: string }) => (
   <div
-    className={`rounded-md ${className}`}
-    style={{
-      width: 24,
-      height: 64,
-      backgroundColor: color,
-    }}
-  />
+    className={`flex flex-col overflow-hidden rounded-md ${className}`}
+    style={{ width: 24, gap: 1, backgroundColor: "transparent" }}
+  >
+    {Array.from({ length: 10 }).map((_, i) => (
+      <div
+        key={i}
+        className="rounded-[2px]"
+        style={{
+          width: 24,
+          height: 6,
+          backgroundColor: color,
+        }}
+      />
+    ))}
+  </div>
 );
 
 /* ─── Ones block: small square ─── */
