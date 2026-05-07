@@ -707,15 +707,15 @@ const Plus10StrategyPractise = () => {
   const [showUnlockBanner, setShowUnlockBanner] = useState(false);
   const l3UsedRef = useRef<Set<string>>(new Set());
 
-  const genQuestion = useCallback((lvl: number) => {
+  const genQuestion = useCallback((lvl: number, qNum?: number) => {
     if (lvl === 1) return generateL1();
-    if (lvl === 2) return generateL2();
+    if (lvl === 2) return (qNum ?? 999) <= 3 ? generateL1() : generateL2();
     return generateL3(l3UsedRef.current);
   }, []);
 
   const handleLevelChange = (l: number) => {
     setLevel(l);
-    setQuestion(genQuestion(l));
+    setQuestion(genQuestion(l, 1));
     setQuestionNum(1);
     if (l === 3) l3UsedRef.current = new Set();
   };
@@ -730,8 +730,9 @@ const Plus10StrategyPractise = () => {
       }
     }
 
-    setQuestionNum((n) => n + 1);
-    setQuestion(genQuestion(level));
+    const nextNum = questionNum + 1;
+    setQuestionNum(nextNum);
+    setQuestion(genQuestion(level, nextNum));
   };
 
   const switchToL3 = () => {
