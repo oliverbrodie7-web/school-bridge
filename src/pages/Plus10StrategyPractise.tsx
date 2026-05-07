@@ -707,9 +707,9 @@ const Plus10StrategyPractise = () => {
   const [showUnlockBanner, setShowUnlockBanner] = useState(false);
   const l3UsedRef = useRef<Set<string>>(new Set());
 
-  const genQuestion = useCallback((lvl: number) => {
+  const genQuestion = useCallback((lvl: number, qNum?: number) => {
     if (lvl === 1) return generateL1();
-    if (lvl === 2) return generateL2();
+    if (lvl === 2) return (qNum ?? 999) <= 3 ? generateL1() : generateL2();
     return generateL3(l3UsedRef.current);
   }, []);
 
