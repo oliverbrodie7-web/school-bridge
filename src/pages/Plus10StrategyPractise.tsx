@@ -398,6 +398,303 @@ const QuestionCard = ({
 };
 
 /* ═══════════════════════════════════════════════════════
+   LEVEL 2 — Text only, no blocks
+   ═══════════════════════════════════════════════════════ */
+
+const Level2Card = ({ q, onCorrect }: { q: Q; onCorrect: () => void }) => {
+  const { a, b } = q;
+  const total = a + b;
+  const totalTens = Math.floor(total / 10);
+  const totalOnes = total % 10;
+
+  const [tensAns, setTensAns] = useState("");
+  const [onesAns, setOnesAns] = useState("");
+  const [totalAns, setTotalAns] = useState("");
+  const [step, setStep] = useState<"input" | "inputTotal" | "wrong" | "wrongTotal" | "correct">("input");
+  const [hint, setHint] = useState("");
+
+  const handleCheck = () => {
+    if (Number(tensAns) !== totalTens) {
+      setHint(`Count the tens — how many tens in ${a} and how many more from ${b}?`);
+      setStep("wrong");
+    } else if (Number(onesAns) !== totalOnes) {
+      setHint("Look at the ones — did they change when we added tens?");
+      setStep("wrong");
+    } else {
+      setHint("");
+      setStep("inputTotal");
+    }
+  };
+
+  const handleCheckTotal = () => {
+    if (Number(totalAns) !== total) {
+      setHint(`Almost! Put your tens and ones together: ${totalTens}0 + ${totalOnes}`);
+      setStep("wrongTotal");
+    } else {
+      setHint("");
+      setStep("correct");
+    }
+  };
+
+  return (
+    <div className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
+      <p className="text-lg font-semibold text-foreground">Use the +10 strategy to solve:</p>
+      <p className="mt-2 text-3xl font-bold text-primary sm:text-4xl" style={{ fontFamily: "var(--font-heading)" }}>
+        {a} + {b}
+      </p>
+
+      <div className="mt-8 space-y-5">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-foreground font-medium">How many tens?</span>
+          <input
+            type="number"
+            inputMode="numeric"
+            value={tensAns}
+            onChange={(e) => { setTensAns(e.target.value); if (step === "wrong") setStep("input"); }}
+            className="w-20 rounded-lg border border-input bg-background px-3 py-2 text-center text-lg font-semibold text-foreground outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-ring/20"
+          />
+          <span className="text-foreground font-medium">tens</span>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-foreground font-medium">How many ones?</span>
+          <input
+            type="number"
+            inputMode="numeric"
+            value={onesAns}
+            onChange={(e) => { setOnesAns(e.target.value); if (step === "wrong") setStep("input"); }}
+            className="w-20 rounded-lg border border-input bg-background px-3 py-2 text-center text-lg font-semibold text-foreground outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-ring/20"
+          />
+          <span className="text-foreground font-medium">ones</span>
+        </div>
+
+        {(step === "inputTotal" || step === "wrongTotal") && (
+          <div className="animate-fade-in flex flex-wrap items-center gap-2">
+            <span className="text-foreground font-medium">So the answer is</span>
+            <input
+              type="number"
+              inputMode="numeric"
+              value={totalAns}
+              onChange={(e) => { setTotalAns(e.target.value); if (step === "wrongTotal") setStep("inputTotal"); }}
+              className="w-20 rounded-lg border border-input bg-background px-3 py-2 text-center text-lg font-semibold text-foreground outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-ring/20"
+            />
+          </div>
+        )}
+      </div>
+
+      {hint && <p className="mt-4 text-center text-base font-medium text-destructive animate-fade-in">{hint}</p>}
+
+      {step === "input" && (
+        <button
+          onClick={handleCheck}
+          disabled={!tensAns || !onesAns}
+          className="mt-8 w-full rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          Check My Answer
+        </button>
+      )}
+
+      {step === "wrong" && (
+        <div className="mt-4 flex gap-3">
+          <button onClick={() => { setHint(""); setStep("input"); }} className="flex-1 rounded-xl border-2 border-primary px-4 py-3 text-base font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground">
+            Try Again
+          </button>
+        </div>
+      )}
+
+      {step === "inputTotal" && (
+        <button
+          onClick={handleCheckTotal}
+          disabled={!totalAns}
+          className="mt-8 w-full rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          Check My Answer
+        </button>
+      )}
+
+      {step === "wrongTotal" && (
+        <div className="mt-4 flex gap-3">
+          <button onClick={() => { setHint(""); setStep("inputTotal"); }} className="flex-1 rounded-xl border-2 border-primary px-4 py-3 text-base font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground">
+            Try Again
+          </button>
+        </div>
+      )}
+
+      {step === "correct" && (
+        <div className="mt-5 space-y-4 animate-fade-in">
+          <div className="rounded-xl bg-secondary p-4 text-center font-medium text-secondary-foreground">
+            Only the tens changed — the ones stayed the same. 🌟
+          </div>
+          <button onClick={onCorrect} className="w-full rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
+            Next Question
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════
+   LEVEL 3 — Text only, supports results over 100
+   ═══════════════════════════════════════════════════════ */
+
+const Level3Card = ({ q, onCorrect }: { q: Q; onCorrect: () => void }) => {
+  const { a, b } = q;
+  const total = a + b;
+  const isOver100 = total >= 100;
+  const hundreds = Math.floor(total / 100);
+  const totalTens = Math.floor(total / 10) % 10;
+  const totalOnes = total % 10;
+
+  const [hundredsAns, setHundredsAns] = useState("");
+  const [tensAns, setTensAns] = useState("");
+  const [onesAns, setOnesAns] = useState("");
+  const [totalAns, setTotalAns] = useState("");
+  const [step, setStep] = useState<"input" | "inputTotal" | "wrong" | "wrongTotal" | "correct">("input");
+  const [hint, setHint] = useState("");
+
+  const handleCheck = () => {
+    if (isOver100 && Number(hundredsAns) !== hundreds) {
+      setHint("Think about it — do we have enough tens to make a hundred?");
+      setStep("wrong");
+      return;
+    }
+    if (Number(tensAns) !== totalTens) {
+      setHint(`Count the tens — how many tens are left after making hundreds?`);
+      setStep("wrong");
+      return;
+    }
+    if (Number(onesAns) !== totalOnes) {
+      setHint("The ones don't change when we add tens. What were the ones?");
+      setStep("wrong");
+      return;
+    }
+    setHint("");
+    setStep("inputTotal");
+  };
+
+  const handleCheckTotal = () => {
+    if (Number(totalAns) !== total) {
+      setHint(isOver100
+        ? `Put it together: ${hundreds} hundred, ${totalTens} tens and ${totalOnes} ones.`
+        : `Put your tens and ones together: ${totalTens}0 + ${totalOnes}`);
+      setStep("wrongTotal");
+    } else {
+      setHint("");
+      setStep("correct");
+    }
+  };
+
+  return (
+    <div className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
+      <p className="text-lg font-semibold text-foreground">Use the +10 strategy to solve:</p>
+      <p className="mt-2 text-3xl font-bold text-primary sm:text-4xl" style={{ fontFamily: "var(--font-heading)" }}>
+        {a} + {b}
+      </p>
+
+      <div className="mt-8 space-y-5">
+        {isOver100 && (
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-foreground font-medium">How many hundreds?</span>
+            <input
+              type="number"
+              inputMode="numeric"
+              value={hundredsAns}
+              onChange={(e) => { setHundredsAns(e.target.value); if (step === "wrong") setStep("input"); }}
+              className="w-20 rounded-lg border border-input bg-background px-3 py-2 text-center text-lg font-semibold text-foreground outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-ring/20"
+            />
+            <span className="text-foreground font-medium">hundred</span>
+          </div>
+        )}
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-foreground font-medium">How many tens?</span>
+          <input
+            type="number"
+            inputMode="numeric"
+            value={tensAns}
+            onChange={(e) => { setTensAns(e.target.value); if (step === "wrong") setStep("input"); }}
+            className="w-20 rounded-lg border border-input bg-background px-3 py-2 text-center text-lg font-semibold text-foreground outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-ring/20"
+          />
+          <span className="text-foreground font-medium">tens</span>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-foreground font-medium">How many ones?</span>
+          <input
+            type="number"
+            inputMode="numeric"
+            value={onesAns}
+            onChange={(e) => { setOnesAns(e.target.value); if (step === "wrong") setStep("input"); }}
+            className="w-20 rounded-lg border border-input bg-background px-3 py-2 text-center text-lg font-semibold text-foreground outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-ring/20"
+          />
+          <span className="text-foreground font-medium">ones</span>
+        </div>
+
+        {(step === "inputTotal" || step === "wrongTotal") && (
+          <div className="animate-fade-in flex flex-wrap items-center gap-2">
+            <span className="text-foreground font-medium">So the answer is</span>
+            <input
+              type="number"
+              inputMode="numeric"
+              value={totalAns}
+              onChange={(e) => { setTotalAns(e.target.value); if (step === "wrongTotal") setStep("inputTotal"); }}
+              className="w-20 rounded-lg border border-input bg-background px-3 py-2 text-center text-lg font-semibold text-foreground outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-ring/20"
+            />
+          </div>
+        )}
+      </div>
+
+      {hint && <p className="mt-4 text-center text-base font-medium text-destructive animate-fade-in">{hint}</p>}
+
+      {step === "input" && (
+        <button
+          onClick={handleCheck}
+          disabled={!tensAns || !onesAns || (isOver100 && !hundredsAns)}
+          className="mt-8 w-full rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          Check My Answer
+        </button>
+      )}
+
+      {step === "wrong" && (
+        <div className="mt-4 flex gap-3">
+          <button onClick={() => { setHint(""); setStep("input"); }} className="flex-1 rounded-xl border-2 border-primary px-4 py-3 text-base font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground">
+            Try Again
+          </button>
+        </div>
+      )}
+
+      {step === "inputTotal" && (
+        <button
+          onClick={handleCheckTotal}
+          disabled={!totalAns}
+          className="mt-8 w-full rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          Check My Answer
+        </button>
+      )}
+
+      {step === "wrongTotal" && (
+        <div className="mt-4 flex gap-3">
+          <button onClick={() => { setHint(""); setStep("inputTotal"); }} className="flex-1 rounded-xl border-2 border-primary px-4 py-3 text-base font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground">
+            Try Again
+          </button>
+        </div>
+      )}
+
+      {step === "correct" && (
+        <div className="mt-5 space-y-4 animate-fade-in">
+          <div className="rounded-xl bg-secondary p-4 text-center font-medium text-secondary-foreground">
+            You're thinking in tens like a mathematician. 🌟
+          </div>
+          <button onClick={onCorrect} className="w-full rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
+            Next Question
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════
    MAIN PAGE
    ═══════════════════════════════════════════════════════ */
 
@@ -424,7 +721,6 @@ const Plus10StrategyPractise = () => {
   };
 
   const handleCorrect = () => {
-    // Track L2 streak
     if (level === 2) {
       const newStreak = l2Streak + 1;
       setL2Streak(newStreak);
@@ -465,7 +761,6 @@ const Plus10StrategyPractise = () => {
 
         <LevelSelector level={level} onChange={handleLevelChange} l3Unlocked={l3Unlocked} />
 
-        {/* Unlock banner */}
         {showUnlockBanner && (
           <div className="mt-4 rounded-xl border-2 border-primary bg-secondary p-4 text-center animate-fade-in">
             <p className="text-lg font-semibold text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
@@ -493,12 +788,28 @@ const Plus10StrategyPractise = () => {
           Question {questionNum}
         </p>
 
-        <QuestionCard
-          key={`${level}-${questionNum}`}
-          q={question}
-          level={level}
-          onCorrect={handleCorrect}
-        />
+        {level === 1 && (
+          <QuestionCard
+            key={`1-${questionNum}`}
+            q={question}
+            level={1}
+            onCorrect={handleCorrect}
+          />
+        )}
+        {level === 2 && (
+          <Level2Card
+            key={`2-${questionNum}`}
+            q={question}
+            onCorrect={handleCorrect}
+          />
+        )}
+        {level === 3 && (
+          <Level3Card
+            key={`3-${questionNum}`}
+            q={question}
+            onCorrect={handleCorrect}
+          />
+        )}
       </div>
     </div>
   );
