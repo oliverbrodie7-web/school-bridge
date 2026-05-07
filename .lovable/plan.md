@@ -1,30 +1,33 @@
 
-## Apply consistent colour system + animated block rows to We Do and You Do
+## Problem
 
-The "I Do" lesson and Parent Guide now use blue=tens, orange=ones with half-and-half gradient unsplit buttons and animated block rows for Steps 2-3. The We Do and You Do pages still use the old per-number colouring with text-only step reveals. This plan brings them in line.
+The +10 Strategy Learn page (Phase 1: I Do) shows blocks and animations but has no explanatory narration. A Year 2 child sees things appear without understanding what's happening or why.
 
-### SplitStrategyWeDo.tsx
+## Plan
 
-1. **Add `Block` component** (same as Learn page) for consistent coloured blocks.
-2. **Unsplit buttons**: Use `linear-gradient(to right, BLUE 50%, ORANGE 50%)` instead of solid blue/orange.
-3. **After splitting**: Tens blocks are BLUE, ones blocks are ORANGE — for both numbers. Input boxes for the child's split also get blue border for tens, orange border for ones.
-4. **Ghost blocks**: When steps 2-3 reveal, the Step 1 blocks ghost out (opacity 20%).
-5. **Step rows**: Replace text-only step reveals with animated block rows matching the Learn page (Step 2 with two blue blocks + = result, Step 3 with two orange blocks + = result, Step 4 as text).
-6. **Step 1 label**: Always visible above the boxes.
-7. **Timing**: Slow down addTens/addOnes/combine delays to 3000-3500ms (matching Learn page) instead of 1000ms.
-8. **Prompt text**: Change "Now you try with 12" prompt — no colour references.
+Update `src/pages/Plus10StrategyLearn.tsx` to add narration text at every phase of each worked example:
 
-### SplitStrategyYouDo.tsx
+### Narration per phase
 
-1. **Unsplit buttons**: Use the half-and-half gradient.
-2. **After splitting (FilledBox)**: Tens = BLUE, ones = ORANGE regardless of which number.
-3. **Input boxes**: Blue border/bg for tens input, orange for ones input (already partially done for orange, needs fixing for blue number too).
-4. **Step 1 label**: Add "Step 1: Split each number into tens and ones" above the boxes.
-5. **Correct/done reveal**: Replace text-only steps with animated block rows (using ghost blocks in Step 1).
-6. **Prompt text**: "Tap the first number" instead of "Tap the blue number", "Now tap the next number" instead of "Now tap the orange number."
+| Phase | Narration text |
+|-------|---------------|
+| `show-number` | "Here's the number **23**. It has 2 tens and 3 ones." |
+| `show-plus10` | "We want to add 10. That's the same as adding 1 more ten." |
+| `tap-prompt` | "Tap the green ten block to add it to our tens." |
+| `animating` | "Watch — the new ten joins the other tens..." |
+| `result` | "Now we have 3 tens and 3 ones. That's **33**!" |
+| `insight` | Callout box (already exists — keep as-is) |
+
+Second example uses the same structure with 45/55.
+
+### Implementation details
+
+- Add a narration `<p>` element above the blocks area that updates based on `phase`
+- Style it prominently: larger text (~text-lg), foreground color, centered, with `animate-fade-in` on each phase change
+- Use a helper function or map to return the correct narration string per phase per example
+- Remove the generic "Watch how adding 10 works" subtitle (it's redundant once narration exists), or keep it only as a brief intro
+- Also add a brief "Continue" / "Next" button between `show-number` and `show-plus10` phases instead of pure auto-advance, so the child can read at their own pace (tap-to-advance for the explanation steps, keeping the tap-the-block interaction for the animation step)
+- Keep all existing animation and block logic unchanged
 
 ### Files changed
-- `src/pages/SplitStrategyWeDo.tsx`
-- `src/pages/SplitStrategyYouDo.tsx`
-
-No other files touched.
+- `src/pages/Plus10StrategyLearn.tsx` — add narration system, change auto-advance to tap-to-advance for explanation steps
