@@ -730,8 +730,9 @@ const Plus10StrategyPractise = () => {
       }
     }
 
-    setQuestionNum((n) => n + 1);
-    setQuestion(genQuestion(level));
+    const nextNum = questionNum + 1;
+    setQuestionNum(nextNum);
+    setQuestion(genQuestion(level, nextNum));
   };
 
   const switchToL3 = () => {
