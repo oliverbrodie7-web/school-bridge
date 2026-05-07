@@ -12,6 +12,28 @@ const EXAMPLES = [
 
 type Phase = "show-number" | "show-plus10" | "tap-prompt" | "animating" | "result" | "insight";
 
+/* ─── Narration per phase ─── */
+const getNarration = (example: (typeof EXAMPLES)[number], phase: Phase) => {
+  const t = Math.floor(example.number / 10);
+  const o = example.number % 10;
+  const resultTens = t + 1;
+
+  switch (phase) {
+    case "show-number":
+      return `Let's look at the number ${example.number}. It has ${t} tens and ${o} ones.`;
+    case "show-plus10":
+      return `We want to add 10. That's the same as adding 1 more ten.`;
+    case "tap-prompt":
+      return `Tap the green ten block to add it to our tens.`;
+    case "animating":
+      return `Watch — the new ten joins the other tens…`;
+    case "result":
+      return `Now we have ${resultTens} tens and ${o} ones. That makes ${example.result}!`;
+    case "insight":
+      return "";
+  }
+};
+
 /* ─── Tens block: tall narrow rectangle ─── */
 const TensBlock = ({ color, className = "" }: { color: string; className?: string }) => (
   <div
@@ -123,24 +145,21 @@ const ExampleCard = ({
   const o = example.number % 10;
   const resultTens = t + 1;
 
-  // Auto-advance: show-number → show-plus10 → tap-prompt
+  // Only auto-advance the animating phase (the rest are tap-to-advance)
   useEffect(() => {
-    if (phase === "show-number") {
-      const timer = setTimeout(() => setPhase("show-plus10"), 2000);
-      return () => clearTimeout(timer);
-    }
-    if (phase === "show-plus10") {
-      const timer = setTimeout(() => setPhase("tap-prompt"), 1500);
-      return () => clearTimeout(timer);
+    if (phase === "animating") {
+      const t1 = setTimeout(() => setPhase("result"), 1200);
+      const t2 = setTimeout(() => setPhase("insight"), 3200);
+      return () => { clearTimeout(t1); clearTimeout(t2); };
     }
   }, [phase]);
 
   const handleTapGreenBlock = () => {
     if (phase !== "tap-prompt") return;
     setPhase("animating");
-    setTimeout(() => setPhase("result"), 1200);
-    setTimeout(() => setPhase("insight"), 3200);
   };
+
+  const narration = getNarration(example, phase);
 
   return (
     <div className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
@@ -152,11 +171,34 @@ const ExampleCard = ({
         {example.number} + 10
       </p>
 
-      <div className="mt-8">
+      {/* Narration text */}
+      {narration && (
+        <p
+          key={phase}
+          className="mt-6 text-center text-lg font-medium text-foreground leading-relaxed animate-fade-in"
+          style={{ fontFamily: "var(--font-body)" }}
+        >
+          {narration}
+        </p>
+      )}
+
+      <div className="mt-6">
         {/* Step 1: Starting number with blocks */}
         <div className="animate-fade-in">
           <NumberBlocks number={example.number} color={BLUE} label={example.label} />
         </div>
+
+        {/* "Next" button after show-number */}
+        {phase === "show-number" && (
+          <div className="mt-6 text-center animate-fade-in">
+            <button
+              onClick={() => setPhase("show-plus10")}
+              className="rounded-xl bg-primary px-6 py-3 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              Next
+            </button>
+          </div>
+        )}
 
         {/* Step 2: +10 appears with green block */}
         {phase !== "show-number" && (
@@ -168,7 +210,9 @@ const ExampleCard = ({
               +10
             </span>
             <div className="flex flex-col items-center gap-2">
-              {phase === "tap-prompt" ? (
+              {phase === "show-plus10" ? (
+                <TensBlock color={GREEN} />
+              ) : phase === "tap-prompt" ? (
                 <button
                   onClick={handleTapGreenBlock}
                   className="cursor-pointer transition-transform hover:scale-110 active:scale-95"
@@ -195,11 +239,16 @@ const ExampleCard = ({
           </div>
         )}
 
-        {/* Tap prompt */}
-        {phase === "tap-prompt" && (
-          <p className="mt-6 text-center text-lg font-medium text-muted-foreground animate-fade-in">
-            Tap the green ten block to add it.
-          </p>
+        {/* "Next" button after show-plus10 to advance to tap-prompt */}
+        {phase === "show-plus10" && (
+          <div className="mt-6 text-center animate-fade-in">
+            <button
+              onClick={() => setPhase("tap-prompt")}
+              className="rounded-xl bg-primary px-6 py-3 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              Next
+            </button>
+          </div>
         )}
 
         {/* Step 3: Combined result */}
