@@ -12,6 +12,7 @@ import AdditionStrategies from "./pages/AdditionStrategies.tsx";
 import SubtractionStrategies from "./pages/SubtractionStrategies.tsx";
 import Plus10StrategyLanding from "./pages/Plus10StrategyLanding.tsx";
 import Plus10StrategyLearn from "./pages/Plus10StrategyLearn.tsx";
+import Plus10StrategyPractise from "./pages/Plus10StrategyPractise.tsx";
 import Plus10StrategyWeDo from "./pages/Plus10StrategyWeDo.tsx";
 import Plus10StrategyYouDo from "./pages/Plus10StrategyYouDo.tsx";
 import SplitStrategyLanding from "./pages/SplitStrategyLanding.tsx";
@@ -41,6 +42,7 @@ const App = () => (
           <Route path="/learn/plus10-strategy" element={<Plus10StrategyLearn />} />
           <Route path="/learn/plus10-strategy/we-do" element={<Plus10StrategyWeDo />} />
           <Route path="/learn/plus10-strategy/you-do" element={<Plus10StrategyYouDo />} />
+          <Route path="/practise/plus10-strategy" element={<Plus10StrategyPractise />} />
           <Route path="/split-strategy" element={<SplitStrategyLanding />} />
           <Route path="/learn/split-strategy" element={<SplitStrategyLearn />} />
           <Route path="/learn/split-strategy/we-do" element={<SplitStrategyWeDo />} />
