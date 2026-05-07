@@ -129,6 +129,14 @@ const Question = ({
     }
   }, [phase]);
 
+  // Animate hint counting sequence
+  useEffect(() => {
+    if (!showHint) return;
+    if (hintStep >= resultTens) return;
+    const timer = setTimeout(() => setHintStep((s) => s + 1), 600);
+    return () => clearTimeout(timer);
+  }, [showHint, hintStep, resultTens]);
+
   const handleTap = () => {
     if (phase !== "tap-prompt") return;
     setPhase("sliding");
