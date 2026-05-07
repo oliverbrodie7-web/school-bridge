@@ -25,6 +25,8 @@ const saveProfiles = (profiles: Profile[]) => {
 const Index = () => {
   const [profiles, setProfiles] = useState<Profile[]>(getProfiles);
   const [showSetup, setShowSetup] = useState(false);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editName, setEditName] = useState("");
   const navigate = useNavigate();
 
   const hasProfiles = profiles.length > 0;
@@ -37,8 +39,30 @@ const Index = () => {
   };
 
   const handleSelectProfile = (profile: Profile, index: number) => {
+    if (editingIndex !== null) return;
     localStorage.setItem("selectedProfileIndex", String(index));
     navigate("/home");
+  };
+
+  const handleStartEdit = (e: React.MouseEvent, index: number) => {
+    e.stopPropagation();
+    setEditingIndex(index);
+    setEditName(profiles[index].name);
+  };
+
+  const handleSaveEdit = () => {
+    if (editingIndex === null || !editName.trim()) return;
+    const updated = [...profiles];
+    updated[editingIndex] = { ...updated[editingIndex], name: editName.trim() };
+    saveProfiles(updated);
+    setProfiles(updated);
+    setEditingIndex(null);
+    setEditName("");
+  };
+
+  const handleCancelEdit = () => {
+    setEditingIndex(null);
+    setEditName("");
   };
 
   if (showSetup || !hasProfiles) {
