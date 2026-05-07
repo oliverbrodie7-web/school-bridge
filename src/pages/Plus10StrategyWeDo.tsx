@@ -170,7 +170,7 @@ const ChildTurn = ({
   const [tensInput, setTensInput] = useState("");
   const [onesInput, setOnesInput] = useState("");
   const [showHint, setShowHint] = useState(false);
-  const tensRef = useRef<HTMLInputElement>(null);
+  const [hintMessage, setHintMessage] = useState("");
 
   const t = Math.floor(number / 10);
   const o = number % 10;
