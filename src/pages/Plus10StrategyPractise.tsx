@@ -715,7 +715,7 @@ const Plus10StrategyPractise = () => {
 
   const handleLevelChange = (l: number) => {
     setLevel(l);
-    setQuestion(genQuestion(l));
+    setQuestion(genQuestion(l, 1));
     setQuestionNum(1);
     if (l === 3) l3UsedRef.current = new Set();
   };
