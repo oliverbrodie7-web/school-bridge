@@ -404,19 +404,11 @@ const Plus10DemoAnimation = () => {
             <TensBlock key={`t${i}`} color={merged ? NEUTRAL : BLUE} />
           ))}
 
-          {/* Green block — merged or tappable */}
-          {merged ? (
+          {/* Green block — only inline after merge */}
+          {merged && (
             <div style={phase === "animating" ? { animation: "slideDown 0.8s ease-out forwards" } : undefined}>
               <TensBlock color={phase === "done" || phase === "result" ? NEUTRAL : GREEN} />
             </div>
-          ) : (
-            <button
-              onClick={() => phase === "tap-prompt" && setPhase("animating")}
-              className="cursor-pointer transition-transform hover:scale-110 active:scale-95 ml-3"
-              aria-label="Tap to add the green ten block"
-            >
-              <TensBlock color={GREEN} className="ring-2 ring-green-400 ring-offset-2 ring-offset-card" />
-            </button>
           )}
 
           {/* Ones — never move */}
@@ -426,6 +418,20 @@ const Plus10DemoAnimation = () => {
             ))}
           </div>
         </div>
+
+        {/* Green block below — tappable before merge */}
+        {!merged && (
+          <div className="mt-4 flex items-center gap-4 animate-fade-in">
+            <span className="text-2xl font-bold" style={{ color: GREEN, fontFamily: "var(--font-heading)" }}>+10</span>
+            <button
+              onClick={() => phase === "tap-prompt" && setPhase("animating")}
+              className="cursor-pointer transition-transform hover:scale-110 active:scale-95"
+              aria-label="Tap to add the green ten block"
+            >
+              <TensBlock color={GREEN} className="ring-2 ring-green-400 ring-offset-2 ring-offset-card" />
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Result */}
@@ -519,17 +525,10 @@ const Plus10PracticeQuestion = () => {
             <TensBlock key={`t${i}`} color={merged ? NEUTRAL : BLUE} />
           ))}
 
-          {merged ? (
+          {merged && (
             <div style={phase === "animating" ? { animation: "slideDown 0.8s ease-out forwards" } : undefined}>
               <TensBlock color={phase === "input" || phase === "feedback" ? NEUTRAL : GREEN} />
             </div>
-          ) : (
-            <button
-              onClick={() => phase === "tap-prompt" && setPhase("animating")}
-              className="cursor-pointer transition-transform hover:scale-110 active:scale-95 ml-3"
-            >
-              <TensBlock color={GREEN} className="ring-2 ring-green-400 ring-offset-2 ring-offset-card" />
-            </button>
           )}
 
           <div className="ml-2 flex flex-wrap items-end gap-1">
@@ -538,6 +537,18 @@ const Plus10PracticeQuestion = () => {
             ))}
           </div>
         </div>
+
+        {!merged && (
+          <div className="mt-4 flex items-center gap-4 animate-fade-in">
+            <span className="text-2xl font-bold" style={{ color: GREEN, fontFamily: "var(--font-heading)" }}>+10</span>
+            <button
+              onClick={() => phase === "tap-prompt" && setPhase("animating")}
+              className="cursor-pointer transition-transform hover:scale-110 active:scale-95"
+            >
+              <TensBlock color={GREEN} className="ring-2 ring-green-400 ring-offset-2 ring-offset-card" />
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Input fields */}
