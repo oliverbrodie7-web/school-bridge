@@ -85,7 +85,7 @@ const Student = () => {
         <Link
           key={topic.name}
           to={topic.to!}
-          className="hover:bg-[#f8fdfb]"
+          className="hover:bg-[var(--colour-card-hover-active)]"
           style={cardStyle}
         >
           {content}
@@ -97,7 +97,7 @@ const Student = () => {
       <button
         key={topic.name}
         onClick={() => setTappedTopic(tappedTopic === topic.name ? null : topic.name)}
-        className="hover:bg-[#fafafa]"
+        className="hover:bg-[var(--colour-card-hover-inactive)]"
         style={{ ...cardStyle, cursor: "default" }}
       >
         {content}

@@ -59,6 +59,8 @@
     --colour-card-bg: #ffffff;
     --colour-card-border: 220 13% 90%;
     --colour-card-radius: 16px;
+    --colour-card-hover-active: #f8fdfb;
+    --colour-card-hover-inactive: #fafafa;
 
     /* Global typography */
     --font-topic-name: 500;

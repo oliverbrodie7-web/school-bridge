@@ -88,7 +88,7 @@ const Index = () => {
             <button
               key={i}
               onClick={() => handleSelectProfile(profile, i)}
-              className="group flex w-36 flex-col items-center gap-3 p-4 transition-colors hover:bg-[#fafafa] active:scale-[0.98]"
+              className="group flex w-36 flex-col items-center gap-3 p-4 transition-colors hover:bg-[var(--colour-card-hover-inactive)] active:scale-[0.98]"
               style={{
                 backgroundColor: "var(--colour-card-bg)",
                 border: "0.5px solid hsl(var(--colour-card-border))",
