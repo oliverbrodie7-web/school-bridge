@@ -12,16 +12,16 @@ const INITIAL_QUESTIONS: QuestionData[] = [
   { a: 24, b: 10 },
   { a: 53, b: 10 },
   { a: 41, b: 10 },
-  { a: 34, b: 23 },
-  { a: 67, b: 31 },
+  { a: 34, b: 20 },
+  { a: 67, b: 30 },
 ];
 
 const EXTRA_BANK: QuestionData[] = [
   { a: 14, b: 10 },
   { a: 32, b: 10 },
   { a: 56, b: 10 },
-  { a: 45, b: 22 },
-  { a: 28, b: 31 },
+  { a: 45, b: 20 },
+  { a: 28, b: 30 },
 ];
 
 const shuffle = (arr: QuestionData[]) => {
