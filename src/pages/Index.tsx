@@ -144,6 +144,15 @@ const Index = () => {
                         autoFocus
                         className="w-full rounded-lg border border-border bg-background px-2 py-1 text-center text-sm text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
                       />
+                      <select
+                        value={editYear}
+                        onChange={(e) => setEditYear(Number(e.target.value))}
+                        className="w-full rounded-lg border border-border bg-background px-2 py-1 text-center text-sm text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
+                      >
+                        {YEAR_LEVELS.map((yr) => (
+                          <option key={yr.value} value={yr.value}>{yr.label}</option>
+                        ))}
+                      </select>
                       <div className="flex gap-2">
                         <button
                           onClick={handleSaveEdit}
