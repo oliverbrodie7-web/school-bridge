@@ -55,7 +55,7 @@ const Index = () => {
   const handleSaveEdit = () => {
     if (editingIndex === null || !editName.trim()) return;
     const updated = [...profiles];
-    updated[editingIndex] = { ...updated[editingIndex], name: editName.trim() };
+    updated[editingIndex] = { ...updated[editingIndex], name: editName.trim(), yearLevel: editYear };
     saveProfiles(updated);
     setProfiles(updated);
     setEditingIndex(null);
