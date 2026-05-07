@@ -314,6 +314,18 @@ const ExampleCard = ({
           </div>
         )}
 
+        {/* "Next" button after result to advance to insight */}
+        {phase === "result" && (
+          <div className="mt-6 text-center animate-fade-in">
+            <button
+              onClick={() => setPhase("insight")}
+              className="rounded-xl bg-primary px-6 py-3 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              Next
+            </button>
+          </div>
+        )}
+
         {/* Step 4: Key insight callout */}
         {phase === "insight" && (
           <div
