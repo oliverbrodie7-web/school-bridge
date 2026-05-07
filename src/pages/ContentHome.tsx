@@ -78,7 +78,7 @@ const ContentHome = () => {
           {isYear2 ? (
             <Link
               to="/student"
-              className="group flex flex-col items-center justify-center p-10 text-center hover:bg-[#f8fdfb]"
+              className="group flex flex-col items-center justify-center p-10 text-center hover:bg-[var(--colour-card-hover-active)]"
               style={{
                 ...cardBase,
                 border: `0.5px solid var(--colour-active-border)`,
@@ -119,7 +119,7 @@ const ContentHome = () => {
           {/* Literacy */}
           <button
             onClick={() => setLiteracyTapped(true)}
-            className="flex flex-col items-center justify-center p-10 text-center opacity-60 hover:bg-[#fafafa]"
+            className="flex flex-col items-center justify-center p-10 text-center opacity-60 hover:bg-[var(--colour-card-hover-inactive)]"
             style={{
               ...cardBase,
               border: `0.5px solid hsl(var(--colour-coming-soon-border))`,

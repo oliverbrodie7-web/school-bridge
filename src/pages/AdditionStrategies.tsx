@@ -36,7 +36,7 @@ const AdditionStrategies = () => {
             <Link
               key={s.label}
               to={s.to}
-              className="group flex flex-col items-center text-center hover:bg-[#f8fdfb]"
+              className="group flex flex-col items-center text-center hover:bg-[var(--colour-card-hover-active)]"
               style={{
                 backgroundColor: "var(--colour-card-bg)",
                 border: "0.5px solid var(--colour-active-border)",
