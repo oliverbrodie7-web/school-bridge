@@ -223,23 +223,62 @@ const ExampleCard = ({
 
           {/* Blocks row */}
           <div className="flex items-end gap-1.5">
-            {/* Existing tens (blue → neutral when merged) */}
+            {/* Existing tens — tappable during counting phase */}
             {Array.from({ length: t }).map((_, i) => (
-              <TensBlock
-                key={`t${i}`}
-                color={merged ? NEUTRAL : BLUE}
-                className="transition-all duration-500"
-              />
+              <div key={`t${i}`} className="relative">
+                {phase === "counting" && i < countedTens && (
+                  <span
+                    className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs font-bold text-foreground animate-fade-in"
+                    style={{ fontFamily: "var(--font-heading)" }}
+                  >
+                    {i + 1}
+                  </span>
+                )}
+                <button
+                  onClick={() => handleTapTensBlock(i)}
+                  disabled={phase !== "counting" || i !== countedTens}
+                  className={`transition-all duration-300 ${
+                    phase === "counting" && i === countedTens
+                      ? "cursor-pointer ring-2 ring-primary ring-offset-1 ring-offset-card rounded-md animate-pulse"
+                      : ""
+                  }`}
+                >
+                  <TensBlock
+                    color={phase === "counting" && i < countedTens ? NEUTRAL : merged ? NEUTRAL : BLUE}
+                    className="transition-all duration-500"
+                  />
+                </button>
+              </div>
             ))}
 
-            {/* Green block slides in here when merged */}
+            {/* Green block — slides in when merged, tappable during counting */}
             {merged && (
               <div
-                style={{
-                  animation: "slideDown 0.8s ease-out forwards",
-                }}
+                className="relative"
+                style={phase === "animating" ? { animation: "slideDown 0.8s ease-out forwards" } : undefined}
               >
-                <TensBlock color={GREEN} />
+                {phase === "counting" && t < countedTens && (
+                  <span
+                    className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs font-bold text-foreground animate-fade-in"
+                    style={{ fontFamily: "var(--font-heading)" }}
+                  >
+                    {t + 1}
+                  </span>
+                )}
+                <button
+                  onClick={() => handleTapTensBlock(t)}
+                  disabled={phase !== "counting" || t !== countedTens}
+                  className={`transition-all duration-300 ${
+                    phase === "counting" && t === countedTens
+                      ? "cursor-pointer ring-2 ring-primary ring-offset-1 ring-offset-card rounded-md animate-pulse"
+                      : ""
+                  }`}
+                >
+                  <TensBlock
+                    color={phase === "counting" && t < countedTens ? NEUTRAL : GREEN}
+                    className="transition-all duration-500"
+                  />
+                </button>
               </div>
             )}
 
