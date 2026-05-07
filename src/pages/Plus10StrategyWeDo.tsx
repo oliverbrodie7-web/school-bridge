@@ -202,11 +202,20 @@ const ChildTurn = ({
   const merged = phase === "sliding" || phase === "input" || phase === "correct";
 
   const handleSubmit = () => {
-    if (Number(tensInput) === resultTens && Number(onesInput) === o) {
+    const tensCorrect = Number(tensInput) === resultTens;
+    const onesCorrect = Number(onesInput) === o;
+    if (tensCorrect && onesCorrect) {
       setShowHint(false);
       setPhase("correct");
     } else {
       setShowHint(true);
+      if (!tensCorrect && !onesCorrect) {
+        setHintMessage("Not quite — count the tens blocks again, and check the ones too.");
+      } else if (!tensCorrect) {
+        setHintMessage("Look at the tens blocks — how many are there now?");
+      } else {
+        setHintMessage("The tens are right! Now look at the ones — did they change?");
+      }
     }
   };
 
