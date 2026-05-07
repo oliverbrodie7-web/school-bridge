@@ -10,6 +10,7 @@ import ContentHome from "./pages/ContentHome.tsx";
 import Parent from "./pages/Parent.tsx";
 import AdditionStrategies from "./pages/AdditionStrategies.tsx";
 import SubtractionStrategies from "./pages/SubtractionStrategies.tsx";
+import Plus10StrategyLanding from "./pages/Plus10StrategyLanding.tsx";
 import SplitStrategyLanding from "./pages/SplitStrategyLanding.tsx";
 import SplitStrategyLearn from "./pages/SplitStrategyLearn.tsx";
 import SplitStrategyWeDo from "./pages/SplitStrategyWeDo.tsx";
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/parent" element={<Parent />} />
           <Route path="/student/addition" element={<AdditionStrategies />} />
           <Route path="/student/subtraction" element={<SubtractionStrategies />} />
+          <Route path="/plus10-strategy" element={<Plus10StrategyLanding />} />
           <Route path="/split-strategy" element={<SplitStrategyLanding />} />
           <Route path="/learn/split-strategy" element={<SplitStrategyLearn />} />
           <Route path="/learn/split-strategy/we-do" element={<SplitStrategyWeDo />} />
