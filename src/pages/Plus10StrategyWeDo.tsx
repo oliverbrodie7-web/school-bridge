@@ -313,7 +313,7 @@ const ChildTurn = ({
 
           {showHint && (
             <p className="text-base font-medium animate-fade-in" style={{ color: "#E88D30", fontFamily: "var(--font-body)" }}>
-              Look at the tens blocks — how many are there now?
+              {hintMessage}
             </p>
           )}
 
