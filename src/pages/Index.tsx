@@ -88,7 +88,13 @@ const Index = () => {
             <button
               key={i}
               onClick={() => handleSelectProfile(profile, i)}
-              className="group flex w-36 flex-col items-center gap-3 rounded-2xl border border-border bg-card p-6 transition-all hover:shadow-md hover:scale-[1.03] active:scale-[0.98]"
+              className="group flex w-36 flex-col items-center gap-3 p-4 transition-colors hover:bg-[#fafafa] active:scale-[0.98]"
+              style={{
+                backgroundColor: "var(--colour-card-bg)",
+                border: "0.5px solid hsl(var(--colour-card-border))",
+                borderRadius: "var(--colour-card-radius)",
+                cursor: "pointer",
+              }}
             >
               <div
                 className="flex h-16 w-16 items-center justify-center rounded-full text-2xl font-bold text-white"
@@ -191,7 +197,6 @@ const ProfileSetup = ({
 
   const handleAddAnother = () => {
     doSave();
-    // Reset for next child — parent component will re-render with incremented colourIndex
     setName("");
     setYearLevel(null);
     setYearMessage("");
@@ -321,7 +326,14 @@ const ProfileSetup = ({
         All set!
       </h2>
 
-      <div className="mt-8 mx-auto inline-flex flex-col items-center gap-3 rounded-2xl border border-border bg-card p-8">
+      <div
+        className="mt-8 mx-auto inline-flex flex-col items-center gap-3 p-4"
+        style={{
+          backgroundColor: "var(--colour-card-bg)",
+          border: "0.5px solid hsl(var(--colour-card-border))",
+          borderRadius: "var(--colour-card-radius)",
+        }}
+      >
         <div
           className="flex h-20 w-20 items-center justify-center rounded-full text-3xl font-bold text-white"
           style={{ backgroundColor: colour }}

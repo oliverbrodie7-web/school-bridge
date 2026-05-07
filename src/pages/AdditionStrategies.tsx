@@ -36,15 +36,26 @@ const AdditionStrategies = () => {
             <Link
               key={s.label}
               to={s.to}
-              className="group rounded-2xl border-2 border-border bg-card p-6 text-left transition-all hover:border-primary hover:shadow-lg"
+              className="group flex flex-col items-center text-center hover:bg-[#f8fdfb]"
+              style={{
+                backgroundColor: "var(--colour-card-bg)",
+                border: "0.5px solid var(--colour-active-border)",
+                borderRadius: "var(--colour-card-radius)",
+                padding: "16px 12px",
+                transition: "background-color 0.15s",
+                cursor: "pointer",
+              }}
             >
               <h2
-                className="text-xl font-bold text-foreground group-hover:text-primary transition-colors"
-                style={{ fontFamily: "var(--font-heading)" }}
+                className="font-semibold text-foreground group-hover:text-primary transition-colors"
+                style={{ fontFamily: "var(--font-heading)", fontSize: "var(--font-topic-name-size)", fontWeight: "var(--font-topic-name)" }}
               >
                 {s.label}
               </h2>
-              <p className="mt-2 text-sm text-muted-foreground">
+              <p
+                className="mt-2 text-muted-foreground"
+                style={{ fontSize: "var(--font-description-size)", lineHeight: "var(--font-description-lh)", fontWeight: "var(--font-description-weight)" }}
+              >
                 {s.description}
               </p>
             </Link>

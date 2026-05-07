@@ -30,12 +30,13 @@ const Student = () => {
     const iconTile = (
       <div
         id={topic.iconId}
-        className="flex items-center justify-center rounded-[12px]"
+        className="flex items-center justify-center"
         style={{
           width: 44,
           height: 44,
-          backgroundColor: isActive ? "#E1F5EE" : "hsl(var(--muted))",
-          color: isActive ? "#0F6E56" : "hsl(var(--muted-foreground))",
+          borderRadius: 12,
+          backgroundColor: isActive ? "var(--colour-active-light)" : "hsl(var(--colour-coming-soon-bg))",
+          color: isActive ? "var(--colour-active-dark)" : "hsl(var(--colour-coming-soon-text))",
           fontSize: topic.symbol.length > 1 ? 14 : 20,
           fontWeight: 600,
         }}
@@ -47,19 +48,19 @@ const Student = () => {
     const content = (
       <>
         {iconTile}
-        <span style={{ fontSize: 14, fontWeight: 500, marginTop: 10, color: isActive ? "hsl(var(--foreground))" : "hsl(var(--muted-foreground))" }}>
+        <span style={{ fontSize: "var(--font-topic-name-size)", fontWeight: "var(--font-topic-name)", marginTop: 10, color: isActive ? "hsl(var(--foreground))" : "hsl(var(--colour-coming-soon-text))" }}>
           {topic.name}
         </span>
-        <span style={{ fontSize: 11, lineHeight: 1.4, marginTop: 4, color: "hsl(var(--muted-foreground))", textAlign: "center" }}>
+        <span style={{ fontSize: "var(--font-description-size)", lineHeight: "var(--font-description-lh)", fontWeight: "var(--font-description-weight)", marginTop: 4, color: "hsl(var(--muted-foreground))", textAlign: "center" }}>
           {topic.description}
         </span>
         {!isActive && (
-          <span style={{ fontSize: 10, marginTop: 8, backgroundColor: "hsl(var(--muted))", color: "hsl(var(--muted-foreground))", borderRadius: 6, padding: "2px 6px" }}>
+          <span style={{ fontSize: "var(--font-badge-size)", fontWeight: "var(--font-badge-weight)", marginTop: 8, backgroundColor: "hsl(var(--colour-coming-soon-bg))", color: "hsl(var(--colour-coming-soon-text))", borderRadius: 6, padding: "2px 6px" }}>
             Coming soon
           </span>
         )}
         {!isActive && tappedTopic === topic.name && (
-          <span className="animate-fade-in" style={{ fontSize: 11, marginTop: 6, color: "hsl(var(--muted-foreground))", textAlign: "center" }}>
+          <span className="animate-fade-in" style={{ fontSize: "var(--font-description-size)", marginTop: 6, color: "hsl(var(--muted-foreground))", textAlign: "center" }}>
             We're building this now — check back soon!
           </span>
         )}
@@ -71,11 +72,12 @@ const Student = () => {
       flexDirection: "column",
       alignItems: "center",
       padding: "16px 12px",
-      borderRadius: 16,
-      border: isActive ? "0.5px solid #1D9E75" : "0.5px solid hsl(var(--border))",
-      backgroundColor: "white",
+      borderRadius: "var(--colour-card-radius)",
+      border: isActive ? `0.5px solid var(--colour-active-border)` : `0.5px solid hsl(var(--colour-card-border))`,
+      backgroundColor: "var(--colour-card-bg)",
       textDecoration: "none",
       transition: "background-color 0.15s",
+      cursor: "pointer",
     };
 
     if (isActive) {

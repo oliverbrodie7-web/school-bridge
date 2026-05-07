@@ -30,6 +30,13 @@ const ContentHome = () => {
   const isYear2 = profile.yearLevel === 2;
   const yearLabel = profile.yearLevel === 0 ? "Kindy" : `Year ${profile.yearLevel}`;
 
+  const cardBase: React.CSSProperties = {
+    backgroundColor: "var(--colour-card-bg)",
+    borderRadius: "var(--colour-card-radius)",
+    padding: "16px 12px",
+    transition: "background-color 0.15s",
+  };
+
   return (
     <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center px-6 py-12">
       <div className="w-full max-w-2xl">
@@ -71,18 +78,31 @@ const ContentHome = () => {
           {isYear2 ? (
             <Link
               to="/student"
-              className="group flex flex-col items-center justify-center rounded-2xl border-2 border-primary bg-primary/5 p-10 text-center transition-all hover:bg-primary/10 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]"
+              className="group flex flex-col items-center justify-center p-10 text-center hover:bg-[#f8fdfb]"
+              style={{
+                ...cardBase,
+                border: `0.5px solid var(--colour-active-border)`,
+                padding: "40px 12px",
+                cursor: "pointer",
+              }}
             >
               <span className="text-4xl">🔢</span>
               <h2
-                className="mt-4 text-2xl font-bold text-primary"
-                style={{ fontFamily: "var(--font-heading)" }}
+                className="mt-4 text-2xl font-bold"
+                style={{ fontFamily: "var(--font-heading)", color: "var(--colour-active-dark)" }}
               >
                 Maths
               </h2>
             </Link>
           ) : (
-            <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-border bg-muted/50 p-10 text-center opacity-60">
+            <div
+              className="flex flex-col items-center justify-center p-10 text-center opacity-60"
+              style={{
+                ...cardBase,
+                border: `0.5px solid hsl(var(--colour-coming-soon-border))`,
+                padding: "40px 12px",
+              }}
+            >
               <span className="text-4xl grayscale">🔢</span>
               <h2
                 className="mt-4 text-2xl font-bold text-muted-foreground"
@@ -90,7 +110,7 @@ const ContentHome = () => {
               >
                 Maths
               </h2>
-              <span className="mt-2 rounded-full bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">
+              <span style={{ fontSize: "var(--font-badge-size)", fontWeight: "var(--font-badge-weight)", marginTop: 8, backgroundColor: "hsl(var(--colour-coming-soon-bg))", color: "hsl(var(--colour-coming-soon-text))", borderRadius: 6, padding: "2px 6px" }}>
                 Coming soon
               </span>
             </div>
@@ -99,7 +119,13 @@ const ContentHome = () => {
           {/* Literacy */}
           <button
             onClick={() => setLiteracyTapped(true)}
-            className="flex flex-col items-center justify-center rounded-2xl border-2 border-border bg-muted/50 p-10 text-center opacity-60 cursor-default"
+            className="flex flex-col items-center justify-center p-10 text-center opacity-60 hover:bg-[#fafafa]"
+            style={{
+              ...cardBase,
+              border: `0.5px solid hsl(var(--colour-coming-soon-border))`,
+              padding: "40px 12px",
+              cursor: "default",
+            }}
           >
             <span className="text-4xl grayscale">📖</span>
             <h2
@@ -108,7 +134,7 @@ const ContentHome = () => {
             >
               Literacy
             </h2>
-            <span className="mt-2 rounded-full bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">
+            <span style={{ fontSize: "var(--font-badge-size)", fontWeight: "var(--font-badge-weight)", marginTop: 8, backgroundColor: "hsl(var(--colour-coming-soon-bg))", color: "hsl(var(--colour-coming-soon-text))", borderRadius: 6, padding: "2px 6px" }}>
               Coming soon
             </span>
           </button>
@@ -117,7 +143,7 @@ const ContentHome = () => {
         {/* Literacy tapped message */}
         {literacyTapped && (
           <p className="mt-4 text-center text-sm text-muted-foreground animate-fade-in">
-            We're building Literacy content now. Check back soon!
+            We're building this now — check back soon!
           </p>
         )}
 
