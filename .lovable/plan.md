@@ -1,26 +1,33 @@
 
 ## Problem
 
-When a child sees "3 tens and 4 ones — so the answer is ___", they may not know how to convert tens/ones into a numeral. There's no scaffolding to bridge that gap.
+The +10 Strategy Learn page (Phase 1: I Do) shows blocks and animations but has no explanatory narration. A Year 2 child sees things appear without understanding what's happening or why.
 
-## Solution
+## Plan
 
-Add a "Need a hint?" button during the `answer-input` phase of each question in `Plus10StrategyYouDo.tsx`. When tapped, it shows a step-by-step counting sequence that counts the tens by 10s (e.g. "10… 20… 30") then adds the ones ("30 + 4 = 34").
+Update `src/pages/Plus10StrategyLearn.tsx` to add narration text at every phase of each worked example:
 
-### How it works
+### Narration per phase
 
-1. Below the "So the answer is ___" line and above the Check button, add a muted "Need a hint?" button.
-2. When tapped, it reveals a guided counting section:
-   - "Let's count the tens: 10… 20… 30" (animated, one at a time with a short delay, each number appearing sequentially)
-   - Then: "That's 30! Now add the 4 ones: 30 + 4 = 34"
-3. The hint stays visible — the child can then type the answer.
-4. The hint button disappears once the hint is shown (no toggling).
+| Phase | Narration text |
+|-------|---------------|
+| `show-number` | "Here's the number **23**. It has 2 tens and 3 ones." |
+| `show-plus10` | "We want to add 10. That's the same as adding 1 more ten." |
+| `tap-prompt` | "Tap the green ten block to add it to our tens." |
+| `animating` | "Watch — the new ten joins the other tens..." |
+| `result` | "Now we have 3 tens and 3 ones. That's **33**!" |
+| `insight` | Callout box (already exists — keep as-is) |
 
-### Technical changes
+Second example uses the same structure with 45/55.
 
-**File: `src/pages/Plus10StrategyYouDo.tsx`**
+### Implementation details
 
-- Add `showHint` boolean state and `hintStep` number state to the `Question` component.
-- Add a "Need a hint?" button in the `answer-input` phase that sets `showHint = true` and starts a timed sequence incrementing `hintStep` from 1 to `resultTens`, then shows the final "That's X! Now add the Y ones" message.
-- The counting sequence displays as: `10, 20, 30…` appearing one by one (using `setInterval` or chained `setTimeout`), with each number styled in the BLUE color to connect visually to the tens blocks.
-- No changes to any other file or phase.
+- Add a narration `<p>` element above the blocks area that updates based on `phase`
+- Style it prominently: larger text (~text-lg), foreground color, centered, with `animate-fade-in` on each phase change
+- Use a helper function or map to return the correct narration string per phase per example
+- Remove the generic "Watch how adding 10 works" subtitle (it's redundant once narration exists), or keep it only as a brief intro
+- Also add a brief "Continue" / "Next" button between `show-number` and `show-plus10` phases instead of pure auto-advance, so the child can read at their own pace (tap-to-advance for the explanation steps, keeping the tap-the-block interaction for the animation step)
+- Keep all existing animation and block logic unchanged
+
+### Files changed
+- `src/pages/Plus10StrategyLearn.tsx` — add narration system, change auto-advance to tap-to-advance for explanation steps
