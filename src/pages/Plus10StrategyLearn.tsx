@@ -10,7 +10,7 @@ const EXAMPLES = [
   { number: 45, label: "4 tens and 5 ones", resultLabel: "5 tens and 5 ones", result: 55 },
 ];
 
-type Phase = "show-number" | "show-plus10" | "tap-prompt" | "animating" | "result" | "insight";
+type Phase = "show-number" | "show-plus10" | "tap-prompt" | "animating" | "counting" | "result" | "insight";
 
 /* ─── Narration per phase ─── */
 const getNarration = (example: (typeof EXAMPLES)[number], phase: Phase) => {
@@ -27,6 +27,8 @@ const getNarration = (example: (typeof EXAMPLES)[number], phase: Phase) => {
       return `Tap the green ten block to add it to our tens.`;
     case "animating":
       return `Watch — the new ten slides in with the other tens…`;
+    case "counting":
+      return `How many tens do we have now? Let's count them together. Tap each ten block to count.`;
     case "result":
       return `We had ${t} tens, now we have ${resultTens} tens. The ${o} ones didn't change at all. So ${example.number} + 10 = ${example.result}.`;
     case "insight":
@@ -148,17 +150,21 @@ const ExampleCard = ({
   onNext: () => void;
 }) => {
   const [phase, setPhase] = useState<Phase>("show-number");
+  const [countedTens, setCountedTens] = useState(0);
 
   const t = Math.floor(example.number / 10);
   const o = example.number % 10;
   const resultTens = t + 1;
 
-  const merged = phase === "animating" || phase === "result" || phase === "insight";
+  const merged = phase === "animating" || phase === "counting" || phase === "result" || phase === "insight";
 
-  // Auto-advance: animating → result (insight is tap-to-advance)
+  // Auto-advance: animating → counting
   useEffect(() => {
     if (phase === "animating") {
-      const t1 = setTimeout(() => setPhase("result"), 1200);
+      const t1 = setTimeout(() => {
+        setCountedTens(0);
+        setPhase("counting");
+      }, 1200);
       return () => clearTimeout(t1);
     }
   }, [phase]);
@@ -166,6 +172,17 @@ const ExampleCard = ({
   const handleTapGreenBlock = () => {
     if (phase !== "tap-prompt") return;
     setPhase("animating");
+  };
+
+  const handleTapTensBlock = (index: number) => {
+    if (phase !== "counting") return;
+    if (index === countedTens) {
+      const next = countedTens + 1;
+      setCountedTens(next);
+      if (next === resultTens) {
+        setTimeout(() => setPhase("result"), 600);
+      }
+    }
   };
 
   const narration = getNarration(example, phase);
@@ -206,23 +223,62 @@ const ExampleCard = ({
 
           {/* Blocks row */}
           <div className="flex items-end gap-1.5">
-            {/* Existing tens (blue → neutral when merged) */}
+            {/* Existing tens — tappable during counting phase */}
             {Array.from({ length: t }).map((_, i) => (
-              <TensBlock
-                key={`t${i}`}
-                color={merged ? NEUTRAL : BLUE}
-                className="transition-all duration-500"
-              />
+              <div key={`t${i}`} className="relative">
+                {phase === "counting" && i < countedTens && (
+                  <span
+                    className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs font-bold text-foreground animate-fade-in"
+                    style={{ fontFamily: "var(--font-heading)" }}
+                  >
+                    {i + 1}
+                  </span>
+                )}
+                <button
+                  onClick={() => handleTapTensBlock(i)}
+                  disabled={phase !== "counting" || i !== countedTens}
+                  className={`transition-all duration-300 ${
+                    phase === "counting" && i === countedTens
+                      ? "cursor-pointer ring-2 ring-primary ring-offset-1 ring-offset-card rounded-md animate-pulse"
+                      : ""
+                  }`}
+                >
+                  <TensBlock
+                    color={phase === "counting" && i < countedTens ? NEUTRAL : merged ? NEUTRAL : BLUE}
+                    className="transition-all duration-500"
+                  />
+                </button>
+              </div>
             ))}
 
-            {/* Green block slides in here when merged */}
+            {/* Green block — slides in when merged, tappable during counting */}
             {merged && (
               <div
-                style={{
-                  animation: "slideDown 0.8s ease-out forwards",
-                }}
+                className="relative"
+                style={phase === "animating" ? { animation: "slideDown 0.8s ease-out forwards" } : undefined}
               >
-                <TensBlock color={GREEN} />
+                {phase === "counting" && t < countedTens && (
+                  <span
+                    className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs font-bold text-foreground animate-fade-in"
+                    style={{ fontFamily: "var(--font-heading)" }}
+                  >
+                    {t + 1}
+                  </span>
+                )}
+                <button
+                  onClick={() => handleTapTensBlock(t)}
+                  disabled={phase !== "counting" || t !== countedTens}
+                  className={`transition-all duration-300 ${
+                    phase === "counting" && t === countedTens
+                      ? "cursor-pointer ring-2 ring-primary ring-offset-1 ring-offset-card rounded-md animate-pulse"
+                      : ""
+                  }`}
+                >
+                  <TensBlock
+                    color={phase === "counting" && t < countedTens ? NEUTRAL : GREEN}
+                    className="transition-all duration-500"
+                  />
+                </button>
               </div>
             )}
 
@@ -239,6 +295,18 @@ const ExampleCard = ({
 
           {!merged && (
             <span className="text-sm font-medium text-muted-foreground">{example.label}</span>
+          )}
+
+          {/* Counting progress */}
+          {phase === "counting" && countedTens > 0 && countedTens < resultTens && (
+            <p className="text-lg font-bold text-foreground animate-fade-in" style={{ fontFamily: "var(--font-heading)" }}>
+              {countedTens}…
+            </p>
+          )}
+          {phase === "counting" && countedTens === resultTens && (
+            <p className="text-lg font-bold animate-fade-in" style={{ color: GREEN, fontFamily: "var(--font-heading)" }}>
+              {resultTens} tens! 🎉
+            </p>
           )}
         </div>
 
