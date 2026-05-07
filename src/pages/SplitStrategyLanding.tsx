@@ -49,7 +49,7 @@ const SplitStrategyLanding = () => {
           </div>
 
           <Link
-            to="/parent"
+            to="/parent?strategy=split"
             className="inline-block rounded-xl bg-muted px-8 py-4 text-lg font-semibold text-muted-foreground transition-colors hover:bg-muted/80 hover:text-foreground"
           >
             Parent Guide

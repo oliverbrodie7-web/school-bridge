@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 const BLUE = "#3B82F6";
 const ORANGE = "#F97316";
@@ -408,6 +408,35 @@ const InputRow = ({
 
 /* ─── Main Parent Guide ─── */
 const Parent = () => {
+  const [searchParams] = useSearchParams();
+  const strategy = searchParams.get("strategy");
+
+  if (strategy !== "split") {
+    return (
+      <div className="flex min-h-screen flex-col items-center px-6 py-12">
+        <div className="w-full max-w-2xl text-center">
+          <h1
+            className="text-2xl font-bold text-foreground sm:text-3xl"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            Parent Guide
+          </h1>
+          <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
+            We're building the Parent Guide content now.
+            <br />
+            Check back soon!
+          </p>
+          <Link
+            to="/"
+            className="mt-8 inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            ← Back to home
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen flex-col items-center px-6 py-12">
       <div className="w-full max-w-2xl">
