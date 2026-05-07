@@ -233,7 +233,6 @@ const ExampleCard = ({
                 <OnesBlock
                   key={`o${i}`}
                   color={merged ? NEUTRAL : BLUE}
-                  className="transition-all duration-500"
                 />
               ))}
             </div>
