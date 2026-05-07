@@ -93,6 +93,8 @@ const Question = ({
   const [answerInput, setAnswerInput] = useState("");
   const [countHint, setCountHint] = useState("");
   const [answerHint, setAnswerHint] = useState("");
+  const [showHint, setShowHint] = useState(false);
+  const [hintStep, setHintStep] = useState(0);
   const tensRef = useRef<HTMLInputElement>(null);
   const answerRef = useRef<HTMLInputElement>(null);
 
