@@ -10,7 +10,7 @@ const QUESTIONS = [
   { computer: { number: 34, addend: 10 }, child: { number: 62, addend: 10 } },
   { computer: { number: 51, addend: 10 }, child: { number: 27, addend: 10 } },
   { computer: { number: 43, addend: 10 }, child: { number: 75, addend: 10 } },
-  { computer: { number: 52, addend: 21 }, child: { number: 43, addend: 32 } },
+  { computer: { number: 52, addend: 20 }, child: { number: 43, addend: 30 } },
 ];
 
 /* ─── Dienes-style tens block ─── */
