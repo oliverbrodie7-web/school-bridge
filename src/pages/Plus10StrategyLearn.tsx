@@ -27,6 +27,8 @@ const getNarration = (example: (typeof EXAMPLES)[number], phase: Phase) => {
       return `Tap the green ten block to add it to our tens.`;
     case "animating":
       return `Watch — the new ten slides in with the other tens…`;
+    case "counting":
+      return `How many tens do we have now? Let's count them together. Tap each ten block to count.`;
     case "result":
       return `We had ${t} tens, now we have ${resultTens} tens. The ${o} ones didn't change at all. So ${example.number} + 10 = ${example.result}.`;
     case "insight":
