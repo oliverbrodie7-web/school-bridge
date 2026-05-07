@@ -47,6 +47,27 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Global colour system */
+    --colour-active-light: #E1F5EE;
+    --colour-active-border: #1D9E75;
+    --colour-active-dark: #0F6E56;
+    --colour-active-mid: #1D9E75;
+    --colour-coming-soon-bg: 220 14% 96%;
+    --colour-coming-soon-text: 220 10% 50%;
+    --colour-coming-soon-border: 220 13% 90%;
+    --colour-card-bg: #ffffff;
+    --colour-card-border: 220 13% 90%;
+    --colour-card-radius: 16px;
+
+    /* Global typography */
+    --font-topic-name: 500;
+    --font-topic-name-size: 14px;
+    --font-description-size: 11px;
+    --font-description-weight: 400;
+    --font-description-lh: 1.4;
+    --font-badge-size: 10px;
+    --font-badge-weight: 400;
   }
 }
 
