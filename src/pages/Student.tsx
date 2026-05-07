@@ -6,21 +6,102 @@ interface TopicCard {
   description: string;
   active: boolean;
   to?: string;
+  symbol: string;
+  iconId: string;
 }
 
 const topics: TopicCard[] = [
-  { name: "Addition", description: "Adding numbers together using smart strategies", active: true, to: "/student/addition" },
-  { name: "Subtraction", description: "Taking numbers away and finding the difference", active: false },
-  { name: "Multiplication", description: "Building equal groups to find totals", active: false },
-  { name: "Sharing", description: "Splitting things into equal groups", active: false },
-  { name: "Fractions", description: "Understanding equal parts of a whole", active: false },
-  { name: "Decimals", description: "Numbers that sit between whole numbers", active: false },
-  { name: "Measurement", description: "Length, mass, volume and time", active: false },
-  { name: "Times Tables", description: "Practising multiplication facts until they stick", active: false },
+  { name: "Addition", description: "Adding numbers together using smart strategies", active: true, to: "/student/addition", symbol: "+", iconId: "topic-icon-addition" },
+  { name: "Subtraction", description: "Taking numbers away and finding the difference", active: false, symbol: "−", iconId: "topic-icon-subtraction" },
+  { name: "Multiplication", description: "Building equal groups to find totals", active: false, symbol: "×", iconId: "topic-icon-multiplication" },
+  { name: "Sharing", description: "Splitting things into equal groups", active: false, symbol: "÷", iconId: "topic-icon-sharing" },
+  { name: "Fractions", description: "Understanding equal parts of a whole", active: false, symbol: "½", iconId: "topic-icon-fractions" },
+  { name: "Decimals", description: "Numbers that sit between whole numbers", active: false, symbol: "0.1", iconId: "topic-icon-decimals" },
+  { name: "Measurement", description: "Length, mass, volume and time", active: false, symbol: "cm", iconId: "topic-icon-measurement" },
+  { name: "Times Tables", description: "Practising multiplication facts until they stick", active: false, symbol: "×", iconId: "topic-icon-times-tables" },
 ];
 
 const Student = () => {
   const [tappedTopic, setTappedTopic] = useState<string | null>(null);
+
+  const renderCard = (topic: TopicCard) => {
+    const isActive = topic.active && topic.to;
+
+    const iconTile = (
+      <div
+        id={topic.iconId}
+        className="flex items-center justify-center rounded-[12px]"
+        style={{
+          width: 44,
+          height: 44,
+          backgroundColor: isActive ? "#E1F5EE" : "hsl(var(--muted))",
+          color: isActive ? "#0F6E56" : "hsl(var(--muted-foreground))",
+          fontSize: topic.symbol.length > 1 ? 14 : 20,
+          fontWeight: 600,
+        }}
+      >
+        {topic.symbol}
+      </div>
+    );
+
+    const content = (
+      <>
+        {iconTile}
+        <span style={{ fontSize: 14, fontWeight: 500, marginTop: 10, color: isActive ? "hsl(var(--foreground))" : "hsl(var(--muted-foreground))" }}>
+          {topic.name}
+        </span>
+        <span style={{ fontSize: 11, lineHeight: 1.4, marginTop: 4, color: "hsl(var(--muted-foreground))", textAlign: "center" }}>
+          {topic.description}
+        </span>
+        {!isActive && (
+          <span style={{ fontSize: 10, marginTop: 8, backgroundColor: "hsl(var(--muted))", color: "hsl(var(--muted-foreground))", borderRadius: 6, padding: "2px 6px" }}>
+            Coming soon
+          </span>
+        )}
+        {!isActive && tappedTopic === topic.name && (
+          <span className="animate-fade-in" style={{ fontSize: 11, marginTop: 6, color: "hsl(var(--muted-foreground))", textAlign: "center" }}>
+            We're building this now — check back soon!
+          </span>
+        )}
+      </>
+    );
+
+    const cardStyle: React.CSSProperties = {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      padding: "16px 12px",
+      borderRadius: 16,
+      border: isActive ? "0.5px solid #1D9E75" : "0.5px solid hsl(var(--border))",
+      backgroundColor: "white",
+      textDecoration: "none",
+      transition: "background-color 0.15s",
+    };
+
+    if (isActive) {
+      return (
+        <Link
+          key={topic.name}
+          to={topic.to!}
+          className="hover:bg-[#f8fdfb]"
+          style={cardStyle}
+        >
+          {content}
+        </Link>
+      );
+    }
+
+    return (
+      <button
+        key={topic.name}
+        onClick={() => setTappedTopic(tappedTopic === topic.name ? null : topic.name)}
+        className="hover:bg-[#fafafa]"
+        style={{ ...cardStyle, cursor: "default" }}
+      >
+        {content}
+      </button>
+    );
+  };
 
   return (
     <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center px-6 py-12">
@@ -44,52 +125,9 @@ const Student = () => {
           </p>
         </div>
 
-        <div className="mt-10 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-          {topics.map((topic) =>
-            topic.active && topic.to ? (
-              <Link
-                key={topic.name}
-                to={topic.to}
-                className="group relative flex flex-col items-center justify-center rounded-2xl border-2 border-primary bg-primary/5 p-8 text-center transition-all hover:bg-primary/10 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]"
-              >
-                <h2
-                  className="text-xl font-bold text-primary"
-                  style={{ fontFamily: "var(--font-heading)" }}
-                >
-                  {topic.name}
-                </h2>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  {topic.description}
-                </p>
-              </Link>
-            ) : (
-              <button
-                key={topic.name}
-                onClick={() => setTappedTopic(topic.name)}
-                className="relative flex flex-col items-center justify-center rounded-2xl border-2 border-border bg-muted/50 p-8 text-center opacity-60 transition-all hover:opacity-70 cursor-default"
-              >
-                <span className="absolute right-3 top-3 rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
-                  Coming soon
-                </span>
-                <h2
-                  className="text-xl font-bold text-muted-foreground"
-                  style={{ fontFamily: "var(--font-heading)" }}
-                >
-                  {topic.name}
-                </h2>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  {topic.description}
-                </p>
-              </button>
-            )
-          )}
+        <div className="mt-10 grid gap-[10px] grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          {topics.map(renderCard)}
         </div>
-
-        {tappedTopic && (
-          <p className="mt-6 text-center text-sm text-muted-foreground animate-fade-in">
-            {tappedTopic} is coming soon. Check back shortly!
-          </p>
-        )}
       </div>
     </div>
   );
