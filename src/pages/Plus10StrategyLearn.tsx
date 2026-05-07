@@ -153,7 +153,9 @@ const ExampleCard = ({
   const o = example.number % 10;
   const resultTens = t + 1;
 
-  // Only auto-advance the animating phase (the rest are tap-to-advance)
+  const merged = phase === "animating" || phase === "result" || phase === "insight";
+
+  // Auto-advance: animating → result → insight
   useEffect(() => {
     if (phase === "animating") {
       const t1 = setTimeout(() => setPhase("result"), 1200);
@@ -191,9 +193,54 @@ const ExampleCard = ({
       )}
 
       <div className="mt-6">
-        {/* Step 1: Starting number with blocks */}
-        <div className="animate-fade-in">
-          <NumberBlocks number={example.number} color={BLUE} label={example.label} />
+        {/* ── Block row: starts as blue blocks, green block joins when tapped ── */}
+        <div className="flex flex-col items-center gap-3 animate-fade-in">
+          {/* Number label */}
+          {!merged && (
+            <span
+              className="text-4xl font-bold sm:text-5xl"
+              style={{ color: BLUE, fontFamily: "var(--font-heading)" }}
+            >
+              {example.number}
+            </span>
+          )}
+
+          {/* Blocks row */}
+          <div className="flex items-end gap-1.5">
+            {/* Existing tens (blue → neutral when merged) */}
+            {Array.from({ length: t }).map((_, i) => (
+              <TensBlock
+                key={`t${i}`}
+                color={merged ? NEUTRAL : BLUE}
+                className="transition-all duration-500"
+              />
+            ))}
+
+            {/* Green block slides in here when merged */}
+            {merged && (
+              <div
+                style={{
+                  animation: "slideDown 0.8s ease-out forwards",
+                }}
+              >
+                <TensBlock color={GREEN} />
+              </div>
+            )}
+
+            {/* Ones */}
+            <div className="ml-2 flex flex-wrap items-end gap-1">
+              {Array.from({ length: o }).map((_, i) => (
+                <OnesBlock
+                  key={`o${i}`}
+                  color={merged ? NEUTRAL : BLUE}
+                />
+              ))}
+            </div>
+          </div>
+
+          {!merged && (
+            <span className="text-sm font-medium text-muted-foreground">{example.label}</span>
+          )}
         </div>
 
         {/* "Next" button after show-number */}
@@ -208,8 +255,8 @@ const ExampleCard = ({
           </div>
         )}
 
-        {/* Step 2: +10 appears with green block */}
-        {phase !== "show-number" && (
+        {/* Step 2: +10 label and tappable green block (below the main row) */}
+        {(phase === "show-plus10" || phase === "tap-prompt") && (
           <div className="mt-8 flex items-center justify-center gap-6 animate-fade-in">
             <span
               className="text-3xl font-bold sm:text-4xl"
@@ -220,7 +267,7 @@ const ExampleCard = ({
             <div className="flex flex-col items-center gap-2">
               {phase === "show-plus10" ? (
                 <TensBlock color={GREEN} />
-              ) : phase === "tap-prompt" ? (
+              ) : (
                 <button
                   onClick={handleTapGreenBlock}
                   className="cursor-pointer transition-transform hover:scale-110 active:scale-95"
@@ -235,19 +282,13 @@ const ExampleCard = ({
                     style={{ backgroundColor: GREEN }}
                   />
                 </button>
-              ) : phase === "animating" || phase === "result" || phase === "insight" ? (
-                <div style={{ width: 24, height: 64, opacity: 0 }} />
-              ) : (
-                <TensBlock color={GREEN} />
               )}
-              {phase !== "animating" && phase !== "result" && phase !== "insight" && (
-                <span className="text-sm font-medium text-muted-foreground">1 ten</span>
-              )}
+              <span className="text-sm font-medium text-muted-foreground">1 ten</span>
             </div>
           </div>
         )}
 
-        {/* "Next" button after show-plus10 to advance to tap-prompt */}
+        {/* "Next" button after show-plus10 */}
         {phase === "show-plus10" && (
           <div className="mt-6 text-center animate-fade-in">
             <button
@@ -259,38 +300,18 @@ const ExampleCard = ({
           </div>
         )}
 
-        {/* Step 3: Combined result */}
-        {(phase === "animating" || phase === "result" || phase === "insight") && (
-          <div className="mt-8 animate-fade-in">
-            <div className="flex flex-col items-center gap-3">
-              {/* Combined block row */}
-              <div className="flex items-end gap-1.5">
-                {Array.from({ length: t }).map((_, i) => (
-                  <TensBlock key={`bt${i}`} color={NEUTRAL} />
-                ))}
-                <TensBlock color={GREEN} className="animate-fade-in" />
-                <div className="ml-2 flex flex-wrap items-end gap-1">
-                  {Array.from({ length: o }).map((_, i) => (
-                    <OnesBlock key={`bo${i}`} color={NEUTRAL} />
-                  ))}
-                </div>
-              </div>
-
-              {/* Result text */}
-              {(phase === "result" || phase === "insight") && (
-                <div className="mt-4 text-center animate-fade-in">
-                  <p className="text-base font-medium text-muted-foreground">
-                    Now we have {resultTens} tens and {o} ones
-                  </p>
-                  <p
-                    className="mt-2 text-2xl font-bold text-foreground sm:text-3xl"
-                    style={{ fontFamily: "var(--font-heading)" }}
-                  >
-                    {example.number} + 10 = {example.result}
-                  </p>
-                </div>
-              )}
-            </div>
+        {/* Result text after merge */}
+        {(phase === "result" || phase === "insight") && (
+          <div className="mt-4 text-center animate-fade-in">
+            <p className="text-base font-medium text-muted-foreground">
+              Now we have {resultTens} tens and {o} ones
+            </p>
+            <p
+              className="mt-2 text-2xl font-bold text-foreground sm:text-3xl"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
+              {example.number} + 10 = {example.result}
+            </p>
           </div>
         )}
 
