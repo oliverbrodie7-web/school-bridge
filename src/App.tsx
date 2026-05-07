@@ -34,6 +34,7 @@ const App = () => (
           <Route path="/parent" element={<Parent />} />
           <Route path="/student/addition" element={<AdditionStrategies />} />
           <Route path="/student/subtraction" element={<SubtractionStrategies />} />
+          <Route path="/plus10-strategy" element={<Plus10StrategyLanding />} />
           <Route path="/split-strategy" element={<SplitStrategyLanding />} />
           <Route path="/learn/split-strategy" element={<SplitStrategyLearn />} />
           <Route path="/learn/split-strategy/we-do" element={<SplitStrategyWeDo />} />
