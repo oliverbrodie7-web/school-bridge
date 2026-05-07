@@ -13,6 +13,7 @@ import SubtractionStrategies from "./pages/SubtractionStrategies.tsx";
 import Plus10StrategyLanding from "./pages/Plus10StrategyLanding.tsx";
 import Plus10StrategyLearn from "./pages/Plus10StrategyLearn.tsx";
 import Plus10StrategyWeDo from "./pages/Plus10StrategyWeDo.tsx";
+import Plus10StrategyYouDo from "./pages/Plus10StrategyYouDo.tsx";
 import SplitStrategyLanding from "./pages/SplitStrategyLanding.tsx";
 import SplitStrategyLearn from "./pages/SplitStrategyLearn.tsx";
 import SplitStrategyWeDo from "./pages/SplitStrategyWeDo.tsx";
