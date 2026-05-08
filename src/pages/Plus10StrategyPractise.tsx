@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
+import { getLevel3Unlocked, setLevel3Unlocked } from "@/lib/progress";
 
 const BLUE = "#3B82F6";
 const GREEN = "#22C55E";
@@ -707,6 +708,13 @@ const Plus10StrategyPractise = () => {
   const [showUnlockBanner, setShowUnlockBanner] = useState(false);
   const l3UsedRef = useRef<Set<string>>(new Set());
 
+  useEffect(() => {
+    (async () => {
+      const unlocked = await getLevel3Unlocked("plusTen");
+      if (unlocked) setL3Unlocked(true);
+    })();
+  }, []);
+
   const genQuestion = useCallback((lvl: number, qNum?: number) => {
     if (lvl === 1) return generateL1();
     if (lvl === 2) return (qNum ?? 999) <= 3 ? generateL1() : generateL2();
@@ -727,6 +735,7 @@ const Plus10StrategyPractise = () => {
       if (newStreak >= 10 && !l3Unlocked) {
         setL3Unlocked(true);
         setShowUnlockBanner(true);
+        void setLevel3Unlocked("plusTen");
       }
     }
 

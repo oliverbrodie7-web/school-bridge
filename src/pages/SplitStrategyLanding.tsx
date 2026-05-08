@@ -1,7 +1,16 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { getLearnComplete, migrateLocalProgressIfNeeded } from "@/lib/progress";
 
 const SplitStrategyLanding = () => {
-  const learnComplete = localStorage.getItem("splitStrategy_learnComplete") === "true";
+  const [learnComplete, setLearnComplete] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      await migrateLocalProgressIfNeeded();
+      setLearnComplete(await getLearnComplete("splitStrategy"));
+    })();
+  }, []);
 
   return (
     <div className="flex min-h-screen flex-col items-center px-6 py-12">

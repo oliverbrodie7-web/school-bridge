@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { setLearnComplete } from "@/lib/progress";
 
 const BLUE = "#3B82F6";
 const GREEN = "#22C55E";
@@ -496,7 +497,7 @@ const Plus10StrategyYouDo = () => {
   };
 
   const handleReady = () => {
-    localStorage.setItem("plus10Strategy_learnComplete", "true");
+    void setLearnComplete("plusTen");
     navigate("/practise/plus10-strategy");
   };
 

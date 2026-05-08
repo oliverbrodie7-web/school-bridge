@@ -22,6 +22,8 @@ const Index = () => {
   useEffect(() => {
     (async () => {
       await migrateLocalProfilesIfNeeded();
+      const { migrateLocalProgressIfNeeded } = await import("@/lib/progress");
+      await migrateLocalProgressIfNeeded();
       try {
         const data = await fetchProfiles();
         setProfiles(data);

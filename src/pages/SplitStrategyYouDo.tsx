@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { setLearnComplete } from "@/lib/progress";
 
 const BLUE = "#3B82F6";
 const ORANGE = "#F97316";
@@ -110,7 +111,7 @@ const SplitStrategyYouDo = () => {
               </button>
               <Link
                 to="/practise/split-strategy"
-                onClick={() => localStorage.setItem("splitStrategy_learnComplete", "true")}
+                onClick={() => { void setLearnComplete("splitStrategy"); }}
                 className="inline-block rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
               >
                 I'm ready to try on my own
