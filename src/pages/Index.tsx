@@ -242,7 +242,7 @@ const ProfileSetup = ({
   onCancel,
 }: {
   colourIndex: number;
-  onSave: (profile: Profile) => void;
+  onSave: (profile: Omit<Profile, "id">) => void;
   onCancel?: () => void;
 }) => {
   const [step, setStep] = useState(1);
