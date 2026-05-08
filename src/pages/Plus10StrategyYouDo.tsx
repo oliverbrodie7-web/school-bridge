@@ -497,7 +497,7 @@ const Plus10StrategyYouDo = () => {
   };
 
   const handleReady = () => {
-    localStorage.setItem("plus10Strategy_learnComplete", "true");
+    void setLearnComplete("plusTen");
     navigate("/practise/plus10-strategy");
   };
 
