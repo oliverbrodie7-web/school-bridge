@@ -81,6 +81,14 @@ const Index = () => {
     setEditYear(2);
   };
 
+  if (loading) {
+    return (
+      <div className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center">
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-muted border-t-primary" />
+      </div>
+    );
+  }
+
   if (showSetup || !hasProfiles) {
     return (
       <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center px-6">
