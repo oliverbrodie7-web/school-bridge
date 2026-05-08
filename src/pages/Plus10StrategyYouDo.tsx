@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { setLearnComplete } from "@/lib/progress";
 
 const BLUE = "#3B82F6";
 const GREEN = "#22C55E";
