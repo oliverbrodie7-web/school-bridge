@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
+import { getLevel3Unlocked, setLevel3Unlocked } from "@/lib/progress";
 
 const BLUE = "#3B82F6";
 const GREEN = "#22C55E";
