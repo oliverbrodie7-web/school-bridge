@@ -1,26 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
-interface Profile {
-  name: string;
-  yearLevel: number;
-  colour: string;
-}
-
-const getSelectedProfile = (): Profile | null => {
-  try {
-    const profiles: Profile[] = JSON.parse(localStorage.getItem("profiles") || "[]");
-    const idx = Number(localStorage.getItem("selectedProfileIndex") || "0");
-    return profiles[idx] || null;
-  } catch {
-    return null;
-  }
-};
+import { Profile, fetchProfiles, migrateLocalProfilesIfNeeded } from "@/lib/profiles";
 
 const ContentHome = () => {
   const navigate = useNavigate();
-  const profile = getSelectedProfile();
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(true);
   const [literacyTapped, setLiteracyTapped] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      await migrateLocalProfilesIfNeeded();
+      try {
+        const profiles = await fetchProfiles();
+        const idx = Number(localStorage.getItem("selectedProfileIndex") || "0");
+        setProfile(profiles[idx] || null);
+      } catch {
+        setProfile(null);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center">
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-muted border-t-primary" />
+      </div>
+    );
+  }
 
   if (!profile) {
     navigate("/");

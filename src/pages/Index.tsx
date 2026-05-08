@@ -1,45 +1,51 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  Profile,
+  fetchProfiles,
+  insertProfile,
+  updateProfile,
+  migrateLocalProfilesIfNeeded,
+} from "@/lib/profiles";
 
 const PALETTE = ["#4A90D9", "#E8934A", "#6BBF8A", "#D96A6A", "#9B6BBF", "#4ABFBF"];
 
-interface Profile {
-  name: string;
-  yearLevel: number;
-  colour: string;
-}
-
-const getProfiles = (): Profile[] => {
-  try {
-    const raw = localStorage.getItem("profiles");
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-};
-
-const saveProfiles = (profiles: Profile[]) => {
-  localStorage.setItem("profiles", JSON.stringify(profiles));
-};
-
 const Index = () => {
-  const [profiles, setProfiles] = useState<Profile[]>(getProfiles);
+  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showSetup, setShowSetup] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editName, setEditName] = useState("");
   const [editYear, setEditYear] = useState<number>(2);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    (async () => {
+      await migrateLocalProfilesIfNeeded();
+      try {
+        const data = await fetchProfiles();
+        setProfiles(data);
+      } catch {
+        setProfiles([]);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
   const hasProfiles = profiles.length > 0;
 
-  const handleAddProfile = (profile: Profile) => {
-    const updated = [...profiles, profile];
-    saveProfiles(updated);
-    setProfiles(updated);
-    setShowSetup(false);
+  const handleAddProfile = async (profile: Omit<Profile, "id">) => {
+    try {
+      const created = await insertProfile(profile);
+      setProfiles((prev) => [...prev, created]);
+      setShowSetup(false);
+    } catch {
+      // silent — could add toast later
+    }
   };
 
-  const handleSelectProfile = (profile: Profile, index: number) => {
+  const handleSelectProfile = (_profile: Profile, index: number) => {
     if (editingIndex !== null) return;
     localStorage.setItem("selectedProfileIndex", String(index));
     navigate("/home");
@@ -52,12 +58,19 @@ const Index = () => {
     setEditYear(profiles[index].yearLevel);
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
     if (editingIndex === null || !editName.trim()) return;
-    const updated = [...profiles];
-    updated[editingIndex] = { ...updated[editingIndex], name: editName.trim(), yearLevel: editYear };
-    saveProfiles(updated);
-    setProfiles(updated);
+    const target = profiles[editingIndex];
+    const newName = editName.trim();
+    const newYear = editYear;
+    try {
+      await updateProfile(target.id, { name: newName, yearLevel: newYear });
+      setProfiles((prev) =>
+        prev.map((p, i) => (i === editingIndex ? { ...p, name: newName, yearLevel: newYear } : p))
+      );
+    } catch {
+      // silent
+    }
     setEditingIndex(null);
     setEditName("");
   };
@@ -67,6 +80,14 @@ const Index = () => {
     setEditName("");
     setEditYear(2);
   };
+
+  if (loading) {
+    return (
+      <div className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center">
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-muted border-t-primary" />
+      </div>
+    );
+  }
 
   if (showSetup || !hasProfiles) {
     return (
@@ -229,7 +250,7 @@ const ProfileSetup = ({
   onCancel,
 }: {
   colourIndex: number;
-  onSave: (profile: Profile) => void;
+  onSave: (profile: Omit<Profile, "id">) => void;
   onCancel?: () => void;
 }) => {
   const [step, setStep] = useState(1);
