@@ -10,15 +10,16 @@ export interface Profile {
 interface DbProfile {
   id: string;
   name: string;
-  year_level: number | string;
+  year_level: number;
   avatar_colour: string;
   created_at?: string;
+  parent_id?: string | null;
 }
 
 const fromDb = (r: DbProfile): Profile => ({
   id: r.id,
   name: r.name,
-  yearLevel: typeof r.year_level === "string" ? Number(r.year_level) : r.year_level,
+  yearLevel: r.year_level,
   colour: r.avatar_colour,
 });
 
@@ -36,7 +37,7 @@ export const insertProfile = async (p: Omit<Profile, "id">): Promise<Profile> =>
     .from("profiles")
     .insert({
       name: p.name,
-      year_level: String(p.yearLevel),
+      year_level: p.yearLevel,
       avatar_colour: p.colour,
     })
     .select()
@@ -51,7 +52,7 @@ export const updateProfile = async (
 ): Promise<void> => {
   const dbPatch: Record<string, unknown> = {};
   if (patch.name !== undefined) dbPatch.name = patch.name;
-  if (patch.yearLevel !== undefined) dbPatch.year_level = String(patch.yearLevel);
+  if (patch.yearLevel !== undefined) dbPatch.year_level = patch.yearLevel;
   if (patch.colour !== undefined) dbPatch.avatar_colour = patch.colour;
   const { error } = await supabase.from("profiles").update(dbPatch).eq("id", id);
   if (error) throw error;
