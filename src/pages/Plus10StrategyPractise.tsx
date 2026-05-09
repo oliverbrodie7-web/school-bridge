@@ -415,7 +415,7 @@ const QuestionCard = ({
           </div>
           <div className="text-center">
             <button
-              onClick={onCorrect}
+              onClick={() => onCorrect(hadWrongRef.current)}
               className="rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
             >
               Next Question
@@ -431,7 +431,17 @@ const QuestionCard = ({
    LEVEL 2 — Text only, no blocks
    ═══════════════════════════════════════════════════════ */
 
-const Level2Card = ({ q, onCorrect }: { q: Q; onCorrect: () => void }) => {
+const Level2Card = ({
+  q,
+  onCorrect,
+  consecutiveCorrect,
+  consecutiveWrong,
+}: {
+  q: Q;
+  onCorrect: (hadWrong: boolean) => void;
+  consecutiveCorrect: number;
+  consecutiveWrong: number;
+}) => {
   const { a, b } = q;
   const total = a + b;
   const totalTens = Math.floor(total / 10);
