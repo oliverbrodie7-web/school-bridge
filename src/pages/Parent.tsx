@@ -684,9 +684,10 @@ const Plus10ParentGuide = () => (
       </Link>
 
       {/* ─── SECTION 1: REASSURANCE ─── */}
-      <section className="mt-8">
+      <section className="relative mt-8">
+        <div className="absolute right-0 top-0 z-10"><CurriculumBadge {...AC9M2N04_PROPS} /></div>
         <h1
-          className="text-2xl font-bold text-foreground sm:text-3xl leading-tight"
+          className="text-2xl font-bold text-foreground sm:text-3xl leading-tight pr-24"
           style={{ fontFamily: "var(--font-heading)" }}
         >
           Adding 10 should be simple. Here's why it sometimes isn't.
