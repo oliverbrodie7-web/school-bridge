@@ -431,14 +431,20 @@ const Level2Card = ({
   const [totalInput, setTotalInput] = useState("");
   const [step, setStep] = useState<"input" | "inputTotal" | "wrong" | "wrongTotal" | "correct">("input");
   const [hint, setHint] = useState("");
+  const hadWrongRef = useRef(false);
+
+  const inputFocus: "tens" | "ones" | "total" =
+    step === "inputTotal" || step === "wrongTotal" ? "total" : "tens";
 
   const handleCheck = () => {
     const t = Number(tensInput), o = Number(onesInput);
     if (t !== tSum) {
       setHint(`Try adding just the tens: ${bT} + ${sT}`);
+      hadWrongRef.current = true;
       setStep("wrong");
     } else if (o !== oSum) {
       setHint(`Now check the ones: ${bO} + ${sO}`);
+      hadWrongRef.current = true;
       setStep("wrong");
     } else {
       setHint("");
@@ -449,6 +455,7 @@ const Level2Card = ({
   const handleCheckTotal = () => {
     if (Number(totalInput) !== total) {
       setHint(`Almost! Add your tens and ones: ${tSum} + ${oSum}`);
+      hadWrongRef.current = true;
       setStep("wrongTotal");
     } else {
       setHint("");
@@ -462,6 +469,15 @@ const Level2Card = ({
       <p className="mt-2 text-3xl font-bold text-primary sm:text-4xl" style={{ fontFamily: "var(--font-heading)" }}>
         {q.big} + {q.small}
       </p>
+
+      <PractiseHintButton
+        strategy="splitStrategy"
+        level={2}
+        consecutiveCorrect={consecutiveCorrect}
+        consecutiveWrong={consecutiveWrong}
+        question={{ a: q.big, b: q.small }}
+        inputFocus={inputFocus}
+      />
 
       <div className="mt-8 space-y-5">
         <InputRow label={`Split the tens: ${bT} + ${sT} = `} value={tensInput} onChange={(v) => { setTensInput(v); if (step === "wrong") setStep("input"); }} />
@@ -524,7 +540,7 @@ const Level2Card = ({
           <div className="rounded-xl bg-secondary p-4 text-center font-medium text-secondary-foreground">
             Great work! You used the split strategy! 🌟
           </div>
-          <button onClick={onNext} className="w-full rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
+          <button onClick={() => onNext(hadWrongRef.current)} className="w-full rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
             Next Question
           </button>
         </div>
