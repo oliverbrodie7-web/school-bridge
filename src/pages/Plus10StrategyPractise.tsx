@@ -234,13 +234,15 @@ const QuestionCard = ({
         {a} + {b}
       </p>
 
-      <PractiseHintButton
-        strategy="plusTen"
-        level={level as 1 | 2 | 3}
-        consecutiveCorrect={consecutiveCorrect}
-        consecutiveWrong={consecutiveWrong}
-        question={q}
-      />
+      {level !== 1 && (
+        <PractiseHintButton
+          strategy="plusTen"
+          level={level as 2 | 3}
+          consecutiveCorrect={consecutiveCorrect}
+          consecutiveWrong={consecutiveWrong}
+          question={q}
+        />
+      )}
 
       {/* Blocks area */}
       <div className="mt-6 flex flex-col items-center gap-3">
