@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import CurriculumBadge, { AC9M2N04_PROPS } from "@/components/CurriculumBadge";
 
 const BLUE = "#3B82F6";
 const ORANGE = "#F97316";
@@ -69,15 +70,18 @@ const SplitStrategyWeDo = () => {
           ← Back
         </Link>
 
-        <h1
-          className="mt-6 text-center text-2xl font-bold text-foreground sm:text-3xl"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
-          Split Strategy — We Do
-        </h1>
-        <p className="mt-2 text-center text-muted-foreground">
-          This time, the computer goes first. Then it's your turn.
-        </p>
+        <div className="relative mt-6">
+          <div className="absolute right-0 top-0 z-10"><CurriculumBadge {...AC9M2N04_PROPS} /></div>
+          <h1
+            className="text-center text-2xl font-bold text-foreground sm:text-3xl"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            Split Strategy — We Do
+          </h1>
+          <p className="mt-2 text-center text-muted-foreground">
+            This time, the computer goes first. Then it's your turn.
+          </p>
+        </div>
 
         {finished ? (
           <div className="mt-10 text-center space-y-6 animate-fade-in">

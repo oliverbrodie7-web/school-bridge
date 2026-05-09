@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { getLevel3Unlocked, setLevel3Unlocked } from "@/lib/progress";
+import CurriculumBadge, { AC9M2N04_PROPS } from "@/components/CurriculumBadge";
 import { PractiseHintButton } from "@/components/PractiseHintButton";
 
 const BLUE = "#3B82F6";
@@ -849,15 +850,18 @@ const Plus10StrategyPractise = () => {
           ← Back
         </Link>
 
-        <h1
-          className="mt-6 text-center text-2xl font-bold text-foreground sm:text-3xl"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
-          +10 Strategy — Practise
-        </h1>
-        <p className="mt-2 mb-6 text-center text-muted-foreground">
-          Choose your level.
-        </p>
+        <div className="relative mt-6">
+          <div className="absolute right-0 top-0 z-10"><CurriculumBadge {...AC9M2N04_PROPS} /></div>
+          <h1
+            className="text-center text-2xl font-bold text-foreground sm:text-3xl"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            +10 Strategy — Practise
+          </h1>
+          <p className="mt-2 mb-6 text-center text-muted-foreground">
+            Choose your level.
+          </p>
+        </div>
 
         <LevelSelector level={level} onChange={handleLevelChange} l3Unlocked={l3Unlocked} />
 

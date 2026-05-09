@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import CurriculumBadge, { AC9M2N04_PROPS } from "@/components/CurriculumBadge";
 import { setLearnComplete } from "@/lib/progress";
 
 const BLUE = "#3B82F6";
@@ -511,18 +512,21 @@ const Plus10StrategyYouDo = () => {
           ← Back
         </Link>
 
-        <h1
-          className="mt-6 text-center text-2xl font-bold text-foreground sm:text-3xl"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
-          +10 Strategy — You Do
-        </h1>
-        <p
-          className="mt-2 text-center text-muted-foreground"
-          style={{ fontFamily: "var(--font-body)" }}
-        >
-          Your turn — you've got this.
-        </p>
+        <div className="relative mt-6">
+          <div className="absolute right-0 top-0 z-10"><CurriculumBadge {...AC9M2N04_PROPS} /></div>
+          <h1
+            className="text-center text-2xl font-bold text-foreground sm:text-3xl"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            +10 Strategy — You Do
+          </h1>
+          <p
+            className="mt-2 text-center text-muted-foreground"
+            style={{ fontFamily: "var(--font-body)" }}
+          >
+            Your turn — you've got this.
+          </p>
+        </div>
 
         {!finished && (
           <p className="mt-4 text-center text-sm font-medium text-muted-foreground">
