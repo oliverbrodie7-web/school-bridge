@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { getLevel3Unlocked, setLevel3Unlocked } from "@/lib/progress";
+import CurriculumBadge, { AC9M2N04_PROPS } from "@/components/CurriculumBadge";
 import { PractiseHintButton } from "@/components/PractiseHintButton";
 
 const BLUE = "#3B82F6";
