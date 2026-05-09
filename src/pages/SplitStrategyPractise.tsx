@@ -674,14 +674,27 @@ const SplitStrategyPractise = () => {
   const finished = currentIndex >= queue.length;
   const l3Unlocked = l2Correct >= L2_THRESHOLD;
 
+  // Session-only hint counters (reset on level change)
+  const [consecutiveCorrect, setConsecutiveCorrect] = useState(0);
+  const [consecutiveWrong, setConsecutiveWrong] = useState(0);
+
   const handleLevelChange = (l: number) => {
     setLevel(l);
     setQueue(buildQueue());
     setCurrentIndex(0);
+    setConsecutiveCorrect(0);
+    setConsecutiveWrong(0);
   };
 
-  const nextQuestion = () => {
-    if (level === 2) {
+  const nextQuestion = (hadWrong: boolean) => {
+    if (hadWrong) {
+      setConsecutiveWrong((w) => w + 1);
+      setConsecutiveCorrect(0);
+    } else {
+      setConsecutiveCorrect((c) => c + 1);
+      setConsecutiveWrong(0);
+    }
+    if (level === 2 && !hadWrong) {
       const newCount = incL2Count();
       setL2Correct(newCount);
     }
@@ -691,6 +704,8 @@ const SplitStrategyPractise = () => {
   const resetAll = () => {
     setQueue(buildQueue());
     setCurrentIndex(0);
+    setConsecutiveCorrect(0);
+    setConsecutiveWrong(0);
   };
 
   const question = finished ? queue[0] : queue[currentIndex];
@@ -750,9 +765,9 @@ const SplitStrategyPractise = () => {
             <p className="mt-4 text-center text-sm text-muted-foreground">
               Question {currentIndex + 1} of {queue.length}
             </p>
-            {level === 1 && <Level1Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} />}
-            {level === 2 && <Level2Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} />}
-            {level === 3 && <Level3Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} />}
+            {level === 1 && <Level1Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} consecutiveCorrect={consecutiveCorrect} consecutiveWrong={consecutiveWrong} />}
+            {level === 2 && <Level2Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} consecutiveCorrect={consecutiveCorrect} consecutiveWrong={consecutiveWrong} />}
+            {level === 3 && <Level3Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} consecutiveCorrect={consecutiveCorrect} consecutiveWrong={consecutiveWrong} />}
           </>
         )}
       </div>
