@@ -139,6 +139,14 @@ const Level1Card = ({
   const [onesAns, setOnesAns] = useState("");
   const [totalAns, setTotalAns] = useState("");
   const [hint, setHint] = useState("");
+  const hadWrongRef = useRef(false);
+
+  const inputFocus: "tens" | "ones" | "total" =
+    phase === "inputOnes" || phase === "onesWrong"
+      ? "ones"
+      : phase === "inputTotal" || phase === "totalWrong"
+        ? "total"
+        : "tens";
 
   const firstSplit = !["tapFirst"].includes(phase);
   const secondSplit = !["tapFirst", "tapSecond"].includes(phase);
@@ -156,6 +164,7 @@ const Level1Card = ({
       setPhase("inputOnes");
     } else {
       setHint(`Try again: ${bT} + ${sT} = ?`);
+      hadWrongRef.current = true;
       setPhase("tensWrong");
     }
   };
@@ -165,6 +174,7 @@ const Level1Card = ({
       setPhase("inputTotal");
     } else {
       setHint(`Try again: ${bO} + ${sO} = ?`);
+      hadWrongRef.current = true;
       setPhase("onesWrong");
     }
   };
@@ -174,6 +184,7 @@ const Level1Card = ({
       setPhase("correct");
     } else {
       setHint(`Add your tens and ones: ${tSum} + ${oSum} = ?`);
+      hadWrongRef.current = true;
       setPhase("totalWrong");
     }
   };
@@ -183,6 +194,15 @@ const Level1Card = ({
       <p className="text-center text-3xl font-bold text-foreground sm:text-4xl" style={{ fontFamily: "var(--font-heading)" }}>
         {q.big} + {q.small}
       </p>
+
+      <PractiseHintButton
+        strategy="splitStrategy"
+        level={1}
+        consecutiveCorrect={consecutiveCorrect}
+        consecutiveWrong={consecutiveWrong}
+        question={{ a: q.big, b: q.small }}
+        inputFocus={inputFocus}
+      />
 
       <p className="mt-6 text-center text-lg font-semibold text-foreground">
         <span className="text-muted-foreground">Step 1: </span>
