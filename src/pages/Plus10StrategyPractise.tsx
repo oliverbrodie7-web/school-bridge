@@ -729,7 +729,7 @@ const Plus10StrategyPractise = () => {
   const genQuestion = useCallback((lvl: number, qNum?: number) => {
     if (lvl === 1) return generateL1();
     if (lvl === 2) return (qNum ?? 999) <= 3 ? generateL1() : generateL2();
-    return generateL3(l3UsedRef.current);
+    return generateL3(l3UsedRef.current, qNum ?? 999);
   }, []);
 
   const handleLevelChange = (l: number) => {
