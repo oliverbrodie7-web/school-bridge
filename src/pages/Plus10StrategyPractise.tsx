@@ -160,6 +160,11 @@ const QuestionCard = ({
 
   const merged = phase === "animating" || phase === "input" || phase === "wrong" || phase === "correct";
 
+  const [hint, setHint] = useState("");
+  const hadWrongRef = useRef(false);
+
+  const merged = phase === "animating" || phase === "input" || phase === "wrong" || phase === "correct";
+
   useEffect(() => {
     if (phase === "animating") {
       const t = setTimeout(() => setPhase("input"), 1000);
