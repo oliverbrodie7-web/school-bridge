@@ -176,6 +176,7 @@ const QuestionCard = ({
     // Check hundreds (if applicable)
     if (isOver100 && Number(hundredsAns) !== hundreds) {
       setHint("How many hundreds do we have? Look at the hundreds block.");
+      hadWrongRef.current = true;
       setPhase("wrong");
       return;
     }
@@ -183,16 +184,19 @@ const QuestionCard = ({
     const expectedTens = isOver100 ? remainderTens : totalTens;
     if (Number(tensAns) !== expectedTens) {
       setHint("Count the tens blocks — how many are there now?");
+      hadWrongRef.current = true;
       setPhase("wrong");
       return;
     }
     if (Number(onesAns) !== totalOnes) {
       setHint("Look at the ones blocks — did they move at all?");
+      hadWrongRef.current = true;
       setPhase("wrong");
       return;
     }
     if (Number(totalAns) !== total) {
       setHint("You've got the tens and ones right — now put them together.");
+      hadWrongRef.current = true;
       setPhase("wrong");
       return;
     }
@@ -229,6 +233,14 @@ const QuestionCard = ({
       >
         {a} + {b}
       </p>
+
+      <PractiseHintButton
+        strategy="plusTen"
+        level={level as 1 | 2 | 3}
+        consecutiveCorrect={consecutiveCorrect}
+        consecutiveWrong={consecutiveWrong}
+        question={q}
+      />
 
       {/* Blocks area */}
       <div className="mt-6 flex flex-col items-center gap-3">
