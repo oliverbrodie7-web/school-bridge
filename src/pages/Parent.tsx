@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import CurriculumBadge, { AC9M2N04_PROPS } from "@/components/CurriculumBadge";
 
 const BLUE = "#3B82F6";
 const ORANGE = "#F97316";
