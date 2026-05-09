@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { getLevel3Unlocked, setLevel3Unlocked } from "@/lib/progress";
+import { PractiseHintButton } from "@/components/PractiseHintButton";
 
 const BLUE = "#3B82F6";
 const GREEN = "#22C55E";
@@ -130,10 +131,14 @@ const QuestionCard = ({
   q,
   level,
   onCorrect,
+  consecutiveCorrect,
+  consecutiveWrong,
 }: {
   q: Q;
   level: number;
-  onCorrect: () => void;
+  onCorrect: (hadWrong: boolean) => void;
+  consecutiveCorrect: number;
+  consecutiveWrong: number;
 }) => {
   const { a, b } = q;
   const total = a + b;
