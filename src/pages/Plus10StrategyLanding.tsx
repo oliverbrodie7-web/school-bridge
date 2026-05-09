@@ -23,8 +23,9 @@ const Plus10StrategyLanding = () => {
           ← Back
         </Link>
 
-        <div className="mt-8 text-center space-y-8">
-          <div>
+        <div className="relative mt-8">
+          <div className="absolute right-0 top-0"><CurriculumBadge {...AC9M2N04_PROPS} /></div>
+          <div className="text-center">
             <h1
               className="text-3xl font-bold text-foreground sm:text-4xl"
               style={{ fontFamily: "var(--font-heading)" }}
@@ -35,6 +36,9 @@ const Plus10StrategyLanding = () => {
               Adding 10s is faster than counting by 1s.
             </p>
           </div>
+        </div>
+
+        <div className="text-center space-y-8 mt-8">
 
           <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
             <Link
