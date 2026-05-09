@@ -157,10 +157,6 @@ const QuestionCard = ({
   const [hundredsAns, setHundredsAns] = useState("");
   const [totalAns, setTotalAns] = useState("");
   const [hint, setHint] = useState("");
-
-  const merged = phase === "animating" || phase === "input" || phase === "wrong" || phase === "correct";
-
-  const [hint, setHint] = useState("");
   const hadWrongRef = useRef(false);
 
   const merged = phase === "animating" || phase === "input" || phase === "wrong" || phase === "correct";
