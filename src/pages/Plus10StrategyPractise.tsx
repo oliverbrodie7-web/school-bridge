@@ -576,7 +576,7 @@ const Level2Card = ({
           <div className="rounded-xl bg-secondary p-4 text-center font-medium text-secondary-foreground">
             Only the tens changed — the ones stayed the same. 🌟
           </div>
-          <button onClick={onCorrect} className="w-full rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
+          <button onClick={() => onCorrect(hadWrongRef.current)} className="w-full rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
             Next Question
           </button>
         </div>
@@ -589,7 +589,17 @@ const Level2Card = ({
    LEVEL 3 — Text only, supports results over 100
    ═══════════════════════════════════════════════════════ */
 
-const Level3Card = ({ q, onCorrect }: { q: Q; onCorrect: () => void }) => {
+const Level3Card = ({
+  q,
+  onCorrect,
+  consecutiveCorrect,
+  consecutiveWrong,
+}: {
+  q: Q;
+  onCorrect: (hadWrong: boolean) => void;
+  consecutiveCorrect: number;
+  consecutiveWrong: number;
+}) => {
   const { a, b } = q;
   const total = a + b;
   const isOver100 = total >= 100;
@@ -603,20 +613,24 @@ const Level3Card = ({ q, onCorrect }: { q: Q; onCorrect: () => void }) => {
   const [totalAns, setTotalAns] = useState("");
   const [step, setStep] = useState<"input" | "inputTotal" | "wrong" | "wrongTotal" | "correct">("input");
   const [hint, setHint] = useState("");
+  const hadWrongRef = useRef(false);
 
   const handleCheck = () => {
     if (isOver100 && Number(hundredsAns) !== hundreds) {
       setHint("Think about it — do we have enough tens to make a hundred?");
+      hadWrongRef.current = true;
       setStep("wrong");
       return;
     }
     if (Number(tensAns) !== totalTens) {
       setHint(`Count the tens — how many tens are left after making hundreds?`);
+      hadWrongRef.current = true;
       setStep("wrong");
       return;
     }
     if (Number(onesAns) !== totalOnes) {
       setHint("The ones don't change when we add tens. What were the ones?");
+      hadWrongRef.current = true;
       setStep("wrong");
       return;
     }
@@ -629,6 +643,7 @@ const Level3Card = ({ q, onCorrect }: { q: Q; onCorrect: () => void }) => {
       setHint(isOver100
         ? `Put it together: ${hundreds} hundred, ${totalTens} tens and ${totalOnes} ones.`
         : `Put your tens and ones together: ${totalTens}0 + ${totalOnes}`);
+      hadWrongRef.current = true;
       setStep("wrongTotal");
     } else {
       setHint("");
@@ -642,6 +657,14 @@ const Level3Card = ({ q, onCorrect }: { q: Q; onCorrect: () => void }) => {
       <p className="mt-2 text-3xl font-bold text-primary sm:text-4xl" style={{ fontFamily: "var(--font-heading)" }}>
         {a} + {b}
       </p>
+
+      <PractiseHintButton
+        strategy="plusTen"
+        level={3}
+        consecutiveCorrect={consecutiveCorrect}
+        consecutiveWrong={consecutiveWrong}
+        question={q}
+      />
 
       <div className="mt-8 space-y-5">
         {isOver100 && (
