@@ -225,7 +225,7 @@ const QuestionCard = ({
   const displayTensAfterMerge = isOver100 ? mergedTensCount - 10 : mergedTensCount;
 
   return (
-    <div className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
+    <div className="relative mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
       {/* Equation */}
       <p
         className="text-center text-3xl font-bold text-foreground sm:text-4xl"
@@ -483,7 +483,7 @@ const Level2Card = ({
   };
 
   return (
-    <div className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
+    <div className="relative mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
       <p className="text-lg font-semibold text-foreground">Use the +10 strategy to solve:</p>
       <p className="mt-2 text-3xl font-bold text-primary sm:text-4xl" style={{ fontFamily: "var(--font-heading)" }}>
         {a} + {b}
@@ -654,7 +654,7 @@ const Level3Card = ({
   };
 
   return (
-    <div className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
+    <div className="relative mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
       <p className="text-lg font-semibold text-foreground">Use the +10 strategy to solve:</p>
       <p className="mt-2 text-3xl font-bold text-primary sm:text-4xl" style={{ fontFamily: "var(--font-heading)" }}>
         {a} + {b}

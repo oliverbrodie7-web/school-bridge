@@ -190,7 +190,7 @@ const Level1Card = ({
   };
 
   return (
-    <div className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
+    <div className="relative mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
       <p className="text-center text-3xl font-bold text-foreground sm:text-4xl" style={{ fontFamily: "var(--font-heading)" }}>
         {q.big} + {q.small}
       </p>
@@ -457,7 +457,7 @@ const Level2Card = ({
   };
 
   return (
-    <div className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
+    <div className="relative mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
       <p className="text-lg font-semibold text-foreground">Use the split strategy to solve:</p>
       <p className="mt-2 text-3xl font-bold text-primary sm:text-4xl" style={{ fontFamily: "var(--font-heading)" }}>
         {q.big} + {q.small}
@@ -589,7 +589,7 @@ const Level3Card = ({
   };
 
   return (
-    <div className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8 text-center">
+    <div className="relative mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8 text-center">
       <p className="text-lg font-semibold text-foreground">
         Use the split strategy to solve this on paper:
       </p>
