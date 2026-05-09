@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { setLearnComplete } from "@/lib/progress";
+import CurriculumBadge, { AC9M2N04_PROPS } from "@/components/CurriculumBadge";
 
 const BLUE = "#3B82F6";
 const ORANGE = "#F97316";
