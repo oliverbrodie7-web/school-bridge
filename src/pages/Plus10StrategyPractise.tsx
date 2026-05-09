@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { getLevel3Unlocked, setLevel3Unlocked } from "@/lib/progress";
+import { PractiseHintButton } from "@/components/PractiseHintButton";
 
 const BLUE = "#3B82F6";
 const GREEN = "#22C55E";
@@ -130,10 +131,14 @@ const QuestionCard = ({
   q,
   level,
   onCorrect,
+  consecutiveCorrect,
+  consecutiveWrong,
 }: {
   q: Q;
   level: number;
-  onCorrect: () => void;
+  onCorrect: (hadWrong: boolean) => void;
+  consecutiveCorrect: number;
+  consecutiveWrong: number;
 }) => {
   const { a, b } = q;
   const total = a + b;
@@ -152,6 +157,7 @@ const QuestionCard = ({
   const [hundredsAns, setHundredsAns] = useState("");
   const [totalAns, setTotalAns] = useState("");
   const [hint, setHint] = useState("");
+  const hadWrongRef = useRef(false);
 
   const merged = phase === "animating" || phase === "input" || phase === "wrong" || phase === "correct";
 
@@ -170,6 +176,7 @@ const QuestionCard = ({
     // Check hundreds (if applicable)
     if (isOver100 && Number(hundredsAns) !== hundreds) {
       setHint("How many hundreds do we have? Look at the hundreds block.");
+      hadWrongRef.current = true;
       setPhase("wrong");
       return;
     }
@@ -177,16 +184,19 @@ const QuestionCard = ({
     const expectedTens = isOver100 ? remainderTens : totalTens;
     if (Number(tensAns) !== expectedTens) {
       setHint("Count the tens blocks — how many are there now?");
+      hadWrongRef.current = true;
       setPhase("wrong");
       return;
     }
     if (Number(onesAns) !== totalOnes) {
       setHint("Look at the ones blocks — did they move at all?");
+      hadWrongRef.current = true;
       setPhase("wrong");
       return;
     }
     if (Number(totalAns) !== total) {
       setHint("You've got the tens and ones right — now put them together.");
+      hadWrongRef.current = true;
       setPhase("wrong");
       return;
     }
@@ -223,6 +233,14 @@ const QuestionCard = ({
       >
         {a} + {b}
       </p>
+
+      <PractiseHintButton
+        strategy="plusTen"
+        level={level as 1 | 2 | 3}
+        consecutiveCorrect={consecutiveCorrect}
+        consecutiveWrong={consecutiveWrong}
+        question={q}
+      />
 
       {/* Blocks area */}
       <div className="mt-6 flex flex-col items-center gap-3">
@@ -397,7 +415,7 @@ const QuestionCard = ({
           </div>
           <div className="text-center">
             <button
-              onClick={onCorrect}
+              onClick={() => onCorrect(hadWrongRef.current)}
               className="rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
             >
               Next Question
@@ -413,7 +431,17 @@ const QuestionCard = ({
    LEVEL 2 — Text only, no blocks
    ═══════════════════════════════════════════════════════ */
 
-const Level2Card = ({ q, onCorrect }: { q: Q; onCorrect: () => void }) => {
+const Level2Card = ({
+  q,
+  onCorrect,
+  consecutiveCorrect,
+  consecutiveWrong,
+}: {
+  q: Q;
+  onCorrect: (hadWrong: boolean) => void;
+  consecutiveCorrect: number;
+  consecutiveWrong: number;
+}) => {
   const { a, b } = q;
   const total = a + b;
   const totalTens = Math.floor(total / 10);
@@ -424,13 +452,16 @@ const Level2Card = ({ q, onCorrect }: { q: Q; onCorrect: () => void }) => {
   const [totalAns, setTotalAns] = useState("");
   const [step, setStep] = useState<"input" | "inputTotal" | "wrong" | "wrongTotal" | "correct">("input");
   const [hint, setHint] = useState("");
+  const hadWrongRef = useRef(false);
 
   const handleCheck = () => {
     if (Number(tensAns) !== totalTens) {
       setHint(`Count the tens — how many tens in ${a} and how many more from ${b}?`);
+      hadWrongRef.current = true;
       setStep("wrong");
     } else if (Number(onesAns) !== totalOnes) {
       setHint("Look at the ones — did they change when we added tens?");
+      hadWrongRef.current = true;
       setStep("wrong");
     } else {
       setHint("");
@@ -441,6 +472,7 @@ const Level2Card = ({ q, onCorrect }: { q: Q; onCorrect: () => void }) => {
   const handleCheckTotal = () => {
     if (Number(totalAns) !== total) {
       setHint(`Almost! Put your tens and ones together: ${totalTens}0 + ${totalOnes}`);
+      hadWrongRef.current = true;
       setStep("wrongTotal");
     } else {
       setHint("");
@@ -454,6 +486,14 @@ const Level2Card = ({ q, onCorrect }: { q: Q; onCorrect: () => void }) => {
       <p className="mt-2 text-3xl font-bold text-primary sm:text-4xl" style={{ fontFamily: "var(--font-heading)" }}>
         {a} + {b}
       </p>
+
+      <PractiseHintButton
+        strategy="plusTen"
+        level={2}
+        consecutiveCorrect={consecutiveCorrect}
+        consecutiveWrong={consecutiveWrong}
+        question={q}
+      />
 
       <div className="mt-8 space-y-5">
         <div className="flex flex-wrap items-center gap-2">
@@ -536,7 +576,7 @@ const Level2Card = ({ q, onCorrect }: { q: Q; onCorrect: () => void }) => {
           <div className="rounded-xl bg-secondary p-4 text-center font-medium text-secondary-foreground">
             Only the tens changed — the ones stayed the same. 🌟
           </div>
-          <button onClick={onCorrect} className="w-full rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
+          <button onClick={() => onCorrect(hadWrongRef.current)} className="w-full rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
             Next Question
           </button>
         </div>
@@ -549,7 +589,17 @@ const Level2Card = ({ q, onCorrect }: { q: Q; onCorrect: () => void }) => {
    LEVEL 3 — Text only, supports results over 100
    ═══════════════════════════════════════════════════════ */
 
-const Level3Card = ({ q, onCorrect }: { q: Q; onCorrect: () => void }) => {
+const Level3Card = ({
+  q,
+  onCorrect,
+  consecutiveCorrect,
+  consecutiveWrong,
+}: {
+  q: Q;
+  onCorrect: (hadWrong: boolean) => void;
+  consecutiveCorrect: number;
+  consecutiveWrong: number;
+}) => {
   const { a, b } = q;
   const total = a + b;
   const isOver100 = total >= 100;
@@ -563,20 +613,24 @@ const Level3Card = ({ q, onCorrect }: { q: Q; onCorrect: () => void }) => {
   const [totalAns, setTotalAns] = useState("");
   const [step, setStep] = useState<"input" | "inputTotal" | "wrong" | "wrongTotal" | "correct">("input");
   const [hint, setHint] = useState("");
+  const hadWrongRef = useRef(false);
 
   const handleCheck = () => {
     if (isOver100 && Number(hundredsAns) !== hundreds) {
       setHint("Think about it — do we have enough tens to make a hundred?");
+      hadWrongRef.current = true;
       setStep("wrong");
       return;
     }
     if (Number(tensAns) !== totalTens) {
       setHint(`Count the tens — how many tens are left after making hundreds?`);
+      hadWrongRef.current = true;
       setStep("wrong");
       return;
     }
     if (Number(onesAns) !== totalOnes) {
       setHint("The ones don't change when we add tens. What were the ones?");
+      hadWrongRef.current = true;
       setStep("wrong");
       return;
     }
@@ -589,6 +643,7 @@ const Level3Card = ({ q, onCorrect }: { q: Q; onCorrect: () => void }) => {
       setHint(isOver100
         ? `Put it together: ${hundreds} hundred, ${totalTens} tens and ${totalOnes} ones.`
         : `Put your tens and ones together: ${totalTens}0 + ${totalOnes}`);
+      hadWrongRef.current = true;
       setStep("wrongTotal");
     } else {
       setHint("");
@@ -602,6 +657,14 @@ const Level3Card = ({ q, onCorrect }: { q: Q; onCorrect: () => void }) => {
       <p className="mt-2 text-3xl font-bold text-primary sm:text-4xl" style={{ fontFamily: "var(--font-heading)" }}>
         {a} + {b}
       </p>
+
+      <PractiseHintButton
+        strategy="plusTen"
+        level={3}
+        consecutiveCorrect={consecutiveCorrect}
+        consecutiveWrong={consecutiveWrong}
+        question={q}
+      />
 
       <div className="mt-8 space-y-5">
         {isOver100 && (
@@ -697,7 +760,7 @@ const Level3Card = ({ q, onCorrect }: { q: Q; onCorrect: () => void }) => {
           <div className="rounded-xl bg-secondary p-4 text-center font-medium text-secondary-foreground">
             You're thinking in tens like a mathematician. 🌟
           </div>
-          <button onClick={onCorrect} className="w-full rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
+          <button onClick={() => onCorrect(hadWrongRef.current)} className="w-full rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
             Next Question
           </button>
         </div>
@@ -719,6 +782,10 @@ const Plus10StrategyPractise = () => {
   const [showUnlockBanner, setShowUnlockBanner] = useState(false);
   const l3UsedRef = useRef<Set<string>>(new Set());
 
+  // Session-only hint counters (per level — reset on level change)
+  const [consecutiveCorrect, setConsecutiveCorrect] = useState(0);
+  const [consecutiveWrong, setConsecutiveWrong] = useState(0);
+
   useEffect(() => {
     (async () => {
       const unlocked = await getLevel3Unlocked("plusTen");
@@ -736,11 +803,21 @@ const Plus10StrategyPractise = () => {
     setLevel(l);
     setQuestion(genQuestion(l, 1));
     setQuestionNum(1);
+    setConsecutiveCorrect(0);
+    setConsecutiveWrong(0);
     if (l === 3) l3UsedRef.current = new Set();
   };
 
-  const handleCorrect = () => {
-    if (level === 2) {
+  const handleCorrect = (hadWrong: boolean) => {
+    if (hadWrong) {
+      setConsecutiveWrong((w) => w + 1);
+      setConsecutiveCorrect(0);
+    } else {
+      setConsecutiveCorrect((c) => c + 1);
+      setConsecutiveWrong(0);
+    }
+
+    if (level === 2 && !hadWrong) {
       const newStreak = l2Streak + 1;
       setL2Streak(newStreak);
       if (newStreak >= 10 && !l3Unlocked) {
@@ -815,6 +892,8 @@ const Plus10StrategyPractise = () => {
             q={question}
             level={1}
             onCorrect={handleCorrect}
+            consecutiveCorrect={consecutiveCorrect}
+            consecutiveWrong={consecutiveWrong}
           />
         )}
         {level === 2 && (
@@ -822,6 +901,8 @@ const Plus10StrategyPractise = () => {
             key={`2-${questionNum}`}
             q={question}
             onCorrect={handleCorrect}
+            consecutiveCorrect={consecutiveCorrect}
+            consecutiveWrong={consecutiveWrong}
           />
         )}
         {level === 3 && (
@@ -829,6 +910,8 @@ const Plus10StrategyPractise = () => {
             key={`3-${questionNum}`}
             q={question}
             onCorrect={handleCorrect}
+            consecutiveCorrect={consecutiveCorrect}
+            consecutiveWrong={consecutiveWrong}
           />
         )}
       </div>

@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import { PractiseHintButton } from "@/components/PractiseHintButton";
 
 const BLUE = "#3B82F6";
 const ORANGE = "#F97316";
@@ -117,7 +118,17 @@ type L1Phase =
   | "inputTotal" | "totalWrong"
   | "correct";
 
-const Level1Card = ({ q, onNext }: { q: Q; onNext: () => void }) => {
+const Level1Card = ({
+  q,
+  onNext,
+  consecutiveCorrect,
+  consecutiveWrong,
+}: {
+  q: Q;
+  onNext: (hadWrong: boolean) => void;
+  consecutiveCorrect: number;
+  consecutiveWrong: number;
+}) => {
   const [phase, setPhase] = useState<L1Phase>("tapFirst");
 
   const bT = tens(q.big), bO = ones(q.big);
@@ -128,6 +139,14 @@ const Level1Card = ({ q, onNext }: { q: Q; onNext: () => void }) => {
   const [onesAns, setOnesAns] = useState("");
   const [totalAns, setTotalAns] = useState("");
   const [hint, setHint] = useState("");
+  const hadWrongRef = useRef(false);
+
+  const inputFocus: "tens" | "ones" | "total" =
+    phase === "inputOnes" || phase === "onesWrong"
+      ? "ones"
+      : phase === "inputTotal" || phase === "totalWrong"
+        ? "total"
+        : "tens";
 
   const firstSplit = !["tapFirst"].includes(phase);
   const secondSplit = !["tapFirst", "tapSecond"].includes(phase);
@@ -145,6 +164,7 @@ const Level1Card = ({ q, onNext }: { q: Q; onNext: () => void }) => {
       setPhase("inputOnes");
     } else {
       setHint(`Try again: ${bT} + ${sT} = ?`);
+      hadWrongRef.current = true;
       setPhase("tensWrong");
     }
   };
@@ -154,6 +174,7 @@ const Level1Card = ({ q, onNext }: { q: Q; onNext: () => void }) => {
       setPhase("inputTotal");
     } else {
       setHint(`Try again: ${bO} + ${sO} = ?`);
+      hadWrongRef.current = true;
       setPhase("onesWrong");
     }
   };
@@ -163,6 +184,7 @@ const Level1Card = ({ q, onNext }: { q: Q; onNext: () => void }) => {
       setPhase("correct");
     } else {
       setHint(`Add your tens and ones: ${tSum} + ${oSum} = ?`);
+      hadWrongRef.current = true;
       setPhase("totalWrong");
     }
   };
@@ -172,6 +194,15 @@ const Level1Card = ({ q, onNext }: { q: Q; onNext: () => void }) => {
       <p className="text-center text-3xl font-bold text-foreground sm:text-4xl" style={{ fontFamily: "var(--font-heading)" }}>
         {q.big} + {q.small}
       </p>
+
+      <PractiseHintButton
+        strategy="splitStrategy"
+        level={1}
+        consecutiveCorrect={consecutiveCorrect}
+        consecutiveWrong={consecutiveWrong}
+        question={{ a: q.big, b: q.small }}
+        inputFocus={inputFocus}
+      />
 
       <p className="mt-6 text-center text-lg font-semibold text-foreground">
         <span className="text-muted-foreground">Step 1: </span>
@@ -366,7 +397,7 @@ const Level1Card = ({ q, onNext }: { q: Q; onNext: () => void }) => {
             {tSum} + {oSum} = {total} 🌟
           </p>
           <div className="mt-4 text-center">
-            <button onClick={onNext} className="rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
+            <button onClick={() => onNext(hadWrongRef.current)} className="rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
               Next Question
             </button>
           </div>
@@ -380,7 +411,17 @@ const Level1Card = ({ q, onNext }: { q: Q; onNext: () => void }) => {
    LEVEL 2 — Text input rows (guided, like screenshot)
    ═══════════════════════════════════════════════════════ */
 
-const Level2Card = ({ q, onNext }: { q: Q; onNext: () => void }) => {
+const Level2Card = ({
+  q,
+  onNext,
+  consecutiveCorrect,
+  consecutiveWrong,
+}: {
+  q: Q;
+  onNext: (hadWrong: boolean) => void;
+  consecutiveCorrect: number;
+  consecutiveWrong: number;
+}) => {
   const bT = tens(q.big), bO = ones(q.big);
   const sT = tens(q.small), sO = ones(q.small);
   const tSum = bT + sT, oSum = bO + sO, total = q.big + q.small;
@@ -390,14 +431,20 @@ const Level2Card = ({ q, onNext }: { q: Q; onNext: () => void }) => {
   const [totalInput, setTotalInput] = useState("");
   const [step, setStep] = useState<"input" | "inputTotal" | "wrong" | "wrongTotal" | "correct">("input");
   const [hint, setHint] = useState("");
+  const hadWrongRef = useRef(false);
+
+  const inputFocus: "tens" | "ones" | "total" =
+    step === "inputTotal" || step === "wrongTotal" ? "total" : "tens";
 
   const handleCheck = () => {
     const t = Number(tensInput), o = Number(onesInput);
     if (t !== tSum) {
       setHint(`Try adding just the tens: ${bT} + ${sT}`);
+      hadWrongRef.current = true;
       setStep("wrong");
     } else if (o !== oSum) {
       setHint(`Now check the ones: ${bO} + ${sO}`);
+      hadWrongRef.current = true;
       setStep("wrong");
     } else {
       setHint("");
@@ -408,6 +455,7 @@ const Level2Card = ({ q, onNext }: { q: Q; onNext: () => void }) => {
   const handleCheckTotal = () => {
     if (Number(totalInput) !== total) {
       setHint(`Almost! Add your tens and ones: ${tSum} + ${oSum}`);
+      hadWrongRef.current = true;
       setStep("wrongTotal");
     } else {
       setHint("");
@@ -421,6 +469,15 @@ const Level2Card = ({ q, onNext }: { q: Q; onNext: () => void }) => {
       <p className="mt-2 text-3xl font-bold text-primary sm:text-4xl" style={{ fontFamily: "var(--font-heading)" }}>
         {q.big} + {q.small}
       </p>
+
+      <PractiseHintButton
+        strategy="splitStrategy"
+        level={2}
+        consecutiveCorrect={consecutiveCorrect}
+        consecutiveWrong={consecutiveWrong}
+        question={{ a: q.big, b: q.small }}
+        inputFocus={inputFocus}
+      />
 
       <div className="mt-8 space-y-5">
         <InputRow label={`Split the tens: ${bT} + ${sT} = `} value={tensInput} onChange={(v) => { setTensInput(v); if (step === "wrong") setStep("input"); }} />
@@ -483,7 +540,7 @@ const Level2Card = ({ q, onNext }: { q: Q; onNext: () => void }) => {
           <div className="rounded-xl bg-secondary p-4 text-center font-medium text-secondary-foreground">
             Great work! You used the split strategy! 🌟
           </div>
-          <button onClick={onNext} className="w-full rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
+          <button onClick={() => onNext(hadWrongRef.current)} className="w-full rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
             Next Question
           </button>
         </div>
@@ -510,11 +567,22 @@ const InputRow = ({ label, suffix, value, onChange }: { label: string; suffix?: 
    LEVEL 3 — Minimal guidance, do it on paper
    ═══════════════════════════════════════════════════════ */
 
-const Level3Card = ({ q, onNext }: { q: Q; onNext: () => void }) => {
+const Level3Card = ({
+  q,
+  onNext,
+  consecutiveCorrect,
+  consecutiveWrong,
+}: {
+  q: Q;
+  onNext: (hadWrong: boolean) => void;
+  consecutiveCorrect: number;
+  consecutiveWrong: number;
+}) => {
   const total = q.big + q.small;
   const [answer, setAnswer] = useState("");
   const [step, setStep] = useState<"input" | "wrong" | "correct">("input");
   const [hint, setHint] = useState("");
+  const hadWrongRef = useRef(false);
 
   const check = () => {
     if (Number(answer) === total) {
@@ -522,6 +590,7 @@ const Level3Card = ({ q, onNext }: { q: Q; onNext: () => void }) => {
       setStep("correct");
     } else {
       setHint("Not quite — use the split strategy on paper and try again.");
+      hadWrongRef.current = true;
       setStep("wrong");
     }
   };
@@ -534,6 +603,14 @@ const Level3Card = ({ q, onNext }: { q: Q; onNext: () => void }) => {
       <p className="mt-4 text-4xl font-bold text-primary sm:text-5xl" style={{ fontFamily: "var(--font-heading)" }}>
         {q.big} + {q.small}
       </p>
+
+      <PractiseHintButton
+        strategy="splitStrategy"
+        level={3}
+        consecutiveCorrect={consecutiveCorrect}
+        consecutiveWrong={consecutiveWrong}
+        question={{ a: q.big, b: q.small }}
+      />
 
       <div className="mt-8 space-y-3">
         <p className="text-muted-foreground text-base">
@@ -576,7 +653,7 @@ const Level3Card = ({ q, onNext }: { q: Q; onNext: () => void }) => {
           <div className="rounded-xl bg-secondary p-4 text-center font-medium text-secondary-foreground">
             {q.big} + {q.small} = {total} — Amazing! 🌟
           </div>
-          <button onClick={onNext} className="rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
+          <button onClick={() => onNext(hadWrongRef.current)} className="rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
             Next Question
           </button>
         </div>
@@ -597,14 +674,27 @@ const SplitStrategyPractise = () => {
   const finished = currentIndex >= queue.length;
   const l3Unlocked = l2Correct >= L2_THRESHOLD;
 
+  // Session-only hint counters (reset on level change)
+  const [consecutiveCorrect, setConsecutiveCorrect] = useState(0);
+  const [consecutiveWrong, setConsecutiveWrong] = useState(0);
+
   const handleLevelChange = (l: number) => {
     setLevel(l);
     setQueue(buildQueue());
     setCurrentIndex(0);
+    setConsecutiveCorrect(0);
+    setConsecutiveWrong(0);
   };
 
-  const nextQuestion = () => {
-    if (level === 2) {
+  const nextQuestion = (hadWrong: boolean) => {
+    if (hadWrong) {
+      setConsecutiveWrong((w) => w + 1);
+      setConsecutiveCorrect(0);
+    } else {
+      setConsecutiveCorrect((c) => c + 1);
+      setConsecutiveWrong(0);
+    }
+    if (level === 2 && !hadWrong) {
       const newCount = incL2Count();
       setL2Correct(newCount);
     }
@@ -614,6 +704,8 @@ const SplitStrategyPractise = () => {
   const resetAll = () => {
     setQueue(buildQueue());
     setCurrentIndex(0);
+    setConsecutiveCorrect(0);
+    setConsecutiveWrong(0);
   };
 
   const question = finished ? queue[0] : queue[currentIndex];
@@ -673,9 +765,9 @@ const SplitStrategyPractise = () => {
             <p className="mt-4 text-center text-sm text-muted-foreground">
               Question {currentIndex + 1} of {queue.length}
             </p>
-            {level === 1 && <Level1Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} />}
-            {level === 2 && <Level2Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} />}
-            {level === 3 && <Level3Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} />}
+            {level === 1 && <Level1Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} consecutiveCorrect={consecutiveCorrect} consecutiveWrong={consecutiveWrong} />}
+            {level === 2 && <Level2Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} consecutiveCorrect={consecutiveCorrect} consecutiveWrong={consecutiveWrong} />}
+            {level === 3 && <Level3Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} consecutiveCorrect={consecutiveCorrect} consecutiveWrong={consecutiveWrong} />}
           </>
         )}
       </div>
