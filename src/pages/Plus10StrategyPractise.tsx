@@ -760,7 +760,7 @@ const Level3Card = ({
           <div className="rounded-xl bg-secondary p-4 text-center font-medium text-secondary-foreground">
             You're thinking in tens like a mathematician. 🌟
           </div>
-          <button onClick={onCorrect} className="w-full rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
+          <button onClick={() => onCorrect(hadWrongRef.current)} className="w-full rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
             Next Question
           </button>
         </div>
@@ -782,6 +782,10 @@ const Plus10StrategyPractise = () => {
   const [showUnlockBanner, setShowUnlockBanner] = useState(false);
   const l3UsedRef = useRef<Set<string>>(new Set());
 
+  // Session-only hint counters (per level — reset on level change)
+  const [consecutiveCorrect, setConsecutiveCorrect] = useState(0);
+  const [consecutiveWrong, setConsecutiveWrong] = useState(0);
+
   useEffect(() => {
     (async () => {
       const unlocked = await getLevel3Unlocked("plusTen");
@@ -799,11 +803,21 @@ const Plus10StrategyPractise = () => {
     setLevel(l);
     setQuestion(genQuestion(l, 1));
     setQuestionNum(1);
+    setConsecutiveCorrect(0);
+    setConsecutiveWrong(0);
     if (l === 3) l3UsedRef.current = new Set();
   };
 
-  const handleCorrect = () => {
-    if (level === 2) {
+  const handleCorrect = (hadWrong: boolean) => {
+    if (hadWrong) {
+      setConsecutiveWrong((w) => w + 1);
+      setConsecutiveCorrect(0);
+    } else {
+      setConsecutiveCorrect((c) => c + 1);
+      setConsecutiveWrong(0);
+    }
+
+    if (level === 2 && !hadWrong) {
       const newStreak = l2Streak + 1;
       setL2Streak(newStreak);
       if (newStreak >= 10 && !l3Unlocked) {
@@ -878,6 +892,8 @@ const Plus10StrategyPractise = () => {
             q={question}
             level={1}
             onCorrect={handleCorrect}
+            consecutiveCorrect={consecutiveCorrect}
+            consecutiveWrong={consecutiveWrong}
           />
         )}
         {level === 2 && (
@@ -885,6 +901,8 @@ const Plus10StrategyPractise = () => {
             key={`2-${questionNum}`}
             q={question}
             onCorrect={handleCorrect}
+            consecutiveCorrect={consecutiveCorrect}
+            consecutiveWrong={consecutiveWrong}
           />
         )}
         {level === 3 && (
@@ -892,6 +910,8 @@ const Plus10StrategyPractise = () => {
             key={`3-${questionNum}`}
             q={question}
             onCorrect={handleCorrect}
+            consecutiveCorrect={consecutiveCorrect}
+            consecutiveWrong={consecutiveWrong}
           />
         )}
       </div>
