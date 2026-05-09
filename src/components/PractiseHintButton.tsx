@@ -10,7 +10,8 @@ interface Question {
 
 interface Props {
   strategy: Strategy;
-  level: 1 | 2 | 3;
+  /** Hint button never renders on Level 1. */
+  level: 2 | 3;
   /** Session counter — page-managed. Hint hides when >= 3 consecutive correct. */
   consecutiveCorrect: number;
   /** Session counter — page-managed. Hint shows again when >= 2 consecutive wrong. */
@@ -21,11 +22,12 @@ interface Props {
   inputFocus?: SplitFocus;
 }
 
+const ACCENT = "#1D9E75"; // --colour-active-border
 const BLUE = "#3B82F6";
 const ORANGE = "#F97316";
 const GREEN = "#22C55E";
 
-const getTip = (strategy: Strategy, level: 1 | 2 | 3, focus: SplitFocus): string => {
+const getTip = (strategy: Strategy, level: 2 | 3, focus: SplitFocus): string => {
   if (strategy === "splitStrategy") {
     if (level === 3) {
       return "Split each number into tens and ones. Add the tens, then the ones, then put them together.";
@@ -39,9 +41,6 @@ const getTip = (strategy: Strategy, level: 1 | 2 | 3, focus: SplitFocus): string
     return "Look at the first digit. That tells you the tens. What is it worth?";
   }
   // plusTen
-  if (level === 1) {
-    return "When we add 10, only the tens digit changes. Look at the tens — what comes next?";
-  }
   if (level === 2) {
     return "Count the tens blocks. How many tens are there now altogether?";
   }
@@ -55,29 +54,32 @@ const SplitVisualHint = ({ q }: { q: Question }) => {
   const t = Math.floor(big / 10) * 10;
   const o = big % 10;
   return (
-    <div className="flex flex-col items-center gap-3">
+    <div className="mt-3 flex flex-col items-center gap-2">
       <div className="flex items-center gap-3">
         <div
-          className="flex h-14 w-14 items-center justify-center rounded-xl text-xl font-bold text-white"
-          style={{ background: `linear-gradient(to right, ${BLUE} 50%, ${ORANGE} 50%)`, animation: "fade-out 0.6s ease-out 0.6s both" }}
+          className="flex h-12 w-12 items-center justify-center rounded-xl text-lg font-bold text-white"
+          style={{
+            background: `linear-gradient(to right, ${BLUE} 50%, ${ORANGE} 50%)`,
+            animation: "fade-out 0.6s ease-out 0.6s both",
+          }}
         >
           {big}
         </div>
         <span className="text-muted-foreground">→</span>
         <div className="flex flex-col items-center" style={{ animation: "slideLeft 0.5s ease-out 0.8s both" }}>
-          <div className="flex h-14 w-14 items-center justify-center rounded-xl text-xl font-bold text-white" style={{ backgroundColor: BLUE }}>
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl text-lg font-bold text-white" style={{ backgroundColor: BLUE }}>
             {t}
           </div>
           <span className="mt-1 text-[10px] font-semibold text-muted-foreground">tens</span>
         </div>
         <div className="flex flex-col items-center" style={{ animation: "slideRight 0.5s ease-out 0.8s both" }}>
-          <div className="flex h-14 w-14 items-center justify-center rounded-xl text-xl font-bold text-white" style={{ backgroundColor: ORANGE }}>
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl text-lg font-bold text-white" style={{ backgroundColor: ORANGE }}>
             {o}
           </div>
           <span className="mt-1 text-[10px] font-semibold text-muted-foreground">ones</span>
         </div>
       </div>
-      <p className="text-sm font-medium text-foreground">Now you try the next step.</p>
+      <p className="text-[13px] font-medium text-foreground">Now you try the next step.</p>
     </div>
   );
 };
@@ -87,26 +89,26 @@ const Plus10VisualHint = ({ q }: { q: Question }) => {
   const aOnes = q.a % 10;
   const bTens = Math.floor(q.b / 10);
   return (
-    <div className="flex flex-col items-center gap-3">
+    <div className="mt-3 flex flex-col items-center gap-2">
       <div className="flex items-end gap-1.5">
         {Array.from({ length: aTens }).map((_, i) => (
-          <div key={`bt${i}`} className="rounded-md" style={{ width: 14, height: 56, backgroundColor: BLUE }} />
+          <div key={`bt${i}`} className="rounded-md" style={{ width: 12, height: 48, backgroundColor: BLUE }} />
         ))}
         {Array.from({ length: bTens }).map((_, i) => (
           <div
             key={`gt${i}`}
             className="rounded-md"
             style={{
-              width: 14,
-              height: 56,
+              width: 12,
+              height: 48,
               backgroundColor: GREEN,
               animation: `slideDown 0.7s ease-out ${0.2 + i * 0.15}s both`,
             }}
           />
         ))}
-        {aOnes > 0 && <div className="ml-1.5 w-3 h-3 rounded-sm" style={{ backgroundColor: BLUE }} />}
+        {aOnes > 0 && <div className="ml-1.5 w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: BLUE }} />}
       </div>
-      <p className="text-sm font-medium text-foreground">Now you try the next step.</p>
+      <p className="text-[13px] font-medium text-foreground">Now you try the next step.</p>
     </div>
   );
 };
@@ -119,11 +121,13 @@ export const PractiseHintButton = ({
   question,
   inputFocus = "tens",
 }: Props) => {
-  const [stage, setStage] = useState<0 | 1 | 2>(0);
+  const [open, setOpen] = useState(false);
+  const [showVisual, setShowVisual] = useState(false);
 
-  // Reset back to the small button whenever the question changes or the level changes.
+  // Reset open/visual state whenever the question or level changes.
   useEffect(() => {
-    setStage(0);
+    setOpen(false);
+    setShowVisual(false);
   }, [strategy, level, question?.a, question?.b]);
 
   const hidden = consecutiveCorrect >= 3 && consecutiveWrong < 2;
@@ -132,40 +136,48 @@ export const PractiseHintButton = ({
   const tip = getTip(strategy, level, inputFocus);
 
   return (
-    <div className="my-3 flex justify-center animate-fade-in">
-      {stage === 0 && (
-        <button
-          type="button"
-          onClick={() => setStage(1)}
-          className="rounded-lg border border-primary/60 bg-transparent px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/5"
+    <>
+      {/* Toggle button — absolute top-right of the parent question card */}
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="absolute z-10 rounded-md border bg-transparent px-2.5 py-1 text-xs font-medium transition-colors hover:bg-[hsl(var(--secondary))]"
+        style={{ top: 14, right: 14, borderColor: ACCENT, color: ACCENT }}
+      >
+        {open ? "Hide hint ↑" : "Need a hint?"}
+      </button>
+
+      {/* Inline expanding hint card */}
+      {open && (
+        <div
+          className="overflow-hidden rounded-md border border-border bg-secondary text-muted-foreground"
+          style={{
+            marginTop: 10,
+            padding: 12,
+            fontSize: 13,
+            animation: "slideDown 0.2s ease-out",
+          }}
         >
-          Need a hint?
-        </button>
-      )}
+          <p className="text-[13px] leading-snug text-foreground">{tip}</p>
 
-      {stage === 1 && (
-        <div className="w-full max-w-md rounded-lg border border-primary/30 bg-primary/5 p-3 animate-fade-in">
-          <p className="text-sm text-foreground">{tip}</p>
-          <button
-            type="button"
-            onClick={() => setStage(2)}
-            className="mt-2 text-xs font-medium text-primary underline-offset-2 hover:underline"
-          >
-            Still stuck? Show me
-          </button>
-        </div>
-      )}
+          {!showVisual && (
+            <button
+              type="button"
+              onClick={() => setShowVisual(true)}
+              className="mt-2 text-[12px] font-medium underline-offset-2 hover:underline"
+              style={{ color: ACCENT }}
+            >
+              Still stuck? Show me
+            </button>
+          )}
 
-      {stage === 2 && (
-        <div className="w-full max-w-md rounded-lg border border-primary/30 bg-primary/5 p-4 animate-fade-in">
-          {question ? (
+          {showVisual && question && (
             strategy === "splitStrategy" ? <SplitVisualHint q={question} /> : <Plus10VisualHint q={question} />
-          ) : (
-            <p className="text-sm text-foreground text-center">Now you try the next step.</p>
           )}
         </div>
       )}
-    </div>
+    </>
   );
 };
 
