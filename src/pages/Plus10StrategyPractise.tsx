@@ -452,13 +452,16 @@ const Level2Card = ({
   const [totalAns, setTotalAns] = useState("");
   const [step, setStep] = useState<"input" | "inputTotal" | "wrong" | "wrongTotal" | "correct">("input");
   const [hint, setHint] = useState("");
+  const hadWrongRef = useRef(false);
 
   const handleCheck = () => {
     if (Number(tensAns) !== totalTens) {
       setHint(`Count the tens — how many tens in ${a} and how many more from ${b}?`);
+      hadWrongRef.current = true;
       setStep("wrong");
     } else if (Number(onesAns) !== totalOnes) {
       setHint("Look at the ones — did they change when we added tens?");
+      hadWrongRef.current = true;
       setStep("wrong");
     } else {
       setHint("");
@@ -469,6 +472,7 @@ const Level2Card = ({
   const handleCheckTotal = () => {
     if (Number(totalAns) !== total) {
       setHint(`Almost! Put your tens and ones together: ${totalTens}0 + ${totalOnes}`);
+      hadWrongRef.current = true;
       setStep("wrongTotal");
     } else {
       setHint("");
@@ -482,6 +486,14 @@ const Level2Card = ({
       <p className="mt-2 text-3xl font-bold text-primary sm:text-4xl" style={{ fontFamily: "var(--font-heading)" }}>
         {a} + {b}
       </p>
+
+      <PractiseHintButton
+        strategy="plusTen"
+        level={2}
+        consecutiveCorrect={consecutiveCorrect}
+        consecutiveWrong={consecutiveWrong}
+        question={q}
+      />
 
       <div className="mt-8 space-y-5">
         <div className="flex flex-wrap items-center gap-2">
