@@ -567,11 +567,22 @@ const InputRow = ({ label, suffix, value, onChange }: { label: string; suffix?: 
    LEVEL 3 — Minimal guidance, do it on paper
    ═══════════════════════════════════════════════════════ */
 
-const Level3Card = ({ q, onNext }: { q: Q; onNext: () => void }) => {
+const Level3Card = ({
+  q,
+  onNext,
+  consecutiveCorrect,
+  consecutiveWrong,
+}: {
+  q: Q;
+  onNext: (hadWrong: boolean) => void;
+  consecutiveCorrect: number;
+  consecutiveWrong: number;
+}) => {
   const total = q.big + q.small;
   const [answer, setAnswer] = useState("");
   const [step, setStep] = useState<"input" | "wrong" | "correct">("input");
   const [hint, setHint] = useState("");
+  const hadWrongRef = useRef(false);
 
   const check = () => {
     if (Number(answer) === total) {
@@ -579,6 +590,7 @@ const Level3Card = ({ q, onNext }: { q: Q; onNext: () => void }) => {
       setStep("correct");
     } else {
       setHint("Not quite — use the split strategy on paper and try again.");
+      hadWrongRef.current = true;
       setStep("wrong");
     }
   };
@@ -591,6 +603,14 @@ const Level3Card = ({ q, onNext }: { q: Q; onNext: () => void }) => {
       <p className="mt-4 text-4xl font-bold text-primary sm:text-5xl" style={{ fontFamily: "var(--font-heading)" }}>
         {q.big} + {q.small}
       </p>
+
+      <PractiseHintButton
+        strategy="splitStrategy"
+        level={3}
+        consecutiveCorrect={consecutiveCorrect}
+        consecutiveWrong={consecutiveWrong}
+        question={{ a: q.big, b: q.small }}
+      />
 
       <div className="mt-8 space-y-3">
         <p className="text-muted-foreground text-base">
@@ -633,7 +653,7 @@ const Level3Card = ({ q, onNext }: { q: Q; onNext: () => void }) => {
           <div className="rounded-xl bg-secondary p-4 text-center font-medium text-secondary-foreground">
             {q.big} + {q.small} = {total} — Amazing! 🌟
           </div>
-          <button onClick={onNext} className="rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
+          <button onClick={() => onNext(hadWrongRef.current)} className="rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
             Next Question
           </button>
         </div>
