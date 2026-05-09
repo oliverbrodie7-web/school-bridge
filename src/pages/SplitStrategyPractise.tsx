@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import { PractiseHintButton } from "@/components/PractiseHintButton";
 
 const BLUE = "#3B82F6";
 const ORANGE = "#F97316";
@@ -117,7 +118,17 @@ type L1Phase =
   | "inputTotal" | "totalWrong"
   | "correct";
 
-const Level1Card = ({ q, onNext }: { q: Q; onNext: () => void }) => {
+const Level1Card = ({
+  q,
+  onNext,
+  consecutiveCorrect,
+  consecutiveWrong,
+}: {
+  q: Q;
+  onNext: (hadWrong: boolean) => void;
+  consecutiveCorrect: number;
+  consecutiveWrong: number;
+}) => {
   const [phase, setPhase] = useState<L1Phase>("tapFirst");
 
   const bT = tens(q.big), bO = ones(q.big);
