@@ -195,14 +195,7 @@ const Level1Card = ({
         {q.big} + {q.small}
       </p>
 
-      <PractiseHintButton
-        strategy="splitStrategy"
-        level={1}
-        consecutiveCorrect={consecutiveCorrect}
-        consecutiveWrong={consecutiveWrong}
-        question={{ a: q.big, b: q.small }}
-        inputFocus={inputFocus}
-      />
+
 
       <p className="mt-6 text-center text-lg font-semibold text-foreground">
         <span className="text-muted-foreground">Step 1: </span>
