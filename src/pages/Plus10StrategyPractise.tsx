@@ -27,11 +27,22 @@ const generateL2 = (): Q => {
   return { a, b };
 };
 
-const generateL3 = (used: Set<string>): Q => {
+const generateL3 = (used: Set<string>, qNum: number = 999): Q => {
+  // Ease in: first 4 questions stay under 100 to build confidence.
+  const stayUnder100 = qNum <= 4;
   let attempts = 0;
   while (attempts < 200) {
-    const b = randInt(1, 9) * 10;
+    const b = randInt(4, 8) * 10; // 40–80, bigger tens than L2
     const a = randInt(11, 89);
+    if (stayUnder100 && a + b >= 100) {
+      attempts++;
+      continue;
+    }
+    if (!stayUnder100 && a + b < 100) {
+      // after the easing window, prefer crossing 100
+      attempts++;
+      continue;
+    }
     const key = `${a}+${b}`;
     if (!used.has(key)) {
       used.add(key);
@@ -40,8 +51,8 @@ const generateL3 = (used: Set<string>): Q => {
     attempts++;
   }
   // fallback
-  const b = randInt(1, 9) * 10;
-  const a = randInt(11, 89);
+  const b = randInt(4, 8) * 10;
+  const a = stayUnder100 ? randInt(11, 99 - b) : randInt(11, 89);
   return { a, b };
 };
 
