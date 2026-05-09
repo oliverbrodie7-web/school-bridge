@@ -397,7 +397,7 @@ const Level1Card = ({
             {tSum} + {oSum} = {total} 🌟
           </p>
           <div className="mt-4 text-center">
-            <button onClick={onNext} className="rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
+            <button onClick={() => onNext(hadWrongRef.current)} className="rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
               Next Question
             </button>
           </div>
@@ -411,7 +411,17 @@ const Level1Card = ({
    LEVEL 2 — Text input rows (guided, like screenshot)
    ═══════════════════════════════════════════════════════ */
 
-const Level2Card = ({ q, onNext }: { q: Q; onNext: () => void }) => {
+const Level2Card = ({
+  q,
+  onNext,
+  consecutiveCorrect,
+  consecutiveWrong,
+}: {
+  q: Q;
+  onNext: (hadWrong: boolean) => void;
+  consecutiveCorrect: number;
+  consecutiveWrong: number;
+}) => {
   const bT = tens(q.big), bO = ones(q.big);
   const sT = tens(q.small), sO = ones(q.small);
   const tSum = bT + sT, oSum = bO + sO, total = q.big + q.small;
