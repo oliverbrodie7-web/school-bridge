@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getLearnComplete, migrateLocalProgressIfNeeded } from "@/lib/progress";
+import CurriculumBadge, { AC9M2N04_PROPS } from "@/components/CurriculumBadge";
 
 const SplitStrategyLanding = () => {
   const [learnComplete, setLearnComplete] = useState(false);
