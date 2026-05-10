@@ -74,27 +74,35 @@ const CurriculumBadge = ({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="inline-flex items-center gap-1 transition-colors"
+        className="inline-flex items-center gap-1.5 transition-colors"
         style={{
           backgroundColor: "#E1F5EE",
           border: "0.5px solid #5DCAA5",
           color: "#0F6E56",
-          fontSize: "11px",
-          padding: "3px 8px",
+          padding: "5px 10px",
           borderRadius: "8px",
           cursor: "pointer",
+          textAlign: "left",
         }}
         onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#D2EFE3")}
         onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#E1F5EE")}
         aria-expanded={open}
         aria-label={`Curriculum reference ${code}`}
       >
-        <span>{code}</span>
+        <div className="flex flex-col">
+          <span style={{ fontSize: "10px", fontWeight: 400, lineHeight: 1.3 }}>
+            Australian Curriculum Outcome
+          </span>
+          <span style={{ fontSize: "11px", fontWeight: 500, lineHeight: 1.3 }}>
+            {code}
+          </span>
+        </div>
         <ChevronDown
           size={12}
           style={{
             transition: "transform 150ms ease-out",
             transform: open ? "rotate(180deg)" : "rotate(0deg)",
+            flexShrink: 0,
           }}
         />
       </button>
