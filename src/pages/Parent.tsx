@@ -1264,7 +1264,7 @@ const HalvesQuartersEighthsParentGuide = () => (
           Your child's teacher uses a three-step approach called Concrete, Pictorial, Abstract. First, children handle real objects — folding paper, cutting food, splitting groups of counters — to feel what equal parts mean. Then they draw and see pictures of those splits. Finally, they write the fraction as a number.
         </p>
         <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-          This site works in the <span className="font-semibold text-foreground">Pictorial</span> stage — your child taps to split shapes on screen. At home, you can support the <span className="font-semibold text-foreground">Concrete</span> stage by folding a piece of paper in half, then in half again, to show quarters. Use food too — cut a sandwich into 2 equal parts for halves, or 4 equal parts for quarters. The physical experience is what makes the fraction stick.
+          At home, try the Concrete stage first. Get a real pizza or a chocolate bar and ask your child to share it into equal parts before coming to this screen. Cutting a real pizza into quarters, or snapping a chocolate bar into equal pieces, is the physical experience that makes fractions stick. The screen shows the picture — the kitchen table provides the real thing.
         </p>
 
         <div className="mt-8">
