@@ -24,6 +24,7 @@ import HalvesQuartersEighthsLanding from "./pages/HalvesQuartersEighthsLanding.t
 import FractionsStrategies from "./pages/FractionsStrategies.tsx";
 import HalvesQuartersEighthsLearn from "./pages/HalvesQuartersEighthsLearn.tsx";
 import HalvesQuartersEighthsWeDo from "./pages/HalvesQuartersEighthsWeDo.tsx";
+import HalvesQuartersEighthsYouDo from "./pages/HalvesQuartersEighthsYouDo.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
