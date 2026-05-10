@@ -160,10 +160,17 @@ const QuestionCard = ({
 
   // Child state
   const [childTaps, setChildTaps] = useState(0);
-  const [partsInput, setPartsInput] = useState("");
-  const [nameInput, setNameInput] = useState("");
+  const [partsChoice, setPartsChoice] = useState<number | null>(null);
+  const [nameChoice, setNameChoice] = useState<string | null>(null);
   const [hint, setHint] = useState("");
   const [childCorrect, setChildCorrect] = useState(false);
+
+  const partsOptions = [2, 4, 8];
+  const nameOptions = [
+    { name: "one half", fraction: "1/2" },
+    { name: "one quarter", fraction: "1/4" },
+    { name: "one eighth", fraction: "1/8" },
+  ];
 
   // Animate computer demo
   useEffect(() => {
@@ -188,10 +195,8 @@ const QuestionCard = ({
   };
 
   const handleCheck = () => {
-    const partsOk = Number(partsInput) === spec.totalParts;
-    const nameOk = spec.acceptedNames.includes(
-      nameInput.trim().toLowerCase()
-    );
+    const partsOk = partsChoice === spec.totalParts;
+    const nameOk = nameChoice === spec.partName;
     if (partsOk && nameOk) {
       setChildCorrect(true);
       setHint("");
@@ -199,6 +204,14 @@ const QuestionCard = ({
       setHint(spec.wrongHint);
     }
   };
+
+  const chipStyle = (selected: boolean): React.CSSProperties => ({
+    backgroundColor: selected ? "#E1F5EE" : "#FFFFFF",
+    borderColor: selected ? TEAL : GREY_BORDER,
+    borderWidth: selected ? 2 : 1,
+    color: LABEL,
+    minHeight: 44,
+  });
 
   return (
     <div className="mt-8 space-y-6">
@@ -262,40 +275,39 @@ const QuestionCard = ({
           )}
 
           {childReady && !childCorrect && (
-            <div className="mt-6 space-y-4 animate-fade-in">
-              <div className="flex flex-col items-center gap-3">
-                <label className="text-base text-foreground flex items-center gap-2 flex-wrap justify-center">
-                  There are
-                  <input
-                    type="number"
-                    inputMode="numeric"
-                    value={partsInput}
-                    onChange={(e) => setPartsInput(e.target.value)}
-                    placeholder="?"
-                    className="h-12 w-20 rounded-xl border-2 text-center text-xl font-bold outline-none transition-colors focus:ring-2"
-                    style={{
-                      borderColor: TEAL,
-                      color: LABEL,
-                      backgroundColor: "#E1F5EE",
-                    }}
-                  />
-                  equal parts
-                </label>
-                <label className="text-base text-foreground flex items-center gap-2 flex-wrap justify-center">
-                  Each part is called
-                  <input
-                    type="text"
-                    value={nameInput}
-                    onChange={(e) => setNameInput(e.target.value)}
-                    placeholder="?"
-                    className="h-12 w-40 rounded-xl border-2 px-3 text-center text-lg font-semibold outline-none transition-colors focus:ring-2"
-                    style={{
-                      borderColor: TEAL,
-                      color: LABEL,
-                      backgroundColor: "#E1F5EE",
-                    }}
-                  />
-                </label>
+            <div className="mt-6 space-y-5 animate-fade-in">
+              <div className="flex flex-col items-center gap-2">
+                <p className="text-base text-foreground">There are ___ equal parts</p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {partsOptions.map((n) => (
+                    <button
+                      key={n}
+                      type="button"
+                      onClick={() => setPartsChoice(n)}
+                      className="rounded-xl border px-5 py-2.5 text-lg font-bold transition-all hover:bg-[#F5FBF8]"
+                      style={chipStyle(partsChoice === n)}
+                    >
+                      {n}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center gap-2">
+                <p className="text-base text-foreground">Each part is called ___</p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {nameOptions.map((opt) => (
+                    <button
+                      key={opt.name}
+                      type="button"
+                      onClick={() => setNameChoice(opt.name)}
+                      className="rounded-xl border px-5 py-2.5 text-base font-semibold transition-all hover:bg-[#F5FBF8]"
+                      style={chipStyle(nameChoice === opt.name)}
+                    >
+                      {opt.name} ({opt.fraction})
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {hint && (
@@ -307,7 +319,7 @@ const QuestionCard = ({
               <div className="text-center">
                 <button
                   onClick={handleCheck}
-                  disabled={!partsInput || !nameInput}
+                  disabled={partsChoice === null || nameChoice === null}
                   className="rounded-xl bg-primary px-6 py-3 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   Check
