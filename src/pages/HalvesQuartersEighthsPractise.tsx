@@ -571,9 +571,28 @@ const ShadeCard = ({
           <p className="text-center text-base text-foreground">
             I shaded ___ out of ___ parts = ___
           </p>
-          <ChipRow<number> label="Shaded parts" options={shadeOptions} value={shadeChip} onChange={setShadeChip} />
-          <ChipRow<number> label="Equal parts" options={partsOptions} value={partsChip} onChange={setPartsChip} />
-          <ChipRow<string> label="Fraction" options={fractionOptions} value={fractionChip} onChange={setFractionChip} />
+          <ChipRow<number>
+            label="How many did you shade?"
+            options={shadeOptions}
+            value={shadeChip}
+            onChange={setShadeChip}
+            active={shadeChip === null}
+            pulse={shadeChip === null}
+          />
+          <ChipRow<number>
+            label="How many equal parts are there?"
+            options={partsOptions}
+            value={partsChip}
+            onChange={setPartsChip}
+            active={shadeChip !== null && partsChip === null}
+          />
+          <ChipRow<string>
+            label="Which fraction is it?"
+            options={fractionOptions}
+            value={fractionChip}
+            onChange={setFractionChip}
+            active={partsChip !== null && fractionChip === null}
+          />
 
           {hint && (
             <p className="text-center text-base font-medium text-destructive animate-fade-in">{hint}</p>
