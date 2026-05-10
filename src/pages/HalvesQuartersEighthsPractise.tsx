@@ -1500,7 +1500,8 @@ const HalvesQuartersEighthsPractise = () => {
       const subPos = ((qNum - 1) % 10) + 1;
       return generateL2(subPos, seenL2.current);
     }
-    return generateL3(seenL3.current);
+    const subPos = ((qNum - 1) % 10) + 1;
+    return generateL3(subPos, seenL3.current);
   }, []);
 
   const [question, setQuestion] = useState<Question>(() => genFor(1, 1));
