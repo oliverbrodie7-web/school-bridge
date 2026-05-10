@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { getLevel3Unlocked, setLevel3Unlocked } from "@/lib/progress";
 import CurriculumBadge from "@/components/CurriculumBadge";
 import { PractiseHintButton } from "@/components/PractiseHintButton";
+import { Pizza, ChocolateBar } from "@/components/FractionFood";
 
 const TEAL = "#1D9E75";
 const TEAL_FILL = "#1D9E75";
