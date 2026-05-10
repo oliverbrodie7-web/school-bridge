@@ -499,21 +499,35 @@ const ChipRow = ({
   options,
   value,
   onChange,
+  active = false,
+  pulse = false,
 }: {
   label: string;
   options: number[];
   value: number | null;
   onChange: (n: number) => void;
+  active?: boolean;
+  pulse?: boolean;
 }) => (
-  <div className="flex flex-col items-center gap-2">
+  <div
+    className={`flex flex-col items-center gap-1.5 rounded-2xl px-3 py-2 transition-all ${
+      pulse ? "animate-pulse" : ""
+    }`}
+    style={{
+      boxShadow: active ? `0 0 0 2px ${TEAL}40` : "none",
+    }}
+  >
     <p className="text-sm font-medium text-muted-foreground">{label}</p>
-    <div className="flex flex-wrap justify-center gap-2">
+    {value === null && (
+      <p className="text-[11px] italic text-muted-foreground/70 -mt-1">Tap to choose</p>
+    )}
+    <div className="flex flex-wrap justify-center gap-2 mt-0.5">
       {options.map((n) => (
         <button
           key={n}
           type="button"
           onClick={() => onChange(n)}
-          className="rounded-xl border px-5 py-2.5 text-lg font-bold transition-all hover:bg-[#F5FBF8]"
+          className="rounded-xl border shadow-sm px-5 py-2.5 text-lg font-bold transition-all hover:bg-[#F5FBF8] hover:border-[#1D9E75]/40 active:scale-95"
           style={{
             backgroundColor: value === n ? "#E1F5EE" : "#FFFFFF",
             borderColor: value === n ? TEAL : GREY_BORDER,
@@ -531,23 +545,35 @@ const ChipRow = ({
 );
 
 const FractionChipRow = ({
+  label = "Fraction",
   options,
   value,
   onChange,
+  active = false,
 }: {
+  label?: string;
   options: string[];
   value: string | null;
   onChange: (n: string) => void;
+  active?: boolean;
 }) => (
-  <div className="flex flex-col items-center gap-2">
-    <p className="text-sm font-medium text-muted-foreground">Fraction</p>
-    <div className="flex flex-wrap justify-center gap-2">
+  <div
+    className="flex flex-col items-center gap-1.5 rounded-2xl px-3 py-2 transition-all"
+    style={{
+      boxShadow: active ? `0 0 0 2px ${TEAL}40` : "none",
+    }}
+  >
+    <p className="text-sm font-medium text-muted-foreground">{label}</p>
+    {value === null && (
+      <p className="text-[11px] italic text-muted-foreground/70 -mt-1">Tap to choose</p>
+    )}
+    <div className="flex flex-wrap justify-center gap-2 mt-0.5">
       {options.map((f) => (
         <button
           key={f}
           type="button"
           onClick={() => onChange(f)}
-          className="rounded-xl border px-5 py-2.5 text-lg font-semibold transition-all hover:bg-[#F5FBF8]"
+          className="rounded-xl border shadow-sm px-5 py-2.5 text-lg font-semibold transition-all hover:bg-[#F5FBF8] hover:border-[#1D9E75]/40 active:scale-95"
           style={{
             backgroundColor: value === f ? "#E1F5EE" : "#FFFFFF",
             borderColor: value === f ? TEAL : GREY_BORDER,
