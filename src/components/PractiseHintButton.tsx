@@ -44,9 +44,9 @@ const getTip = (strategy: Strategy, level: 2 | 3, focus: SplitFocus): string => 
   }
   if (strategy === "halvesQuartersEighths") {
     if (level === 2) {
-      return "Remember — quarters come from halving twice. Tap the shape again.";
+      return "Count the equal parts in the shape. The bottom number is how many parts altogether; the top number is how many are shaded.";
     }
-    return "Eighths come from halving three times — half, then quarter, then eighth. How many parts are there?";
+    return "Find two things in the problem: how many equal parts altogether (that's your bottom number), and how many parts are being talked about (that's your top number).";
   }
   // plusTen
   if (level === 2) {
@@ -207,7 +207,8 @@ export const PractiseHintButton = ({
         >
           <p className="text-[13px] leading-snug text-foreground">{tip}</p>
 
-          {!showVisual && (
+          {/* Hide "Show me" visual for HQE L3 — worded problems have no shape to animate. */}
+          {!(strategy === "halvesQuartersEighths" && level === 3) && !showVisual && (
             <button
               type="button"
               onClick={() => setShowVisual(true)}
@@ -219,7 +220,7 @@ export const PractiseHintButton = ({
           )}
 
           {showVisual && (
-            strategy === "halvesQuartersEighths"
+            strategy === "halvesQuartersEighths" && level === 2
               ? <FractionVisualHint level={level} />
               : strategy === "splitStrategy" && question
                 ? <SplitVisualHint q={question} />
