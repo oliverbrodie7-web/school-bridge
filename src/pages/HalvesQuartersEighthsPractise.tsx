@@ -378,18 +378,18 @@ const LevelSelector = ({
   l3Unlocked: boolean;
 }) => {
   const levels = [
-    { n: 1, label: "Level 1", desc: "Halves 🍫", locked: false },
-    { n: 2, label: "Level 2", desc: "Identify, match, fill", locked: false },
-    { n: 3, label: "Level 3", desc: "Worded problems", locked: !l3Unlocked },
+    { n: 1, label: "Level 1", desc: "Halves", locked: false },
+    { n: 2, label: "Level 2", desc: "Identify", locked: false },
+    { n: 3, label: "Level 3", desc: "Worded", locked: !l3Unlocked },
   ];
   return (
-    <div className="flex gap-3 justify-center flex-wrap">
+    <div className="flex gap-3 justify-center">
       {levels.map((l) => (
         <button
           key={l.n}
           onClick={() => !l.locked && onChange(l.n)}
           disabled={l.locked}
-          className={`rounded-xl px-5 py-3 text-sm font-semibold transition-colors border-2 ${
+          className={`flex-1 rounded-xl px-5 py-3 text-sm font-semibold transition-colors border-2 text-center ${
             l.locked
               ? "border-border text-muted-foreground opacity-50 cursor-not-allowed"
               : level === l.n
