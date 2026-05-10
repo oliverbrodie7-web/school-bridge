@@ -199,7 +199,7 @@ const HalvesQuartersEighthsYouDo = () => {
         ) : (
           <>
             {/* ProgressIndicator: Learn / You Do phase, wired to qIndex / queue.length */}
-            <ProgressIndicator mode="learn" phase="youDo" current={qIndex + 1} total={queue.length} />
+            <ProgressIndicator mode="learn" phase="youdo" current={qIndex + 1} total={queue.length} />
             {queue[qIndex].type === "shade" ? (
               <ShadeCard
                 key={`${seed}-${qIndex}-${queue[qIndex].id}`}
