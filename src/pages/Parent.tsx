@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import CurriculumBadge, { AC9M2N04_PROPS } from "@/components/CurriculumBadge";
+import { Pizza } from "@/components/FractionFood";
 
 const BLUE = "#3B82F6";
 const ORANGE = "#F97316";
@@ -983,9 +984,8 @@ type HQEDemoPhase = "prompt" | "halved" | "quartered" | "shaded";
 const HQEDemoAnimation = () => {
   const [phase, setPhase] = useState<HQEDemoPhase>("prompt");
 
-  const taps =
-    phase === "prompt" ? 0 : phase === "halved" ? 1 : 2;
-  const shaded = phase === "shaded";
+  const slices = phase === "prompt" ? 1 : phase === "halved" ? 2 : 4;
+  const shaded = phase === "shaded" ? [0] : [];
 
   const advance = () => {
     if (phase === "prompt") setPhase("halved");
@@ -995,57 +995,54 @@ const HQEDemoAnimation = () => {
 
   const reset = () => setPhase("prompt");
 
+  const splitDone = phase === "quartered" || phase === "shaded";
+  const canTapWhole = phase === "prompt" || phase === "halved";
+
+  const handleSliceTap = (i: number) => {
+    if (phase === "quartered" && i === 0) setPhase("shaded");
+  };
+
   return (
     <div className="rounded-xl border border-border bg-card p-6 sm:p-8">
       <p className="text-sm font-medium text-muted-foreground text-center">
-        Tap the square to halve it. Tap again to make quarters. Tap once more to shade one quarter.
+        Tap the pizza to slice it in half. Tap again to make quarters. Tap one slice to shade it.
       </p>
 
       <div className="mt-6 flex justify-center">
-        <button
-          type="button"
-          onClick={advance}
-          disabled={phase === "shaded"}
+        <div
+          role={canTapWhole ? "button" : undefined}
+          onClick={canTapWhole ? advance : undefined}
+          aria-label="Tap pizza to slice"
           className={
-            phase !== "shaded"
+            canTapWhole
               ? "cursor-pointer transition-transform hover:scale-105 active:scale-95"
               : "cursor-default"
           }
-          style={{ background: "transparent", border: "none", padding: 0 }}
-          aria-label="Tap to split shape"
+          style={{ background: "transparent", border: "none", padding: 0, display: "inline-block" }}
         >
-          <svg width="220" height="220" viewBox="0 0 200 200">
-            <rect x="2" y="2" width="196" height="196" fill={HQE_GREY} stroke={HQE_GREY_BORDER} strokeWidth="1" rx="6" />
-            {shaded && (
-              <rect x="2" y="2" width="98" height="98" fill={HQE_TEAL}
-                style={{ animation: "fadeFill 200ms ease-in" }} />
-            )}
-            {/* Vertical (1st halving) */}
-            <line x1="100" y1="2" x2="100" y2="198" stroke={HQE_LABEL} strokeWidth="2"
-              strokeDasharray="196" strokeDashoffset={taps >= 1 ? 0 : 196}
-              style={{ transition: "stroke-dashoffset 500ms ease-out" }} />
-            {/* Horizontal (2nd halving → quarters) */}
-            <line x1="2" y1="100" x2="198" y2="100" stroke={HQE_LABEL} strokeWidth="2"
-              strokeDasharray="196" strokeDashoffset={taps >= 2 ? 0 : 196}
-              style={{ transition: "stroke-dashoffset 500ms ease-out" }} />
-          </svg>
-        </button>
+          <Pizza
+            size={220}
+            slices={slices}
+            shaded={shaded}
+            onSliceTap={splitDone && phase !== "shaded" ? handleSliceTap : undefined}
+          />
+        </div>
       </div>
 
       {phase === "halved" && (
         <p className="mt-4 text-center text-sm text-muted-foreground animate-fade-in">
-          Two equal parts — that's halves. Tap again to halve each side.
+          Two equal slices — that's halves. Tap again to slice each half.
         </p>
       )}
       {phase === "quartered" && (
         <p className="mt-4 text-center text-sm text-muted-foreground animate-fade-in">
-          Four equal parts — that's quarters. Tap a part to shade it.
+          Four equal slices — that's quarters. Tap one slice to shade it.
         </p>
       )}
       {phase === "shaded" && (
         <div className="mt-4 text-center animate-fade-in space-y-3">
           <p className="text-base font-semibold" style={{ color: HQE_LABEL }}>
-            1 out of 4 equal parts = 1/4
+            1 out of 4 equal slices = 1/4
           </p>
           <button
             type="button"
@@ -1127,49 +1124,37 @@ const HQEParentPractice = () => {
     <div className="rounded-xl border border-border bg-card p-6 sm:p-8 animate-fade-in">
       <p className="text-sm text-muted-foreground text-center">
         {!splitDone
-          ? `Tap the circle to split it into quarters. (${taps} / 2 taps)`
+          ? `Tap the pizza to slice it into quarters. (${taps} / 2 taps)`
           : !shadeDone
-            ? "Now tap one quarter to shade it."
+            ? "Now tap one slice to shade it."
             : "Fill in the answer below."}
       </p>
 
       <div className="mt-6 flex justify-center">
-        <button
-          type="button"
-          onClick={handleTap}
-          disabled={splitDone}
+        <div
+          role={!splitDone ? "button" : undefined}
+          onClick={!splitDone ? handleTap : undefined}
+          aria-label="Tap pizza to slice"
           className={
             !splitDone
               ? "cursor-pointer transition-transform hover:scale-105 active:scale-95"
               : "cursor-default"
           }
-          style={{ background: "transparent", border: "none", padding: 0 }}
+          style={{ background: "transparent", border: "none", padding: 0, display: "inline-block" }}
         >
-          <svg width="200" height="200" viewBox="0 0 200 200">
-            <circle cx={cx} cy={cy} r={r} fill={HQE_GREY} stroke={HQE_GREY_BORDER} strokeWidth="1" />
-            {wedges.map((w, i) => (
-              <path
-                key={i}
-                d={w.d}
-                fill={shaded.includes(i) ? HQE_TEAL : "transparent"}
-                style={{ cursor: splitDone && !shadeDone ? "pointer" : "default", animation: shaded.includes(i) ? "fadeFill 200ms ease-in" : undefined }}
-                onClick={() => handleWedgeTap(i)}
-              />
-            ))}
-            <line x1={cx - r} y1={cy} x2={cx + r} y2={cy} stroke={HQE_LABEL} strokeWidth="2"
-              strokeDasharray={r * 2} strokeDashoffset={taps >= 1 ? 0 : r * 2}
-              style={{ transition: "stroke-dashoffset 500ms ease-out" }} />
-            <line x1={cx} y1={cy - r} x2={cx} y2={cy + r} stroke={HQE_LABEL} strokeWidth="2"
-              strokeDasharray={r * 2} strokeDashoffset={taps >= 2 ? 0 : r * 2}
-              style={{ transition: "stroke-dashoffset 500ms ease-out" }} />
-          </svg>
-        </button>
+          <Pizza
+            size={220}
+            slices={splitDone ? 4 : taps >= 1 ? 2 : 1}
+            shaded={shaded}
+            onSliceTap={splitDone && !shadeDone ? handleWedgeTap : undefined}
+          />
+        </div>
       </div>
 
       {shadeDone && feedback !== "correct" && (
         <div className="mt-6 space-y-3 animate-fade-in">
           <div className="flex flex-wrap items-center justify-center gap-2 text-sm text-foreground">
-            <span>I shaded</span>
+            <span>I took</span>
             <input
               type="number" inputMode="numeric" value={shadedIn}
               onChange={(e) => { setShadedIn(e.target.value); setFeedback(null); }}
@@ -1183,7 +1168,7 @@ const HQEParentPractice = () => {
               className="w-16 rounded-lg border border-input bg-background px-3 py-2 text-center font-semibold outline-none focus:border-primary focus:ring-2 focus:ring-ring/20"
               placeholder="?"
             />
-            <span>parts =</span>
+            <span>equal slices =</span>
             <input
               type="text" value={fractionIn}
               onChange={(e) => { setFractionIn(e.target.value); setFeedback(null); }}
@@ -1194,7 +1179,7 @@ const HQEParentPractice = () => {
 
           {feedback === "incorrect" && (
             <p className="text-center text-sm font-medium text-destructive animate-fade-in">
-              Remember — quarters come from halving twice. You shaded 1 of 4 equal parts.
+              Quarters come from slicing or breaking twice. Tap again.
             </p>
           )}
 
@@ -1279,7 +1264,7 @@ const HalvesQuartersEighthsParentGuide = () => (
           Your child's teacher uses a three-step approach called Concrete, Pictorial, Abstract. First, children handle real objects — folding paper, cutting food, splitting groups of counters — to feel what equal parts mean. Then they draw and see pictures of those splits. Finally, they write the fraction as a number.
         </p>
         <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-          This site works in the <span className="font-semibold text-foreground">Pictorial</span> stage — your child taps to split shapes on screen. At home, you can support the <span className="font-semibold text-foreground">Concrete</span> stage by folding a piece of paper in half, then in half again, to show quarters. Use food too — cut a sandwich into 2 equal parts for halves, or 4 equal parts for quarters. The physical experience is what makes the fraction stick.
+          At home, try the Concrete stage first. Get a real pizza or a chocolate bar and ask your child to share it into equal parts before coming to this screen. Cutting a real pizza into quarters, or snapping a chocolate bar into equal pieces, is the physical experience that makes fractions stick. The screen shows the picture — the kitchen table provides the real thing.
         </p>
 
         <div className="mt-8">
@@ -1288,7 +1273,7 @@ const HalvesQuartersEighthsParentGuide = () => (
 
         <div className="mt-6 rounded-xl border-l-4 border-foreground/20 bg-muted p-5 sm:p-6">
           <p className="text-sm leading-relaxed text-foreground/80">
-            The most important thing your child is learning is not what 1/4 looks like — it is that a fraction only works when all parts are exactly equal. An unequal split is not a fraction at all. This understanding is the foundation of all fraction work through to high school.
+            The most important thing your child is learning is not what 1/4 looks like — it is that a fraction only works when all parts are exactly equal. An unequal slice is not a fraction at all. Next time you share a pizza or break a chocolate bar, ask your child: are all the pieces the same size? That question is the foundation of all fraction work through to high school.
           </p>
         </div>
       </section>
@@ -1313,7 +1298,7 @@ const HalvesQuartersEighthsParentGuide = () => (
 
           <Card title="If they're stuck">
             <p className="text-sm leading-relaxed text-muted-foreground">
-              <span className="font-semibold text-foreground">Say this:</span> "Let's fold a piece of paper instead. Fold it in half — now how many equal parts can you see? Fold it again — now how many?"
+              <span className="font-semibold text-foreground">Say this:</span> "Let's use a real chocolate bar instead. Snap it into equal pieces — how many pieces did you make? Are they all the same size?"
             </p>
           </Card>
 
@@ -1341,7 +1326,7 @@ const HalvesQuartersEighthsParentGuide = () => (
           <MistakeCard
             mistake="Your child splits a shape into unequal parts and calls it a half."
             explanation="They understand the idea of splitting but haven't yet connected fractions to equal parts."
-            suggestion={`"Are both parts exactly the same size? Cover one part — does it look exactly like the other?"`}
+            suggestion={`"Are both slices exactly the same size? If one slice is bigger, it's not a half yet — let's try cutting it more carefully."`}
           />
           <MistakeCard
             mistake="Your child confuses the number of shaded parts with the fraction (e.g. shades 2 of 4 parts and says '2' instead of 2/4)."
