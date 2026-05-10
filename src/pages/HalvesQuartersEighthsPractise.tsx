@@ -646,7 +646,7 @@ const CompareCard = ({
       />
 
       <p className="mt-6 text-center text-lg font-semibold text-foreground">
-        Which shape shows {q.target}?
+        Which pizza shows {q.target}?
       </p>
 
       <div className="mt-6 flex flex-wrap justify-center gap-4">
