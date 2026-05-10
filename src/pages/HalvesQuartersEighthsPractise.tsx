@@ -859,6 +859,13 @@ const HalvesQuartersEighthsPractise = () => {
           </div>
         )}
 
+        {/* ProgressIndicator: Practise mode, 10-question batches, resets when level changes */}
+        <ProgressIndicator
+          mode="practise"
+          level={level}
+          current={((questionNum - 1) % 10) + 1}
+          total={10}
+        />
         <p className="mt-4 text-center text-sm text-muted-foreground">
           Question {questionNum}
         </p>
