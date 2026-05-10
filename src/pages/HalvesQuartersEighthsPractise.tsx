@@ -216,13 +216,13 @@ const ShapeRenderer = ({
       ? "cursor-pointer transition-transform hover:scale-105 active:scale-95"
       : "";
 
+  const canTapShape = !splitDone && interactive && !!onTapShape;
   return (
-    <button
-      type="button"
-      onClick={() => !splitDone && interactive && onTapShape?.()}
-      disabled={splitDone || !interactive || !onTapShape}
+    <div
+      role={canTapShape ? "button" : undefined}
+      onClick={() => canTapShape && onTapShape?.()}
       className={wrapClass}
-      style={{ background: "transparent", border: "none", padding: 0 }}
+      style={{ background: "transparent", border: "none", padding: 0, display: "inline-block" }}
     >
       <svg width={W} height={H} viewBox={`0 0 ${VBW} ${VBH}`}>
         {shape === "circle" && (
@@ -235,7 +235,7 @@ const ShapeRenderer = ({
           <RectangleParts taps={taps} totalParts={totalParts} shaded={shaded} onTapPart={onTapPart} interactive={interactive && splitDone} />
         )}
       </svg>
-    </button>
+    </div>
   );
 };
 
