@@ -235,7 +235,7 @@ const ShapeRenderer = ({
           <RectangleParts taps={taps} totalParts={totalParts} shaded={shaded} onTapPart={onTapPart} interactive={interactive && splitDone} />
         )}
       </svg>
-    </button>
+    </div>
   );
 };
 
