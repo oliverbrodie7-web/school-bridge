@@ -160,10 +160,17 @@ const QuestionCard = ({
 
   // Child state
   const [childTaps, setChildTaps] = useState(0);
-  const [partsInput, setPartsInput] = useState("");
-  const [nameInput, setNameInput] = useState("");
+  const [partsChoice, setPartsChoice] = useState<number | null>(null);
+  const [nameChoice, setNameChoice] = useState<string | null>(null);
   const [hint, setHint] = useState("");
   const [childCorrect, setChildCorrect] = useState(false);
+
+  const partsOptions = [2, 4, 8];
+  const nameOptions = [
+    { name: "one half", fraction: "1/2" },
+    { name: "one quarter", fraction: "1/4" },
+    { name: "one eighth", fraction: "1/8" },
+  ];
 
   // Animate computer demo
   useEffect(() => {
