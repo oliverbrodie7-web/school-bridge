@@ -962,6 +962,430 @@ const SplitParentGuide = () => (
 );
 
 /* ═══════════════════════════════════════════════════
+   HALVES, QUARTERS & EIGHTHS — Parent Guide
+   ═══════════════════════════════════════════════════ */
+const HQE_TEAL = "#1D9E75";
+const HQE_LABEL = "#0F6E56";
+const HQE_GREY = "#F5F5F5";
+const HQE_GREY_BORDER = "#D4D4D4";
+
+const AC9M2N03_PROPS = {
+  code: "AC9M2N03",
+  title: "Halves, quarters and eighths",
+  description:
+    "Recognise one-half as one of two equal parts; connect halves, quarters and eighths via repeated halving.",
+  year: "Year 2",
+  strand: "Number",
+};
+
+type HQEDemoPhase = "prompt" | "halved" | "quartered" | "shaded";
+
+const HQEDemoAnimation = () => {
+  const [phase, setPhase] = useState<HQEDemoPhase>("prompt");
+
+  const taps =
+    phase === "prompt" ? 0 : phase === "halved" ? 1 : 2;
+  const shaded = phase === "shaded";
+
+  const advance = () => {
+    if (phase === "prompt") setPhase("halved");
+    else if (phase === "halved") setPhase("quartered");
+    else if (phase === "quartered") setPhase("shaded");
+  };
+
+  const reset = () => setPhase("prompt");
+
+  return (
+    <div className="rounded-xl border border-border bg-card p-6 sm:p-8">
+      <p className="text-sm font-medium text-muted-foreground text-center">
+        Tap the square to halve it. Tap again to make quarters. Tap once more to shade one quarter.
+      </p>
+
+      <div className="mt-6 flex justify-center">
+        <button
+          type="button"
+          onClick={advance}
+          disabled={phase === "shaded"}
+          className={
+            phase !== "shaded"
+              ? "cursor-pointer transition-transform hover:scale-105 active:scale-95"
+              : "cursor-default"
+          }
+          style={{ background: "transparent", border: "none", padding: 0 }}
+          aria-label="Tap to split shape"
+        >
+          <svg width="220" height="220" viewBox="0 0 200 200">
+            <rect x="2" y="2" width="196" height="196" fill={HQE_GREY} stroke={HQE_GREY_BORDER} strokeWidth="1" rx="6" />
+            {shaded && (
+              <rect x="2" y="2" width="98" height="98" fill={HQE_TEAL}
+                style={{ animation: "fadeFill 200ms ease-in" }} />
+            )}
+            {/* Vertical (1st halving) */}
+            <line x1="100" y1="2" x2="100" y2="198" stroke={HQE_LABEL} strokeWidth="2"
+              strokeDasharray="196" strokeDashoffset={taps >= 1 ? 0 : 196}
+              style={{ transition: "stroke-dashoffset 500ms ease-out" }} />
+            {/* Horizontal (2nd halving → quarters) */}
+            <line x1="2" y1="100" x2="198" y2="100" stroke={HQE_LABEL} strokeWidth="2"
+              strokeDasharray="196" strokeDashoffset={taps >= 2 ? 0 : 196}
+              style={{ transition: "stroke-dashoffset 500ms ease-out" }} />
+          </svg>
+        </button>
+      </div>
+
+      {phase === "halved" && (
+        <p className="mt-4 text-center text-sm text-muted-foreground animate-fade-in">
+          Two equal parts — that's halves. Tap again to halve each side.
+        </p>
+      )}
+      {phase === "quartered" && (
+        <p className="mt-4 text-center text-sm text-muted-foreground animate-fade-in">
+          Four equal parts — that's quarters. Tap a part to shade it.
+        </p>
+      )}
+      {phase === "shaded" && (
+        <div className="mt-4 text-center animate-fade-in space-y-3">
+          <p className="text-base font-semibold" style={{ color: HQE_LABEL }}>
+            1 out of 4 equal parts = 1/4
+          </p>
+          <button
+            type="button"
+            onClick={reset}
+            className="text-sm font-medium underline-offset-2 hover:underline text-muted-foreground"
+          >
+            Replay
+          </button>
+        </div>
+      )}
+      <style>{`@keyframes fadeFill { from { opacity: 0; } to { opacity: 1; } }`}</style>
+    </div>
+  );
+};
+
+/* ─── HQE Optional Practice (Section 4) ─── */
+type HQEPracticePhase = "idle" | "active";
+
+const HQEParentPractice = () => {
+  const [phase, setPhase] = useState<HQEPracticePhase>("idle");
+  const [taps, setTaps] = useState(0);
+  const [shaded, setShaded] = useState<number[]>([]);
+  const [shadedIn, setShadedIn] = useState("");
+  const [partsIn, setPartsIn] = useState("");
+  const [fractionIn, setFractionIn] = useState("");
+  const [feedback, setFeedback] = useState<null | "correct" | "incorrect">(null);
+
+  const splitDone = taps >= 2;
+  const shadeDone = shaded.length >= 1;
+
+  const handleTap = () => { if (taps < 2) setTaps((n) => n + 1); };
+  const handleWedgeTap = (i: number) => {
+    if (!splitDone || shadeDone) return;
+    setShaded([i]);
+  };
+
+  const handleCheck = () => {
+    const ok =
+      Number(shadedIn) === 1 &&
+      Number(partsIn) === 4 &&
+      ["1/4", "one quarter", "a quarter", "quarter"].includes(fractionIn.trim().toLowerCase());
+    setFeedback(ok ? "correct" : "incorrect");
+  };
+
+  const reset = () => {
+    setPhase("idle");
+    setTaps(0);
+    setShaded([]);
+    setShadedIn("");
+    setPartsIn("");
+    setFractionIn("");
+    setFeedback(null);
+  };
+
+  if (phase === "idle") {
+    return (
+      <button
+        onClick={() => setPhase("active")}
+        className="rounded-xl bg-foreground px-6 py-3.5 text-lg font-semibold text-background transition-colors hover:bg-foreground/90"
+      >
+        Try a question
+      </button>
+    );
+  }
+
+  // Build 4 quarter wedges of a circle
+  const cx = 100, cy = 100, r = 90;
+  const wedges = splitDone
+    ? [0, 1, 2, 3].map((i) => {
+        const a1 = (i * Math.PI) / 2 - Math.PI / 2;
+        const a2 = ((i + 1) * Math.PI) / 2 - Math.PI / 2;
+        return {
+          d: `M ${cx} ${cy} L ${cx + r * Math.cos(a1)} ${cy + r * Math.sin(a1)} A ${r} ${r} 0 0 1 ${cx + r * Math.cos(a2)} ${cy + r * Math.sin(a2)} Z`,
+        };
+      })
+    : [];
+
+  return (
+    <div className="rounded-xl border border-border bg-card p-6 sm:p-8 animate-fade-in">
+      <p className="text-sm text-muted-foreground text-center">
+        {!splitDone
+          ? `Tap the circle to split it into quarters. (${taps} / 2 taps)`
+          : !shadeDone
+            ? "Now tap one quarter to shade it."
+            : "Fill in the answer below."}
+      </p>
+
+      <div className="mt-6 flex justify-center">
+        <button
+          type="button"
+          onClick={handleTap}
+          disabled={splitDone}
+          className={
+            !splitDone
+              ? "cursor-pointer transition-transform hover:scale-105 active:scale-95"
+              : "cursor-default"
+          }
+          style={{ background: "transparent", border: "none", padding: 0 }}
+        >
+          <svg width="200" height="200" viewBox="0 0 200 200">
+            <circle cx={cx} cy={cy} r={r} fill={HQE_GREY} stroke={HQE_GREY_BORDER} strokeWidth="1" />
+            {wedges.map((w, i) => (
+              <path
+                key={i}
+                d={w.d}
+                fill={shaded.includes(i) ? HQE_TEAL : "transparent"}
+                style={{ cursor: splitDone && !shadeDone ? "pointer" : "default", animation: shaded.includes(i) ? "fadeFill 200ms ease-in" : undefined }}
+                onClick={() => handleWedgeTap(i)}
+              />
+            ))}
+            <line x1={cx - r} y1={cy} x2={cx + r} y2={cy} stroke={HQE_LABEL} strokeWidth="2"
+              strokeDasharray={r * 2} strokeDashoffset={taps >= 1 ? 0 : r * 2}
+              style={{ transition: "stroke-dashoffset 500ms ease-out" }} />
+            <line x1={cx} y1={cy - r} x2={cx} y2={cy + r} stroke={HQE_LABEL} strokeWidth="2"
+              strokeDasharray={r * 2} strokeDashoffset={taps >= 2 ? 0 : r * 2}
+              style={{ transition: "stroke-dashoffset 500ms ease-out" }} />
+          </svg>
+        </button>
+      </div>
+
+      {shadeDone && feedback !== "correct" && (
+        <div className="mt-6 space-y-3 animate-fade-in">
+          <div className="flex flex-wrap items-center justify-center gap-2 text-sm text-foreground">
+            <span>I shaded</span>
+            <input
+              type="number" inputMode="numeric" value={shadedIn}
+              onChange={(e) => { setShadedIn(e.target.value); setFeedback(null); }}
+              className="w-16 rounded-lg border border-input bg-background px-3 py-2 text-center font-semibold outline-none focus:border-primary focus:ring-2 focus:ring-ring/20"
+              placeholder="?"
+            />
+            <span>out of</span>
+            <input
+              type="number" inputMode="numeric" value={partsIn}
+              onChange={(e) => { setPartsIn(e.target.value); setFeedback(null); }}
+              className="w-16 rounded-lg border border-input bg-background px-3 py-2 text-center font-semibold outline-none focus:border-primary focus:ring-2 focus:ring-ring/20"
+              placeholder="?"
+            />
+            <span>parts =</span>
+            <input
+              type="text" value={fractionIn}
+              onChange={(e) => { setFractionIn(e.target.value); setFeedback(null); }}
+              className="w-24 rounded-lg border border-input bg-background px-3 py-2 text-center font-semibold outline-none focus:border-primary focus:ring-2 focus:ring-ring/20"
+              placeholder="1/4"
+            />
+          </div>
+
+          {feedback === "incorrect" && (
+            <p className="text-center text-sm font-medium text-destructive animate-fade-in">
+              Remember — quarters come from halving twice. You shaded 1 of 4 equal parts.
+            </p>
+          )}
+
+          <div className="text-center">
+            <button
+              onClick={handleCheck}
+              disabled={!shadedIn || !partsIn || !fractionIn}
+              className="rounded-xl bg-foreground px-6 py-3 text-base font-semibold text-background transition-colors hover:bg-foreground/90 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              Check
+            </button>
+          </div>
+        </div>
+      )}
+
+      {feedback === "correct" && (
+        <div className="mt-6 text-center space-y-3 animate-fade-in">
+          <p className="text-base font-semibold" style={{ color: HQE_LABEL }}>
+            You've got it. Now you can show your child.
+          </p>
+          <button
+            type="button"
+            onClick={reset}
+            className="text-sm font-medium underline-offset-2 hover:underline text-muted-foreground"
+          >
+            Try again
+          </button>
+        </div>
+      )}
+      <style>{`@keyframes fadeFill { from { opacity: 0; } to { opacity: 1; } }`}</style>
+    </div>
+  );
+};
+
+const HalvesQuartersEighthsParentGuide = () => (
+  <div className="flex min-h-screen flex-col items-center px-6 py-12">
+    <div className="w-full max-w-2xl">
+      <Link
+        to="/halves-quarters-eighths"
+        className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+      >
+        ← Back
+      </Link>
+
+      {/* SECTION 1 — REASSURANCE */}
+      <section className="relative mt-8">
+        <div className="flex justify-end mb-3 -mr-4 sm:-mr-10">
+          <CurriculumBadge {...AC9M2N03_PROPS} pageName="Parent Guide HQE" />
+        </div>
+        <h1
+          className="text-2xl font-bold text-foreground sm:text-3xl leading-tight pr-24"
+          style={{ fontFamily: "var(--font-heading)" }}
+        >
+          Fractions look different now than when you were at school.
+        </h1>
+        <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+          If your child came home talking about halves and quarters and you weren't sure how to help — you're not alone. Australian schools now teach fractions by connecting them to equal parts of real objects before ever writing a number. This guide will show you exactly what your child is learning and how to support them at home.
+        </p>
+      </section>
+
+      <hr className="my-10 border-border" />
+
+      {/* SECTION 2 — WHAT IS THIS TOPIC? */}
+      <section>
+        <h2
+          className="text-xl font-bold text-foreground sm:text-2xl"
+          style={{ fontFamily: "var(--font-heading)" }}
+        >
+          What are halves, quarters and eighths?
+        </h2>
+        <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+          Your child is learning that a fraction is only a fraction if all parts are equal. A half means 1 of 2 equal parts. A quarter means 1 of 4 equal parts — made by halving twice. An eighth means 1 of 8 equal parts — made by halving three times. This is called <span className="font-semibold text-foreground">repeated halving</span>.
+        </p>
+
+        <h3
+          className="mt-8 text-lg font-bold text-foreground"
+          style={{ fontFamily: "var(--font-heading)" }}
+        >
+          Concrete, Pictorial, Abstract
+        </h3>
+        <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+          Your child's teacher uses a three-step approach called Concrete, Pictorial, Abstract. First, children handle real objects — folding paper, cutting food, splitting groups of counters — to feel what equal parts mean. Then they draw and see pictures of those splits. Finally, they write the fraction as a number.
+        </p>
+        <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+          This site works in the <span className="font-semibold text-foreground">Pictorial</span> stage — your child taps to split shapes on screen. At home, you can support the <span className="font-semibold text-foreground">Concrete</span> stage by folding a piece of paper in half, then in half again, to show quarters. Use food too — cut a sandwich into 2 equal parts for halves, or 4 equal parts for quarters. The physical experience is what makes the fraction stick.
+        </p>
+
+        <div className="mt-8">
+          <HQEDemoAnimation />
+        </div>
+
+        <div className="mt-6 rounded-xl border-l-4 border-foreground/20 bg-muted p-5 sm:p-6">
+          <p className="text-sm leading-relaxed text-foreground/80">
+            The most important thing your child is learning is not what 1/4 looks like — it is that a fraction only works when all parts are exactly equal. An unequal split is not a fraction at all. This understanding is the foundation of all fraction work through to high school.
+          </p>
+        </div>
+      </section>
+
+      <hr className="my-10 border-border" />
+
+      {/* SECTION 3 — HOW TO USE WITH YOUR CHILD */}
+      <section>
+        <h2
+          className="text-xl font-bold text-foreground sm:text-2xl"
+          style={{ fontFamily: "var(--font-heading)" }}
+        >
+          Sitting down with your child? Here's exactly what to say.
+        </h2>
+
+        <div className="mt-6 space-y-4">
+          <Card title="Getting started">
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              <span className="font-semibold text-foreground">Say this:</span> "Before we write the fraction, let's split the shape. How many equal parts do we need? Are all the parts the same size?"
+            </p>
+          </Card>
+
+          <Card title="If they're stuck">
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              <span className="font-semibold text-foreground">Say this:</span> "Let's fold a piece of paper instead. Fold it in half — now how many equal parts can you see? Fold it again — now how many?"
+            </p>
+          </Card>
+
+          <Card title="When they get it wrong">
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              <span className="font-semibold text-foreground">Don't say:</span> "That's wrong."
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              <span className="font-semibold text-foreground">Do say:</span> "Are all the parts exactly the same size? If not, it's not a fraction yet — let's try splitting it more carefully."
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground italic">
+              Remember: equal parts is the whole point.
+            </p>
+          </Card>
+        </div>
+
+        <h3
+          className="mt-10 text-lg font-bold text-foreground"
+          style={{ fontFamily: "var(--font-heading)" }}
+        >
+          Common mistakes to watch for:
+        </h3>
+
+        <div className="mt-4 space-y-4">
+          <MistakeCard
+            mistake="Your child splits a shape into unequal parts and calls it a half."
+            explanation="They understand the idea of splitting but haven't yet connected fractions to equal parts."
+            suggestion={`"Are both parts exactly the same size? Cover one part — does it look exactly like the other?"`}
+          />
+          <MistakeCard
+            mistake="Your child confuses the number of shaded parts with the fraction (e.g. shades 2 of 4 parts and says '2' instead of 2/4)."
+            explanation="They haven't yet connected the fraction notation to the number of equal parts."
+            suggestion={`"How many parts did we split it into altogether? That's the bottom number. How many did we shade? That's the top number."`}
+          />
+        </div>
+      </section>
+
+      <hr className="my-10 border-border" />
+
+      {/* SECTION 4 — OPTIONAL PRACTICE */}
+      <section className="pb-12">
+        <h2
+          className="text-xl font-bold text-foreground sm:text-2xl"
+          style={{ fontFamily: "var(--font-heading)" }}
+        >
+          Want to try one yourself?
+        </h2>
+        <p className="mt-3 text-base text-muted-foreground">
+          Trying it yourself makes it much easier to explain to your child.
+        </p>
+
+        <div className="mt-6">
+          <HQEParentPractice />
+        </div>
+
+        <div className="mt-10 rounded-xl border border-border bg-card p-6 text-center">
+          <p className="text-base font-medium text-foreground">
+            Ready to sit with your child?
+          </p>
+          <Link
+            to="/learn/halves-quarters-eighths"
+            className="mt-4 inline-block rounded-xl bg-foreground px-6 py-3.5 text-base font-semibold text-background transition-colors hover:bg-foreground/90"
+          >
+            Open the student lesson
+          </Link>
+        </div>
+      </section>
+    </div>
+  </div>
+);
+
+/* ═══════════════════════════════════════════════════
    MAIN PARENT COMPONENT — Router
    ═══════════════════════════════════════════════════ */
 const Parent = () => {
@@ -970,6 +1394,7 @@ const Parent = () => {
 
   if (strategy === "plus10") return <Plus10ParentGuide />;
   if (strategy === "split") return <SplitParentGuide />;
+  if (strategy === "halvesQuartersEighths") return <HalvesQuartersEighthsParentGuide />;
 
   return (
     <div className="flex min-h-screen flex-col items-center px-6 py-12">
