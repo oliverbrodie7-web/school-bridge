@@ -23,6 +23,8 @@ type PizzaProps = {
   cutsDrawn?: boolean;
   /** Animate red fill in shaded slices. */
   filled?: boolean;
+  /** When set, slices become clickable (transparent overlay) and call this with the slice index. */
+  onSliceTap?: (index: number) => void;
 };
 
 export const Pizza = ({
