@@ -207,7 +207,8 @@ export const PractiseHintButton = ({
         >
           <p className="text-[13px] leading-snug text-foreground">{tip}</p>
 
-          {!showVisual && (
+          {/* Hide "Show me" visual for HQE L3 — worded problems have no shape to animate. */}
+          {!(strategy === "halvesQuartersEighths" && level === 3) && !showVisual && (
             <button
               type="button"
               onClick={() => setShowVisual(true)}
@@ -219,7 +220,7 @@ export const PractiseHintButton = ({
           )}
 
           {showVisual && (
-            strategy === "halvesQuartersEighths"
+            strategy === "halvesQuartersEighths" && level === 2
               ? <FractionVisualHint level={level} />
               : strategy === "splitStrategy" && question
                 ? <SplitVisualHint q={question} />
