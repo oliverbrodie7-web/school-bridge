@@ -23,6 +23,8 @@ type PizzaProps = {
   cutsDrawn?: boolean;
   /** Animate red fill in shaded slices. */
   filled?: boolean;
+  /** When set, slices become clickable (transparent overlay) and call this with the slice index. */
+  onSliceTap?: (index: number) => void;
 };
 
 export const Pizza = ({
@@ -31,6 +33,7 @@ export const Pizza = ({
   shaded = [],
   cutsDrawn = true,
   filled = true,
+  onSliceTap,
 }: PizzaProps) => {
   const cx = 100;
   const cy = 100;
@@ -245,6 +248,18 @@ export const Pizza = ({
         strokeWidth={1}
         strokeOpacity={0.5}
       />
+
+      {/* Click overlay — transparent slice paths for tap-to-shade */}
+      {onSliceTap && slices >= 2 &&
+        Array.from({ length: slices }, (_, i) => (
+          <path
+            key={`tap-${i}`}
+            d={slicePath(i)}
+            fill="transparent"
+            style={{ cursor: "pointer" }}
+            onClick={() => onSliceTap(i)}
+          />
+        ))}
     </svg>
   );
 };
@@ -259,6 +274,8 @@ type ChocProps = {
   breaksDrawn?: boolean;
   /** Animate dark fill in shaded segments. */
   filled?: boolean;
+  /** When set, segments become clickable (transparent overlay). */
+  onSegmentTap?: (index: number) => void;
 };
 
 export const ChocolateBar = ({
@@ -268,6 +285,7 @@ export const ChocolateBar = ({
   shaded = [],
   breaksDrawn = true,
   filled = true,
+  onSegmentTap,
 }: ChocProps) => {
   const pad = 5;
   const groove = Math.max(2, Math.min(4, width / segments / 10));
@@ -443,6 +461,28 @@ export const ChocolateBar = ({
           />
         );
       })}
+
+      {/* Click overlay — transparent segment rects for tap-to-shade */}
+      {onSegmentTap &&
+        Array.from({ length: segments }, (_, i) => {
+          const x0 = pad + i * segW + groove / 2;
+          const y0 = pad + groove / 2;
+          const w = segW - groove;
+          const h = innerH - groove;
+          return (
+            <rect
+              key={`tap-${i}`}
+              x={x0}
+              y={y0}
+              width={w}
+              height={h}
+              rx={4}
+              fill="transparent"
+              style={{ cursor: "pointer" }}
+              onClick={() => onSegmentTap(i)}
+            />
+          );
+        })}
     </svg>
   );
 };

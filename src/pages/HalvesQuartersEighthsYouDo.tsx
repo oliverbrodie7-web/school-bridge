@@ -2,10 +2,9 @@ import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { setLearnComplete } from "@/lib/progress";
 import CurriculumBadge from "@/components/CurriculumBadge";
+import { Pizza, ChocolateBar } from "@/components/FractionFood";
 
 const TEAL = "#1D9E75";
-const TEAL_FILL = "#1D9E75";
-const GREY = "#F5F5F5";
 const GREY_BORDER = "#D4D4D4";
 const LABEL = "#0F6E56";
 
@@ -19,16 +18,16 @@ const AC9M2N03_PROPS = {
 };
 
 /* ──────────────── QUESTION TYPES ──────────────── */
-type ShapeKind = "circle" | "square" | "rectangle";
+type FoodKind = "pizza" | "chocolate";
 
 interface ShadeQuestion {
   type: "shade";
   id: string;
-  shape: ShapeKind;
+  food: FoodKind;
   taps: number; // splits required
   totalParts: number;
-  shadeCount: number; // how many parts to shade
-  fraction: string; // canonical, e.g. "1/2"
+  shadeCount: number;
+  fraction: string;
   acceptedFractions: string[];
   prompt: string;
   successMessage: string;
@@ -46,66 +45,69 @@ interface ChooseQuestion {
 
 type Question = ShadeQuestion | ChooseQuestion;
 
+const unitFor = (food: FoodKind, plural = true) =>
+  food === "pizza" ? (plural ? "slices" : "slice") : (plural ? "pieces" : "piece");
+
 const QUESTIONS: Question[] = [
   {
     type: "shade",
     id: "q1",
-    shape: "circle",
+    food: "pizza",
     taps: 1,
     totalParts: 2,
     shadeCount: 1,
     fraction: "1/2",
     acceptedFractions: ["1/2"],
-    prompt: "Tap to split into 2 equal parts. Shade one half.",
-    successMessage: "Yes! 1 out of 2 equal parts is one half.",
+    prompt: "Tap the pizza to slice it into 2 equal pieces. Take one slice.",
+    successMessage: "Perfect — you shared it equally!",
   },
   {
     type: "shade",
     id: "q2",
-    shape: "square",
+    food: "chocolate",
     taps: 2,
     totalParts: 4,
     shadeCount: 1,
     fraction: "1/4",
     acceptedFractions: ["1/4"],
-    prompt: "Tap to split into 4 equal parts. Shade one quarter.",
-    successMessage: "Yes! 1 out of 4 equal parts is one quarter.",
+    prompt: "Tap the bar to break it into 4 equal pieces. Take one piece.",
+    successMessage: "Perfect — you shared it equally!",
   },
   {
     type: "shade",
     id: "q3",
-    shape: "rectangle",
+    food: "chocolate",
     taps: 1,
     totalParts: 2,
     shadeCount: 2,
     fraction: "2/2",
-    acceptedFractions: ["2/2", "1", "1/1", "the whole thing", "whole"],
-    prompt: "Tap to split into 2 equal parts. Shade both halves.",
-    successMessage: "Yes! 2 out of 2 equal parts makes the whole thing.",
+    acceptedFractions: ["2/2", "1", "1/1"],
+    prompt: "Tap the bar to break it into 2 equal pieces. Take both pieces.",
+    successMessage: "Perfect — you shared it equally! 2 out of 2 makes the whole bar.",
   },
   {
     type: "shade",
     id: "q4",
-    shape: "circle",
+    food: "pizza",
     taps: 3,
     totalParts: 8,
     shadeCount: 1,
     fraction: "1/8",
     acceptedFractions: ["1/8"],
-    prompt: "Tap to split into 8 equal parts. Shade one eighth.",
-    successMessage: "Yes! 1 out of 8 equal parts is one eighth.",
+    prompt: "Tap the pizza three times to slice it into 8 equal pieces. Take one slice.",
+    successMessage: "Perfect — you shared it equally!",
   },
   {
     type: "choose",
     id: "q5",
-    prompt: "Which shape shows quarters?",
+    prompt: "Which pizza shows quarters?",
     options: [
       { label: "A", parts: 2 },
       { label: "B", parts: 4 },
     ],
     correctParts: 4,
-    successMessage: "Yes! 4 equal parts = quarters.",
-    wrongHint: "Count the parts in each shape — which one has 4?",
+    successMessage: "Yes! 4 equal slices = quarters.",
+    wrongHint: "Count the slices on each pizza — which one has 4?",
   },
 ];
 
@@ -210,7 +212,6 @@ const HalvesQuartersEighthsYouDo = () => {
           />
         )}
       </div>
-      <Keyframes />
     </div>
   );
 };
@@ -237,24 +238,22 @@ const ShadeCard = ({
 
   const splitDone = taps >= spec.taps;
   const shadeDone = shaded.length >= spec.shadeCount;
+  const unitS = unitFor(spec.food, true);
+  const unit1 = unitFor(spec.food, false);
 
-  const handleTapShape = () => {
-    if (!splitDone) {
-      setTaps((n) => n + 1);
-    }
+  const handleTapWhole = () => {
+    if (!splitDone) setTaps((n) => n + 1);
   };
 
   const handleTapPart = (idx: number) => {
-    if (!splitDone || shadeDone) return;
+    if (!splitDone || shadeDone || correct) return;
     if (shaded.includes(idx)) return;
     setShaded((s) => [...s, idx]);
   };
 
   const fractionOptions = useMemo(() => {
     const all = ["1/2", "1/4", "1/8", "2/2"];
-    return shuffle(
-      Array.from(new Set([spec.fraction, ...all])).slice(0, 4)
-    );
+    return shuffle(Array.from(new Set([spec.fraction, ...all])).slice(0, 4));
   }, [spec.fraction]);
 
   const partsOptions = [2, 4, 8];
@@ -272,12 +271,12 @@ const ShadeCard = ({
       return;
     }
     if (!shadeOk) {
-      setHint("Almost — count just the shaded parts.");
+      setHint(`Almost — count just the ${unitS} you took.`);
     } else if (!partsOk) {
-      setHint("Almost — count all the equal parts altogether.");
+      setHint(`Almost — count all the equal ${unitS} altogether.`);
     } else {
       setHint(
-        `Not quite — ${spec.shadeCount} out of ${spec.totalParts} equal parts.`
+        `Not quite — ${spec.shadeCount} out of ${spec.totalParts} equal ${unitS}.`
       );
     }
   };
@@ -289,6 +288,23 @@ const ShadeCard = ({
     setFractionInput(null);
   };
 
+  // Progressive split rendering
+  const currentParts = (() => {
+    if (spec.food === "pizza") {
+      if (spec.totalParts === 2) return taps >= 1 ? 2 : 1;
+      if (spec.totalParts === 8) return taps >= 3 ? 8 : taps >= 2 ? 4 : taps >= 1 ? 2 : 1;
+      return spec.totalParts;
+    }
+    // chocolate
+    if (spec.totalParts === 2) return taps >= 1 ? 2 : 1;
+    if (spec.totalParts === 4) return taps >= 2 ? 4 : taps >= 1 ? 2 : 1;
+    if (spec.totalParts === 8) return taps >= 3 ? 8 : taps >= 2 ? 4 : taps >= 1 ? 2 : 1;
+    return spec.totalParts;
+  })();
+
+  const tapPrompt =
+    spec.food === "pizza" ? "Tap the pizza to slice it" : "Tap the bar to break it";
+
   return (
     <div className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
       <p className="text-center text-sm font-medium text-muted-foreground">
@@ -296,14 +312,14 @@ const ShadeCard = ({
       </p>
 
       <div className="mt-6 flex justify-center">
-        <ShapeCanvas
-          shape={spec.shape}
-          taps={taps}
-          totalParts={spec.totalParts}
+        <FoodCanvas
+          food={spec.food}
+          parts={currentParts}
           shaded={shaded}
-          onTapShape={handleTapShape}
-          onTapPart={handleTapPart}
           interactive={!correct}
+          splitDone={splitDone}
+          onTapWhole={handleTapWhole}
+          onTapPart={handleTapPart}
         />
       </div>
 
@@ -321,19 +337,19 @@ const ShadeCard = ({
       {splitDone && !shadeDone && (
         <p className="mt-6 text-center text-base font-medium text-muted-foreground animate-fade-in">
           {spec.shadeCount === 1
-            ? "Now tap a part to shade it."
-            : `Now tap ${spec.shadeCount} parts to shade them. (${shaded.length} / ${spec.shadeCount})`}
+            ? `Now tap a ${unit1} to take it.`
+            : `Now tap ${spec.shadeCount} ${unitS} to take them. (${shaded.length} / ${spec.shadeCount})`}
         </p>
       )}
 
       {shadeDone && !correct && (
         <div className="mt-6 space-y-5 animate-fade-in">
           <p className="text-center text-base text-foreground">
-            I shaded ___ out of ___ equal parts = ___
+            I took ___ out of ___ equal {unitS} = ___
           </p>
 
           <ChipRow
-            label="How many did you shade?"
+            label={`How many ${unitS} did you take?`}
             options={[1, 2, 3, 4]}
             value={shadeInput}
             onChange={setShadeInput}
@@ -342,7 +358,7 @@ const ShadeCard = ({
           />
 
           <ChipRow
-            label="How many equal parts are there?"
+            label={`How many equal ${unitS} are there?`}
             options={partsOptions}
             value={partsInput}
             onChange={setPartsInput}
@@ -401,6 +417,9 @@ const ShadeCard = ({
           </button>
         </div>
       )}
+
+      {/* Hidden tap-prompt anchor for screen readers */}
+      <span className="sr-only">{tapPrompt}</span>
     </div>
   );
 };
@@ -421,7 +440,6 @@ const ChooseCard = ({
   const [hint, setHint] = useState("");
   const [correct, setCorrect] = useState(false);
 
-  // Shuffle the order of A/B once per mount
   const shown = useMemo(() => shuffle(spec.options), [spec]);
 
   const handlePick = (parts: number) => {
@@ -464,7 +482,7 @@ const ChooseCard = ({
                 backgroundColor: isCorrect ? "#E1F5EE" : "#FFFFFF",
               }}
             >
-              <PreSplitSquare parts={opt.parts} />
+              <Pizza size={140} slices={opt.parts} shaded={[]} cutsDrawn={true} filled={false} />
             </button>
           );
         })}
@@ -513,9 +531,7 @@ const ChipRow = ({
     className={`flex flex-col items-center gap-1.5 rounded-2xl px-3 py-2 transition-all ${
       pulse ? "animate-pulse" : ""
     }`}
-    style={{
-      boxShadow: active ? `0 0 0 2px ${TEAL}40` : "none",
-    }}
+    style={{ boxShadow: active ? `0 0 0 2px ${TEAL}40` : "none" }}
   >
     <p className="text-sm font-medium text-muted-foreground">{label}</p>
     {value === null && (
@@ -559,9 +575,7 @@ const FractionChipRow = ({
 }) => (
   <div
     className="flex flex-col items-center gap-1.5 rounded-2xl px-3 py-2 transition-all"
-    style={{
-      boxShadow: active ? `0 0 0 2px ${TEAL}40` : "none",
-    }}
+    style={{ boxShadow: active ? `0 0 0 2px ${TEAL}40` : "none" }}
   >
     <p className="text-sm font-medium text-muted-foreground">{label}</p>
     {value === null && (
@@ -590,284 +604,65 @@ const FractionChipRow = ({
   </div>
 );
 
-/* ──────────────── SHAPE CANVAS ──────────────── */
-const ShapeCanvas = ({
-  shape,
-  taps,
-  totalParts,
+/* ──────────────── FOOD CANVAS ──────────────── */
+const FoodCanvas = ({
+  food,
+  parts,
   shaded,
-  onTapShape,
-  onTapPart,
   interactive,
-}: {
-  shape: ShapeKind;
-  taps: number;
-  totalParts: number;
-  shaded: number[];
-  onTapShape: () => void;
-  onTapPart: (idx: number) => void;
-  interactive: boolean;
-}) => {
-  const splitComplete = totalParts > 0 && (
-    (totalParts === 2 && taps >= 1) ||
-    (totalParts === 4 && taps >= 2) ||
-    (totalParts === 8 && taps >= 3)
-  );
-
-  // Container size
-  const W = shape === "rectangle" ? 280 : 220;
-  const H = shape === "rectangle" ? 160 : 220;
-
-  const wrapperClass = !splitComplete && interactive
-    ? "cursor-pointer transition-transform hover:scale-105 active:scale-95"
-    : "";
-
-  return (
-    <button
-      type="button"
-      onClick={() => !splitComplete && interactive && onTapShape()}
-      disabled={splitComplete || !interactive}
-      className={wrapperClass}
-      style={{ background: "transparent", border: "none", padding: 0 }}
-    >
-      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`}>
-        {shape === "circle" && (
-          <CircleShape
-            taps={taps}
-            totalParts={totalParts}
-            shaded={shaded}
-            onTapPart={onTapPart}
-            interactive={interactive && splitComplete}
-          />
-        )}
-        {shape === "square" && (
-          <SquareShape
-            taps={taps}
-            totalParts={totalParts}
-            shaded={shaded}
-            onTapPart={onTapPart}
-            interactive={interactive && splitComplete}
-          />
-        )}
-        {shape === "rectangle" && (
-          <RectangleShape
-            taps={taps}
-            shaded={shaded}
-            onTapPart={onTapPart}
-            interactive={interactive && splitComplete}
-          />
-        )}
-      </svg>
-    </button>
-  );
-};
-
-/* ──────────────── CIRCLE: halves (2), quarters? not used here, eighths (8) ──────────────── */
-const CircleShape = ({
-  taps,
-  totalParts,
-  shaded,
+  splitDone,
+  onTapWhole,
   onTapPart,
-  interactive,
 }: {
-  taps: number;
-  totalParts: number;
+  food: FoodKind;
+  parts: number;
   shaded: number[];
-  onTapPart: (idx: number) => void;
   interactive: boolean;
+  splitDone: boolean;
+  onTapWhole: () => void;
+  onTapPart: (idx: number) => void;
 }) => {
-  const cx = 110, cy = 110, r = 95;
-
-  // Build wedge paths for totalParts (when split complete)
-  const wedges: { d: string }[] = [];
-  if (totalParts === 2 && taps >= 1) {
-    // Two halves split horizontally
-    wedges.push({
-      d: `M ${cx - r} ${cy} A ${r} ${r} 0 0 1 ${cx + r} ${cy} L ${cx - r} ${cy} Z`,
-    }); // top
-    wedges.push({
-      d: `M ${cx - r} ${cy} A ${r} ${r} 0 0 0 ${cx + r} ${cy} L ${cx - r} ${cy} Z`,
-    }); // bottom
-  } else if (totalParts === 8 && taps >= 3) {
-    // Eight wedges
-    for (let i = 0; i < 8; i++) {
-      const a1 = (i * Math.PI) / 4 - Math.PI / 2;
-      const a2 = ((i + 1) * Math.PI) / 4 - Math.PI / 2;
-      const x1 = cx + r * Math.cos(a1), y1 = cy + r * Math.sin(a1);
-      const x2 = cx + r * Math.cos(a2), y2 = cy + r * Math.sin(a2);
-      wedges.push({
-        d: `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 0 1 ${x2} ${y2} Z`,
-      });
-    }
+  // Before split: wrap in a tap-anywhere button.
+  if (!splitDone) {
+    return (
+      <button
+        type="button"
+        onClick={onTapWhole}
+        disabled={!interactive}
+        aria-label={food === "pizza" ? "Tap the pizza to slice it" : "Tap the bar to break it"}
+        className={interactive ? "cursor-pointer transition-transform hover:scale-105 active:scale-95" : "cursor-default"}
+        style={{ background: "transparent", border: "none", padding: 0 }}
+      >
+        {food === "pizza" ? (
+          <Pizza size={240} slices={parts} shaded={[]} cutsDrawn={true} filled={false} />
+        ) : (
+          <ChocolateBar width={320} height={120} segments={parts} shaded={[]} breaksDrawn={true} filled={false} />
+        )}
+      </button>
+    );
   }
 
-  return (
-    <>
-      <circle cx={cx} cy={cy} r={r} fill={GREY} stroke={GREY_BORDER} strokeWidth="1" />
-
-      {/* Wedge fills + click targets */}
-      {wedges.map((w, i) => (
-        <path
-          key={i}
-          d={w.d}
-          fill={shaded.includes(i) ? TEAL_FILL : "transparent"}
-          style={{
-            cursor: interactive ? "pointer" : "default",
-            animation: shaded.includes(i) ? "fadeFill 200ms ease-in" : undefined,
-          }}
-          onClick={() => interactive && onTapPart(i)}
-        />
-      ))}
-
-      {/* Splitting lines */}
-      {/* For halves: horizontal */}
-      {totalParts === 2 && (
-        <line x1={cx - r} y1={cy} x2={cx + r} y2={cy} stroke={LABEL} strokeWidth="2"
-          strokeDasharray={r * 2} strokeDashoffset={taps >= 1 ? 0 : r * 2}
-          style={{ transition: "stroke-dashoffset 500ms ease-out" }} />
-      )}
-      {/* For eighths: 4 diameters at 0, 45, 90, 135 deg */}
-      {totalParts === 8 && [0, 1, 2, 3].map((i) => {
-        const ang = (i * Math.PI) / 4;
-        const dx = r * Math.cos(ang), dy = r * Math.sin(ang);
-        const tapNeeded = i === 0 ? 1 : i === 2 ? 2 : 3;
-        return (
-          <line
-            key={i}
-            x1={cx - dx} y1={cy - dy} x2={cx + dx} y2={cy + dy}
-            stroke={LABEL} strokeWidth="2"
-            strokeDasharray={r * 2}
-            strokeDashoffset={taps >= tapNeeded ? 0 : r * 2}
-            style={{ transition: "stroke-dashoffset 500ms ease-out" }}
-          />
-        );
-      })}
-    </>
+  // After split: enable per-piece tap-to-shade.
+  return food === "pizza" ? (
+    <Pizza
+      size={240}
+      slices={parts}
+      shaded={shaded}
+      cutsDrawn={true}
+      filled={true}
+      onSliceTap={interactive ? onTapPart : undefined}
+    />
+  ) : (
+    <ChocolateBar
+      width={320}
+      height={120}
+      segments={parts}
+      shaded={shaded}
+      breaksDrawn={true}
+      filled={true}
+      onSegmentTap={interactive ? onTapPart : undefined}
+    />
   );
 };
-
-/* ──────────────── SQUARE: quarters (4) via 2x2 ──────────────── */
-const SquareShape = ({
-  taps,
-  totalParts,
-  shaded,
-  onTapPart,
-  interactive,
-}: {
-  taps: number;
-  totalParts: number;
-  shaded: number[];
-  onTapPart: (idx: number) => void;
-  interactive: boolean;
-}) => {
-  // 196x196 square, top-left at (2,2)
-  const cells: { x: number; y: number; w: number; h: number }[] = [];
-  if (totalParts === 4 && taps >= 2) {
-    cells.push({ x: 2, y: 2, w: 98, h: 98 });
-    cells.push({ x: 100, y: 2, w: 98, h: 98 });
-    cells.push({ x: 2, y: 100, w: 98, h: 98 });
-    cells.push({ x: 100, y: 100, w: 98, h: 98 });
-  }
-
-  return (
-    <>
-      <rect x="2" y="2" width="196" height="196" fill={GREY} stroke={GREY_BORDER} strokeWidth="1" rx="6" />
-
-      {cells.map((c, i) => (
-        <rect
-          key={i}
-          x={c.x} y={c.y} width={c.w} height={c.h}
-          fill={shaded.includes(i) ? TEAL_FILL : "transparent"}
-          style={{
-            cursor: interactive ? "pointer" : "default",
-            animation: shaded.includes(i) ? "fadeFill 200ms ease-in" : undefined,
-          }}
-          onClick={() => interactive && onTapPart(i)}
-        />
-      ))}
-
-      {/* Vertical line (tap 1) */}
-      <line x1="100" y1="2" x2="100" y2="198" stroke={LABEL} strokeWidth="2"
-        strokeDasharray="196" strokeDashoffset={taps >= 1 ? 0 : 196}
-        style={{ transition: "stroke-dashoffset 500ms ease-out" }} />
-      {/* Horizontal line (tap 2) */}
-      <line x1="2" y1="100" x2="198" y2="100" stroke={LABEL} strokeWidth="2"
-        strokeDasharray="196" strokeDashoffset={taps >= 2 ? 0 : 196}
-        style={{ transition: "stroke-dashoffset 500ms ease-out" }} />
-    </>
-  );
-};
-
-/* ──────────────── RECTANGLE: halves split vertically ──────────────── */
-const RectangleShape = ({
-  taps,
-  shaded,
-  onTapPart,
-  interactive,
-}: {
-  taps: number;
-  shaded: number[];
-  onTapPart: (idx: number) => void;
-  interactive: boolean;
-}) => {
-  // 280x160, padded
-  const cells = taps >= 1
-    ? [
-        { x: 2, y: 2, w: 138, h: 156 },
-        { x: 140, y: 2, w: 138, h: 156 },
-      ]
-    : [];
-
-  return (
-    <>
-      <rect x="2" y="2" width="276" height="156" fill={GREY} stroke={GREY_BORDER} strokeWidth="1" rx="6" />
-
-      {cells.map((c, i) => (
-        <rect
-          key={i}
-          x={c.x} y={c.y} width={c.w} height={c.h}
-          fill={shaded.includes(i) ? TEAL_FILL : "transparent"}
-          style={{
-            cursor: interactive ? "pointer" : "default",
-            animation: shaded.includes(i) ? "fadeFill 200ms ease-in" : undefined,
-          }}
-          onClick={() => interactive && onTapPart(i)}
-        />
-      ))}
-
-      <line x1="140" y1="2" x2="140" y2="158" stroke={LABEL} strokeWidth="2"
-        strokeDasharray="156" strokeDashoffset={taps >= 1 ? 0 : 156}
-        style={{ transition: "stroke-dashoffset 500ms ease-out" }} />
-    </>
-  );
-};
-
-/* ──────────────── PRE-SPLIT SQUARE for the "choose" question ──────────────── */
-const PreSplitSquare = ({ parts }: { parts: number }) => {
-  return (
-    <svg width="120" height="120" viewBox="0 0 120 120">
-      <rect x="2" y="2" width="116" height="116" fill={GREY} stroke={GREY_BORDER} strokeWidth="1" rx="6" />
-      {parts === 2 && (
-        <line x1="60" y1="2" x2="60" y2="118" stroke={LABEL} strokeWidth="2" />
-      )}
-      {parts === 4 && (
-        <>
-          <line x1="60" y1="2" x2="60" y2="118" stroke={LABEL} strokeWidth="2" />
-          <line x1="2" y1="60" x2="118" y2="60" stroke={LABEL} strokeWidth="2" />
-        </>
-      )}
-    </svg>
-  );
-};
-
-/* ──────────────── KEYFRAMES ──────────────── */
-const Keyframes = () => (
-  <style>{`
-    @keyframes fadeFill {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-  `}</style>
-);
 
 export default HalvesQuartersEighthsYouDo;
