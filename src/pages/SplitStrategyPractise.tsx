@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { PractiseHintButton } from "@/components/PractiseHintButton";
 import CurriculumBadge, { AC9M2N04_PROPS } from "@/components/CurriculumBadge";
+import ProgressIndicator from "@/components/ProgressIndicator";
 
 const BLUE = "#3B82F6";
 const ORANGE = "#F97316";
@@ -759,6 +760,13 @@ const SplitStrategyPractise = () => {
           </div>
         ) : (
           <>
+            {/* ProgressIndicator: Practise mode, wired to level / currentIndex / queue.length */}
+            <ProgressIndicator
+              mode="practise"
+              level={level as 1 | 2 | 3}
+              current={currentIndex + 1}
+              total={queue.length}
+            />
             <p className="mt-4 text-center text-sm text-muted-foreground">
               Question {currentIndex + 1} of {queue.length}
             </p>

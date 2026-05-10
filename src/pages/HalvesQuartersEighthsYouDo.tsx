@@ -4,6 +4,7 @@ import ParentSignpost from "@/components/ParentSignpost";
 import { setLearnComplete } from "@/lib/progress";
 import CurriculumBadge from "@/components/CurriculumBadge";
 import { Pizza, ChocolateBar } from "@/components/FractionFood";
+import ProgressIndicator from "@/components/ProgressIndicator";
 
 const TEAL = "#1D9E75";
 const GREY_BORDER = "#D4D4D4";
@@ -195,22 +196,28 @@ const HalvesQuartersEighthsYouDo = () => {
               </button>
             </div>
           </div>
-        ) : queue[qIndex].type === "shade" ? (
-          <ShadeCard
-            key={`${seed}-${qIndex}-${queue[qIndex].id}`}
-            spec={queue[qIndex] as ShadeQuestion}
-            qNum={qIndex + 1}
-            total={queue.length}
-            onNext={() => setQIndex((i) => i + 1)}
-          />
         ) : (
-          <ChooseCard
-            key={`${seed}-${qIndex}-${queue[qIndex].id}`}
-            spec={queue[qIndex] as ChooseQuestion}
-            qNum={qIndex + 1}
-            total={queue.length}
-            onNext={() => setQIndex((i) => i + 1)}
-          />
+          <>
+            {/* ProgressIndicator: Learn / You Do phase, wired to qIndex / queue.length */}
+            <ProgressIndicator mode="learn" phase="youdo" current={qIndex + 1} total={queue.length} />
+            {queue[qIndex].type === "shade" ? (
+              <ShadeCard
+                key={`${seed}-${qIndex}-${queue[qIndex].id}`}
+                spec={queue[qIndex] as ShadeQuestion}
+                qNum={qIndex + 1}
+                total={queue.length}
+                onNext={() => setQIndex((i) => i + 1)}
+              />
+            ) : (
+              <ChooseCard
+                key={`${seed}-${qIndex}-${queue[qIndex].id}`}
+                spec={queue[qIndex] as ChooseQuestion}
+                qNum={qIndex + 1}
+                total={queue.length}
+                onNext={() => setQIndex((i) => i + 1)}
+              />
+            )}
+          </>
         )}
       </div>
       <ParentSignpost strategy="halvesQuartersEighths" />

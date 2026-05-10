@@ -5,6 +5,7 @@ import { getLevel3Unlocked, setLevel3Unlocked } from "@/lib/progress";
 import CurriculumBadge from "@/components/CurriculumBadge";
 import { PractiseHintButton } from "@/components/PractiseHintButton";
 import { Pizza, ChocolateBar } from "@/components/FractionFood";
+import ProgressIndicator from "@/components/ProgressIndicator";
 
 const TEAL = "#1D9E75";
 const TEAL_FILL = "#1D9E75";
@@ -858,6 +859,13 @@ const HalvesQuartersEighthsPractise = () => {
           </div>
         )}
 
+        {/* ProgressIndicator: Practise mode, 10-question batches, resets when level changes */}
+        <ProgressIndicator
+          mode="practise"
+          level={level}
+          current={((questionNum - 1) % 10) + 1}
+          total={10}
+        />
         <p className="mt-4 text-center text-sm text-muted-foreground">
           Question {questionNum}
         </p>
