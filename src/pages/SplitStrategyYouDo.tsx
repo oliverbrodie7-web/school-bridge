@@ -103,6 +103,13 @@ const SplitStrategyYouDo = () => {
           </p>
         </div>
 
+        {!finished && (
+          <>
+            {/* ProgressIndicator inserted directly — move into shared QuestionCard wrapper when refactor occurs. */}
+            <ProgressIndicator mode="learn" phase="youdo" current={qIndex + 1} total={queue.length} />
+          </>
+        )}
+
         {finished ? (
           <div className="mt-10 text-center space-y-6 animate-fade-in">
             <p className="text-xl font-bold text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
