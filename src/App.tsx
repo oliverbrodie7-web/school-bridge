@@ -20,6 +20,7 @@ import SplitStrategyLearn from "./pages/SplitStrategyLearn.tsx";
 import SplitStrategyWeDo from "./pages/SplitStrategyWeDo.tsx";
 import SplitStrategyYouDo from "./pages/SplitStrategyYouDo.tsx";
 import SplitStrategyPractise from "./pages/SplitStrategyPractise.tsx";
+import HalvesQuartersEighthsLanding from "./pages/HalvesQuartersEighthsLanding.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
