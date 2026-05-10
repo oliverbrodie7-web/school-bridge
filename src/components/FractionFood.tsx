@@ -461,6 +461,28 @@ export const ChocolateBar = ({
           />
         );
       })}
+
+      {/* Click overlay — transparent segment rects for tap-to-shade */}
+      {onSegmentTap &&
+        Array.from({ length: segments }, (_, i) => {
+          const x0 = pad + i * segW + groove / 2;
+          const y0 = pad + groove / 2;
+          const w = segW - groove;
+          const h = innerH - groove;
+          return (
+            <rect
+              key={`tap-${i}`}
+              x={x0}
+              y={y0}
+              width={w}
+              height={h}
+              rx={4}
+              fill="transparent"
+              style={{ cursor: "pointer" }}
+              onClick={() => onSegmentTap(i)}
+            />
+          );
+        })}
     </svg>
   );
 };
