@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import CurriculumBadge from "@/components/CurriculumBadge";
+import { Pizza, ChocolateBar } from "@/components/FractionFood";
 
 const AC9M2N03_PROPS = {
   code: "AC9M2N03",
