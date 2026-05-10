@@ -1326,7 +1326,7 @@ const HalvesQuartersEighthsParentGuide = () => (
           <MistakeCard
             mistake="Your child splits a shape into unequal parts and calls it a half."
             explanation="They understand the idea of splitting but haven't yet connected fractions to equal parts."
-            suggestion={`"Are both parts exactly the same size? Cover one part — does it look exactly like the other?"`}
+            suggestion={`"Are both slices exactly the same size? If one slice is bigger, it's not a half yet — let's try cutting it more carefully."`}
           />
           <MistakeCard
             mistake="Your child confuses the number of shaded parts with the fraction (e.g. shades 2 of 4 parts and says '2' instead of 2/4)."
