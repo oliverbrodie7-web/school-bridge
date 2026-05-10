@@ -33,6 +33,7 @@ export const Pizza = ({
   shaded = [],
   cutsDrawn = true,
   filled = true,
+  onSliceTap,
 }: PizzaProps) => {
   const cx = 100;
   const cy = 100;
