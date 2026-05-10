@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import ParentSignpost from "@/components/ParentSignpost";
+import { ProgressIndicator } from "@/components/ProgressIndicator";
 import { getLevel3Unlocked, setLevel3Unlocked } from "@/lib/progress";
 import CurriculumBadge, { AC9M2N04_PROPS } from "@/components/CurriculumBadge";
 import { PractiseHintButton } from "@/components/PractiseHintButton";
@@ -889,9 +890,13 @@ const Plus10StrategyPractise = () => {
           </div>
         )}
 
-        <p className="mt-4 text-center text-sm text-muted-foreground">
-          Question {questionNum}
-        </p>
+        {/* ProgressIndicator inserted directly — move into shared QuestionCard wrapper when refactor occurs. */}
+        <ProgressIndicator
+          mode="practise"
+          level={level as 1 | 2 | 3}
+          current={((questionNum - 1) % 10) + 1}
+          total={10}
+        />
 
         {level === 1 && (
           <QuestionCard

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import ParentSignpost from "@/components/ParentSignpost";
+import { ProgressIndicator } from "@/components/ProgressIndicator";
 import CurriculumBadge, { AC9M2N04_PROPS } from "@/components/CurriculumBadge";
 
 const BLUE = "#3B82F6";
@@ -83,6 +84,13 @@ const SplitStrategyWeDo = () => {
             This time, the computer goes first. Then it's your turn.
           </p>
         </div>
+
+        {!finished && (
+          <>
+            {/* ProgressIndicator inserted directly — move into shared QuestionCard wrapper when refactor occurs. */}
+            <ProgressIndicator mode="learn" phase="wedo" current={qIndex + 1} total={QUESTIONS.length} />
+          </>
+        )}
 
         {finished ? (
           <div className="mt-10 text-center space-y-6 animate-fade-in">

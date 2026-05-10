@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import ParentSignpost from "@/components/ParentSignpost";
+import { ProgressIndicator } from "@/components/ProgressIndicator";
 import CurriculumBadge, { AC9M2N04_PROPS } from "@/components/CurriculumBadge";
 
 const BLUE = "#3B82F6";
@@ -132,6 +133,9 @@ const Plus10StrategyLearn = () => {
             Watch how adding 10 works.
           </p>
         </div>
+        {/* ProgressIndicator inserted directly — move into shared QuestionCard wrapper when refactor occurs. */}
+        <ProgressIndicator mode="learn" phase="ido" current={exIndex + 1} total={EXAMPLES.length} />
+
         <ExampleCard
           key={exIndex}
           example={EXAMPLES[exIndex]}

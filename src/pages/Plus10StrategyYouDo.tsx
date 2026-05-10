@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ParentSignpost from "@/components/ParentSignpost";
+import { ProgressIndicator } from "@/components/ProgressIndicator";
 import CurriculumBadge, { AC9M2N04_PROPS } from "@/components/CurriculumBadge";
 import { setLearnComplete } from "@/lib/progress";
 
@@ -530,9 +531,10 @@ const Plus10StrategyYouDo = () => {
         </div>
 
         {!finished && (
-          <p className="mt-4 text-center text-sm font-medium text-muted-foreground">
-            Question {qIndex + 1} of {questions.length}
-          </p>
+          <>
+            {/* ProgressIndicator inserted directly — move into shared QuestionCard wrapper when refactor occurs. */}
+            <ProgressIndicator mode="learn" phase="youdo" current={qIndex + 1} total={questions.length} />
+          </>
         )}
 
         <div className="mt-6 rounded-2xl border border-border bg-card p-6 sm:p-8">

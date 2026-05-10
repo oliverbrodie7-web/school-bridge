@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ParentSignpost from "@/components/ParentSignpost";
+import { ProgressIndicator } from "@/components/ProgressIndicator";
 import CurriculumBadge from "@/components/CurriculumBadge";
 import { Pizza, ChocolateBar } from "@/components/FractionFood";
 
@@ -111,6 +112,13 @@ const HalvesQuartersEighthsWeDo = () => {
             This time, the computer goes first. Then it's your turn.
           </p>
         </div>
+
+        {!finished && (
+          <>
+            {/* ProgressIndicator inserted directly — move into shared QuestionCard wrapper when refactor occurs. */}
+            <ProgressIndicator mode="learn" phase="wedo" current={qIndex + 1} total={QUESTIONS.length} />
+          </>
+        )}
 
         {finished ? (
           <div className="mt-10 text-center space-y-6 animate-fade-in">

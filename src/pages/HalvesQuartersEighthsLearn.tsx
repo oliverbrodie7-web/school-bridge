@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ParentSignpost from "@/components/ParentSignpost";
+import { ProgressIndicator } from "@/components/ProgressIndicator";
 import CurriculumBadge from "@/components/CurriculumBadge";
 import { Pizza, ChocolateBar } from "@/components/FractionFood";
 
@@ -55,6 +56,9 @@ const HalvesQuartersEighthsLearn = () => {
             Watch how a chocolate bar and a pizza split into equal pieces.
           </p>
         </div>
+
+        {/* ProgressIndicator inserted directly — move into shared QuestionCard wrapper when refactor occurs. */}
+        <ProgressIndicator mode="learn" phase="ido" current={exIndex + 1} total={2} />
 
         {exIndex === 0 ? (
           <HalfChocolateCard onNext={() => setExIndex(1)} />
