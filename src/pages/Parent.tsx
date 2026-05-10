@@ -984,9 +984,8 @@ type HQEDemoPhase = "prompt" | "halved" | "quartered" | "shaded";
 const HQEDemoAnimation = () => {
   const [phase, setPhase] = useState<HQEDemoPhase>("prompt");
 
-  const taps =
-    phase === "prompt" ? 0 : phase === "halved" ? 1 : 2;
-  const shaded = phase === "shaded";
+  const slices = phase === "prompt" ? 1 : phase === "halved" ? 2 : 4;
+  const shaded = phase === "shaded" ? [0] : [];
 
   const advance = () => {
     if (phase === "prompt") setPhase("halved");
@@ -996,57 +995,54 @@ const HQEDemoAnimation = () => {
 
   const reset = () => setPhase("prompt");
 
+  const splitDone = phase === "quartered" || phase === "shaded";
+  const canTapWhole = phase === "prompt" || phase === "halved";
+
+  const handleSliceTap = (i: number) => {
+    if (phase === "quartered" && i === 0) setPhase("shaded");
+  };
+
   return (
     <div className="rounded-xl border border-border bg-card p-6 sm:p-8">
       <p className="text-sm font-medium text-muted-foreground text-center">
-        Tap the square to halve it. Tap again to make quarters. Tap once more to shade one quarter.
+        Tap the pizza to slice it in half. Tap again to make quarters. Tap one slice to shade it.
       </p>
 
       <div className="mt-6 flex justify-center">
-        <button
-          type="button"
-          onClick={advance}
-          disabled={phase === "shaded"}
+        <div
+          role={canTapWhole ? "button" : undefined}
+          onClick={canTapWhole ? advance : undefined}
+          aria-label="Tap pizza to slice"
           className={
-            phase !== "shaded"
+            canTapWhole
               ? "cursor-pointer transition-transform hover:scale-105 active:scale-95"
               : "cursor-default"
           }
-          style={{ background: "transparent", border: "none", padding: 0 }}
-          aria-label="Tap to split shape"
+          style={{ background: "transparent", border: "none", padding: 0, display: "inline-block" }}
         >
-          <svg width="220" height="220" viewBox="0 0 200 200">
-            <rect x="2" y="2" width="196" height="196" fill={HQE_GREY} stroke={HQE_GREY_BORDER} strokeWidth="1" rx="6" />
-            {shaded && (
-              <rect x="2" y="2" width="98" height="98" fill={HQE_TEAL}
-                style={{ animation: "fadeFill 200ms ease-in" }} />
-            )}
-            {/* Vertical (1st halving) */}
-            <line x1="100" y1="2" x2="100" y2="198" stroke={HQE_LABEL} strokeWidth="2"
-              strokeDasharray="196" strokeDashoffset={taps >= 1 ? 0 : 196}
-              style={{ transition: "stroke-dashoffset 500ms ease-out" }} />
-            {/* Horizontal (2nd halving → quarters) */}
-            <line x1="2" y1="100" x2="198" y2="100" stroke={HQE_LABEL} strokeWidth="2"
-              strokeDasharray="196" strokeDashoffset={taps >= 2 ? 0 : 196}
-              style={{ transition: "stroke-dashoffset 500ms ease-out" }} />
-          </svg>
-        </button>
+          <Pizza
+            size={220}
+            slices={slices}
+            shaded={shaded}
+            onSliceTap={splitDone && phase !== "shaded" ? handleSliceTap : undefined}
+          />
+        </div>
       </div>
 
       {phase === "halved" && (
         <p className="mt-4 text-center text-sm text-muted-foreground animate-fade-in">
-          Two equal parts — that's halves. Tap again to halve each side.
+          Two equal slices — that's halves. Tap again to slice each half.
         </p>
       )}
       {phase === "quartered" && (
         <p className="mt-4 text-center text-sm text-muted-foreground animate-fade-in">
-          Four equal parts — that's quarters. Tap a part to shade it.
+          Four equal slices — that's quarters. Tap one slice to shade it.
         </p>
       )}
       {phase === "shaded" && (
         <div className="mt-4 text-center animate-fade-in space-y-3">
           <p className="text-base font-semibold" style={{ color: HQE_LABEL }}>
-            1 out of 4 equal parts = 1/4
+            1 out of 4 equal slices = 1/4
           </p>
           <button
             type="button"
