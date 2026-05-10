@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-type Strategy = "splitStrategy" | "plusTen";
+type Strategy = "splitStrategy" | "plusTen" | "halvesQuartersEighths";
 type SplitFocus = "tens" | "ones" | "total";
 
 interface Question {
@@ -16,10 +16,12 @@ interface Props {
   consecutiveCorrect: number;
   /** Session counter — page-managed. Hint shows again when >= 2 consecutive wrong. */
   consecutiveWrong: number;
-  /** Optional — used for the visual (Stage 2) hint animation. */
+  /** Optional — used for the visual (Stage 2) hint animation (split / plusTen). */
   question?: Question;
   /** Split-strategy only — which input the child is working on right now. */
   inputFocus?: SplitFocus;
+  /** Fraction strategy only — re-key the visual so it replays when the question changes. */
+  hintKey?: string | number;
 }
 
 const ACCENT = "#1D9E75"; // --colour-active-border
