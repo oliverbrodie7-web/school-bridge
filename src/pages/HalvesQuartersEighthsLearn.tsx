@@ -51,7 +51,7 @@ const HalvesQuartersEighthsLearn = () => {
             Halves, Quarters &amp; Eighths — I Do
           </h1>
           <p className="mt-2 text-center text-muted-foreground">
-            Watch how shapes split into equal parts.
+            Watch how a chocolate bar and a pizza split into equal pieces.
           </p>
         </div>
 
