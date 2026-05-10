@@ -42,6 +42,12 @@ const getTip = (strategy: Strategy, level: 2 | 3, focus: SplitFocus): string => 
     }
     return "Look at the first digit. That tells you the tens. What is it worth?";
   }
+  if (strategy === "halvesQuartersEighths") {
+    if (level === 2) {
+      return "Remember — quarters come from halving twice. Tap the shape again.";
+    }
+    return "Eighths come from halving three times — half, then quarter, then eighth. How many parts are there?";
+  }
   // plusTen
   if (level === 2) {
     return "Count the tens blocks. How many tens are there now altogether?";
