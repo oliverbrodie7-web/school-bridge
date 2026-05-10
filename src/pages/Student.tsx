@@ -15,7 +15,7 @@ const topics: TopicCard[] = [
   { name: "Subtraction", description: "Taking numbers away and finding the difference", active: false, symbol: "−", iconId: "topic-icon-subtraction" },
   { name: "Multiplication", description: "Building equal groups to find totals", active: false, symbol: "×", iconId: "topic-icon-multiplication" },
   { name: "Sharing", description: "Splitting things into equal groups", active: false, symbol: "÷", iconId: "topic-icon-sharing" },
-  { name: "Fractions", description: "Understanding equal parts of a whole", active: false, symbol: "½", iconId: "topic-icon-fractions" },
+  { name: "Fractions", description: "Understanding equal parts of a whole", active: true, to: "/student/fractions", symbol: "½", iconId: "topic-icon-fractions" },
   { name: "Decimals", description: "Numbers that sit between whole numbers", active: false, symbol: "0.1", iconId: "topic-icon-decimals" },
   { name: "Measurement", description: "Length, mass, volume and time", active: false, symbol: "cm", iconId: "topic-icon-measurement" },
   { name: "Times Tables", description: "Practising multiplication facts until they stick", active: false, symbol: "×", iconId: "topic-icon-times-tables" },

@@ -21,6 +21,7 @@ import SplitStrategyWeDo from "./pages/SplitStrategyWeDo.tsx";
 import SplitStrategyYouDo from "./pages/SplitStrategyYouDo.tsx";
 import SplitStrategyPractise from "./pages/SplitStrategyPractise.tsx";
 import HalvesQuartersEighthsLanding from "./pages/HalvesQuartersEighthsLanding.tsx";
+import FractionsStrategies from "./pages/FractionsStrategies.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -39,6 +40,7 @@ const App = () => (
           <Route path="/parent" element={<Parent />} />
           <Route path="/student/addition" element={<AdditionStrategies />} />
           <Route path="/student/subtraction" element={<SubtractionStrategies />} />
+          <Route path="/student/fractions" element={<FractionsStrategies />} />
           <Route path="/plus10-strategy" element={<Plus10StrategyLanding />} />
           <Route path="/learn/plus10-strategy" element={<Plus10StrategyLearn />} />
           <Route path="/learn/plus10-strategy/we-do" element={<Plus10StrategyWeDo />} />
