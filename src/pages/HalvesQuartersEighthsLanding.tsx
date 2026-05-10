@@ -51,6 +51,28 @@ const HalvesQuartersEighthsLanding = () => {
           </div>
         </div>
 
+        {/* Static visual preview: pizza + chocolate bar */}
+        <div className="mt-6 flex items-end justify-center gap-8">
+          <div className="flex flex-col items-center">
+            <Pizza size={60} slices={4} shaded={[0]} />
+            <span
+              className="mt-1.5"
+              style={{ fontSize: 11, color: "var(--color-text-tertiary, hsl(var(--muted-foreground)))" }}
+            >
+              pizza
+            </span>
+          </div>
+          <div className="flex flex-col items-center">
+            <ChocolateBar width={80} height={44} segments={2} shaded={[0]} />
+            <span
+              className="mt-1.5"
+              style={{ fontSize: 11, color: "var(--color-text-tertiary, hsl(var(--muted-foreground)))" }}
+            >
+              chocolate bar
+            </span>
+          </div>
+        </div>
+
         <div className="text-center space-y-8 mt-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
             <Link
