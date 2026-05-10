@@ -34,59 +34,120 @@ export const Pizza = ({
 }: PizzaProps) => {
   const cx = 100;
   const cy = 100;
-  const r = 92;
+  const rOuter = 96; // crust outer
+  const rInner = 84; // cheese disc
+  const detail = size >= 160 ? "rich" : size >= 100 ? "med" : "small";
+  const pepCount = detail === "rich" ? 5 : detail === "med" ? 3 : 2;
+  const pepR = detail === "rich" ? 4.5 : detail === "med" ? 3.2 : 2.4;
 
-  // Slice paths (start at top, clockwise)
-  const slicePath = (i: number) => {
+  // Slice paths (start at top, clockwise) over inner cheese radius
+  const slicePath = (i: number, radius = rInner) => {
     if (slices < 2) return "";
     const a1 = (i / slices) * Math.PI * 2 - Math.PI / 2;
     const a2 = ((i + 1) / slices) * Math.PI * 2 - Math.PI / 2;
-    const x1 = cx + r * Math.cos(a1);
-    const y1 = cy + r * Math.sin(a1);
-    const x2 = cx + r * Math.cos(a2);
-    const y2 = cy + r * Math.sin(a2);
+    const x1 = cx + radius * Math.cos(a1);
+    const y1 = cy + radius * Math.sin(a1);
+    const x2 = cx + radius * Math.cos(a2);
+    const y2 = cy + radius * Math.sin(a2);
     const large = a2 - a1 > Math.PI ? 1 : 0;
-    return `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} Z`;
+    return `M ${cx} ${cy} L ${x1} ${y1} A ${radius} ${radius} 0 ${large} 1 ${x2} ${y2} Z`;
   };
 
-  // Cut line endpoints (each cut goes through centre, so n/2 lines for even n)
+  // Cut lines (within cheese disc only — knife cuts, not over crust)
   const cutLines: Array<{ x1: number; y1: number; x2: number; y2: number }> = [];
   if (slices >= 2) {
+    const cutR = rInner - 2;
     const n = slices / 2;
     for (let i = 0; i < n; i++) {
       const a = (i / slices) * Math.PI * 2 - Math.PI / 2;
       cutLines.push({
-        x1: cx - r * Math.cos(a),
-        y1: cy - r * Math.sin(a),
-        x2: cx + r * Math.cos(a),
-        y2: cy + r * Math.sin(a),
+        x1: cx - cutR * Math.cos(a),
+        y1: cy - cutR * Math.sin(a),
+        x2: cx + cutR * Math.cos(a),
+        y2: cy + cutR * Math.sin(a),
       });
     }
   }
 
-  // Pepperoni positions inside a slice (deterministic per index).
-  const pepsForSlice = (i: number) => {
-    const mid = ((i + 0.5) / slices) * Math.PI * 2 - Math.PI / 2;
-    const dots = [0.45, 0.65, 0.55].map((rr, k) => {
-      const offset = (k - 1) * 0.25;
-      const a = mid + offset / slices;
-      return {
-        x: cx + r * rr * Math.cos(a),
-        y: cy + r * rr * Math.sin(a),
-        rr: 2 + (k % 2),
-      };
-    });
-    return dots;
+  // Deterministic pseudo-random based on slice index + dot index
+  const seeded = (i: number, k: number, salt = 1) => {
+    const v = Math.sin((i + 1) * 12.9898 + (k + 1) * 78.233 + salt * 37.719) * 43758.5453;
+    return v - Math.floor(v); // 0..1
   };
+
+  const pepsForSlice = (i: number) => {
+    const a1 = (i / slices) * Math.PI * 2 - Math.PI / 2;
+    const a2 = ((i + 1) / slices) * Math.PI * 2 - Math.PI / 2;
+    const out: Array<{ x: number; y: number; r: number }> = [];
+    for (let k = 0; k < pepCount; k++) {
+      // Jittered placement in polar coords, kept inside slice
+      const ta = 0.18 + seeded(i, k, 1) * 0.64; // 0.18..0.82 along the slice angle
+      const tr = 0.32 + seeded(i, k, 2) * 0.5; // 0.32..0.82 along radius
+      const a = a1 + (a2 - a1) * ta;
+      const rad = (rInner - 6) * tr;
+      out.push({
+        x: cx + rad * Math.cos(a),
+        y: cy + rad * Math.sin(a),
+        r: pepR * (0.85 + seeded(i, k, 3) * 0.3),
+      });
+    }
+    return out;
+  };
+
+  // Cheese melt blobs (organic light highlights on the cheese)
+  const cheeseBlobs = [
+    { x: 70, y: 70, r: 14 },
+    { x: 130, y: 78, r: 11 },
+    { x: 92, y: 130, r: 13 },
+    { x: 128, y: 128, r: 9 },
+  ];
+
+  // Crust speckles (baked bubbles around the rim)
+  const speckles = Array.from({ length: detail === "small" ? 8 : 18 }, (_, k) => {
+    const a = (k / (detail === "small" ? 8 : 18)) * Math.PI * 2;
+    const rr = (rOuter + rInner) / 2 + (seeded(k, 0, 5) - 0.5) * 4;
+    return {
+      x: cx + rr * Math.cos(a),
+      y: cy + rr * Math.sin(a),
+      r: 0.8 + seeded(k, 0, 6) * 1.2,
+      light: seeded(k, 0, 7) > 0.5,
+    };
+  });
+
+  const clipId = `pizza-clip-${slices}-${size}`;
 
   return (
     <svg width={size} height={size} viewBox="0 0 200 200">
-      {/* Pale base */}
-      <circle cx={cx} cy={cy} r={r} fill={PIZZA_BASE} fillOpacity={0.6} />
-      {/* Shaded slices */}
+      <defs>
+        <radialGradient id={`crust-grad-${size}`} cx="50%" cy="50%" r="50%">
+          <stop offset="85%" stopColor="#D97706" />
+          <stop offset="100%" stopColor="#92400E" />
+        </radialGradient>
+        <clipPath id={clipId}>
+          <circle cx={cx} cy={cy} r={rInner} />
+        </clipPath>
+      </defs>
+
+      {/* Crust ring with darker outer rim */}
+      <circle cx={cx} cy={cy} r={rOuter} fill={`url(#crust-grad-${size})`} />
+
+      {/* Tomato sauce layer (inside crust) */}
+      <circle cx={cx} cy={cy} r={rInner} fill="#F87171" />
+
+      {/* Melted cheese on top of sauce — leaves sauce peeking via blobs */}
+      <g clipPath={`url(#${clipId})`}>
+        <circle cx={cx} cy={cy} r={rInner} fill="#FDE68A" fillOpacity={0.92} />
+        {cheeseBlobs.map((b, k) => (
+          <circle key={k} cx={b.x} cy={b.y} r={b.r} fill="#F87171" fillOpacity={0.35} />
+        ))}
+        {/* Cheese highlight */}
+        <ellipse cx={cx - 22} cy={cy - 28} rx={26} ry={10} fill="#FFFFFF" fillOpacity={0.18} />
+      </g>
+
+      {/* Shaded ("taken") slices — extra sauce + toppings */}
       {slices >= 2 &&
         shaded.map((i) => (
-          <g key={`sh-${i}`}>
+          <g key={`sh-${i}`} clipPath={`url(#${clipId})`}>
             <path
               d={slicePath(i)}
               fill={PIZZA_RED}
@@ -95,44 +156,94 @@ export const Pizza = ({
             />
             {filled &&
               pepsForSlice(i).map((p, k) => (
-                <circle
-                  key={k}
-                  cx={p.x}
-                  cy={p.y}
-                  r={p.rr}
-                  fill={PEP}
-                  fillOpacity={0.55}
-                />
+                <g key={k}>
+                  <circle cx={p.x} cy={p.y} r={p.r} fill="#7F1D1D" fillOpacity={0.9} />
+                  <circle cx={p.x} cy={p.y} r={p.r - 0.8} fill="#DC2626" />
+                  <circle
+                    cx={p.x - p.r * 0.3}
+                    cy={p.y - p.r * 0.3}
+                    r={p.r * 0.25}
+                    fill="#FCA5A5"
+                    fillOpacity={0.7}
+                  />
+                </g>
               ))}
+            {/* Tiny basil specks */}
+            {filled && detail !== "small" &&
+              [0, 1].map((k) => {
+                const a1 = (i / slices) * Math.PI * 2 - Math.PI / 2;
+                const a2 = ((i + 1) / slices) * Math.PI * 2 - Math.PI / 2;
+                const ta = 0.3 + seeded(i, k, 9) * 0.4;
+                const tr = 0.45 + seeded(i, k, 10) * 0.3;
+                const a = a1 + (a2 - a1) * ta;
+                const rad = (rInner - 8) * tr;
+                return (
+                  <circle
+                    key={`b-${k}`}
+                    cx={cx + rad * Math.cos(a)}
+                    cy={cy + rad * Math.sin(a)}
+                    r={1.2}
+                    fill="#16A34A"
+                    fillOpacity={0.85}
+                  />
+                );
+              })}
           </g>
         ))}
-      {/* Cut lines */}
-      {cutLines.map((l, idx) => {
-        const len = Math.hypot(l.x2 - l.x1, l.y2 - l.y1);
-        return (
-          <line
-            key={idx}
-            x1={l.x1}
-            y1={l.y1}
-            x2={l.x2}
-            y2={l.y2}
-            stroke={CRUST}
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeDasharray={len}
-            strokeDashoffset={cutsDrawn ? 0 : len}
-            style={{ transition: "stroke-dashoffset 600ms ease-out" }}
-          />
-        );
-      })}
-      {/* Crust */}
+
+      {/* Knife cut lines (clipped to cheese disc, dark crust colour) */}
+      <g clipPath={`url(#${clipId})`}>
+        {cutLines.map((l, idx) => {
+          const len = Math.hypot(l.x2 - l.x1, l.y2 - l.y1);
+          return (
+            <line
+              key={idx}
+              x1={l.x1}
+              y1={l.y1}
+              x2={l.x2}
+              y2={l.y2}
+              stroke="#78350F"
+              strokeWidth={2.5}
+              strokeLinecap="round"
+              strokeDasharray={len}
+              strokeDashoffset={cutsDrawn ? 0 : len}
+              style={{ transition: "stroke-dashoffset 600ms ease-out" }}
+            />
+          );
+        })}
+      </g>
+
+      {/* Crust speckles (baked bubbles) on the rim */}
+      {speckles.map((s, k) => (
+        <circle
+          key={k}
+          cx={s.x}
+          cy={s.y}
+          r={s.r}
+          fill={s.light ? "#FEF3C7" : "#92400E"}
+          fillOpacity={s.light ? 0.7 : 0.5}
+        />
+      ))}
+
+      {/* Outer rim shadow for depth */}
       <circle
         cx={cx}
         cy={cy}
-        r={r}
+        r={rOuter}
         fill="none"
-        stroke={CRUST}
-        strokeWidth={3}
+        stroke="#78350F"
+        strokeWidth={1.5}
+        strokeOpacity={0.7}
+      />
+      {/* Inner crust edge */}
+      <circle
+        cx={cx}
+        cy={cy}
+        r={rInner}
+        fill="none"
+        stroke="#92400E"
+        strokeWidth={1}
+        strokeOpacity={0.5}
       />
     </svg>
   );
