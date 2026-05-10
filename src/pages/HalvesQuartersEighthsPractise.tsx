@@ -427,7 +427,7 @@ const ShadeCard = ({
             I took ___ out of ___ equal {unitWord} = ___
           </p>
           <ChipRow<number>
-            label="How many did you shade?"
+            label={`How many did you take?`}
             options={shadeOptions}
             value={shadeChip}
             onChange={setShadeChip}
@@ -435,7 +435,7 @@ const ShadeCard = ({
             pulse={shadeChip === null}
           />
           <ChipRow<number>
-            label="How many equal parts are there?"
+            label={`How many equal ${unitWord} are there?`}
             options={partsOptions}
             value={partsChip}
             onChange={setPartsChip}
