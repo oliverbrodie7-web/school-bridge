@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import CurriculumBadge from "@/components/CurriculumBadge";
+import { Pizza, ChocolateBar } from "@/components/FractionFood";
 
 const TEAL = "#1D9E75";
-const GREY = "#F5F5F5";
 const GREY_BORDER = "#D4D4D4";
 const LABEL = "#0F6E56";
 
@@ -16,15 +16,15 @@ const AC9M2N03_PROPS = {
   strand: "Number",
 };
 
-type ShapeKind = "halfSquare" | "quarterCircle" | "eighthSquare";
+type FoodKind = "halfBar" | "quarterPizza" | "eighthBar";
 
 interface QSpec {
-  kind: ShapeKind;
+  kind: FoodKind;
   totalParts: number;
-  partName: string; // canonical name
-  acceptedNames: string[]; // lowercase variants accepted
-  acceptedFraction: string; // e.g. "1/2"
-  taps: number; // total taps required for child shape
+  partName: string;
+  acceptedFraction: string;
+  taps: number;
+  unit: "piece" | "slice";
   computerMessage: string;
   promptMessage: string;
   successMessage: string;
@@ -33,49 +33,49 @@ interface QSpec {
 
 const QUESTIONS: QSpec[] = [
   {
-    kind: "halfSquare",
+    kind: "halfBar",
     totalParts: 2,
     partName: "one half",
-    acceptedNames: ["one half", "1/2", "a half", "half", "one-half"],
     acceptedFraction: "1/2",
     taps: 1,
+    unit: "piece",
     computerMessage:
-      "I split the square into 2 equal parts. Each part is one half.",
-    promptMessage: "Tap the shape to split it.",
+      "I broke the bar into 2 equal pieces. Each piece is one half.",
+    promptMessage: "Tap the bar to break it.",
     successMessage:
-      "That's right! 2 equal parts means each part is one half.",
+      "That's right! 2 equal pieces means each piece is one half.",
     wrongHint:
-      "Count the parts carefully — how many sections did the line make?",
+      "Count the pieces — how many sections did the break make?",
   },
   {
-    kind: "quarterCircle",
+    kind: "quarterPizza",
     totalParts: 4,
     partName: "one quarter",
-    acceptedNames: ["one quarter", "1/4", "a quarter", "quarter", "one-quarter"],
     acceptedFraction: "1/4",
     taps: 2,
+    unit: "slice",
     computerMessage:
-      "I halved it twice to make 4 equal parts. Each part is one quarter.",
-    promptMessage: "Tap twice to split into quarters.",
+      "I sliced the pizza in half, then in half again to make 4 equal slices. Each slice is one quarter.",
+    promptMessage: "Tap the pizza twice to slice into quarters.",
     successMessage:
-      "That's right! Halving twice makes 4 equal parts — each is one quarter.",
+      "That's right! Slicing twice makes 4 equal slices — each is one quarter.",
     wrongHint:
-      "Remember — we halved it twice. How many parts did we end up with?",
+      "Remember — we sliced it twice. How many slices did we end up with?",
   },
   {
-    kind: "eighthSquare",
+    kind: "eighthBar",
     totalParts: 8,
     partName: "one eighth",
-    acceptedNames: ["one eighth", "1/8", "an eighth", "eighth", "one-eighth"],
     acceptedFraction: "1/8",
     taps: 3,
+    unit: "piece",
     computerMessage:
-      "I halved it three times to make 8 equal parts. Each part is one eighth.",
-    promptMessage: "Tap three times to split into eighths.",
+      "I broke the bar three times to make 8 equal pieces. Each piece is one eighth.",
+    promptMessage: "Tap the bar three times to break into eighths.",
     successMessage:
-      "That's right! Halving 3 times makes 8 equal parts — each is one eighth.",
+      "That's right! Breaking 3 times makes 8 equal pieces — each is one eighth.",
     wrongHint:
-      "We halved it 3 times — 2, then 4, then 8. How many parts are there now?",
+      "We broke it 3 times — 2, then 4, then 8. How many pieces are there?",
   },
 ];
 
@@ -136,7 +136,6 @@ const HalvesQuartersEighthsWeDo = () => {
           />
         )}
       </div>
-      <Keyframes />
     </div>
   );
 };
@@ -153,12 +152,10 @@ const QuestionCard = ({
   isLast: boolean;
   onNext: () => void;
 }) => {
-  // Computer demo state: animated taps
   const [computerTaps, setComputerTaps] = useState(0);
   const [computerFilled, setComputerFilled] = useState(false);
   const [computerDone, setComputerDone] = useState(false);
 
-  // Child state
   const [childTaps, setChildTaps] = useState(0);
   const [partsChoice, setPartsChoice] = useState<number | null>(null);
   const [nameChoice, setNameChoice] = useState<string | null>(null);
@@ -172,7 +169,6 @@ const QuestionCard = ({
     { name: "one eighth", fraction: "1/8" },
   ];
 
-  // Animate computer demo
   useEffect(() => {
     if (computerTaps < spec.taps) {
       const t = setTimeout(() => setComputerTaps((n) => n + 1), 800);
@@ -213,6 +209,10 @@ const QuestionCard = ({
     minHeight: 44,
   });
 
+  const unitPlural = spec.unit === "slice" ? "slices" : "pieces";
+  const aria =
+    spec.kind === "quarterPizza" ? "Tap the pizza to slice it" : "Tap the bar to break it";
+
   return (
     <div className="mt-8 space-y-6">
       {/* Computer card */}
@@ -222,11 +222,7 @@ const QuestionCard = ({
           My turn
         </p>
         <div className="mt-6 flex justify-center">
-          <ShapeSVG
-            kind={spec.kind}
-            taps={computerTaps}
-            filled={computerFilled}
-          />
+          <FoodSVG kind={spec.kind} taps={computerTaps} filled={computerFilled} />
         </div>
         {computerDone && (
           <p className="mt-6 text-center text-base text-foreground animate-fade-in">
@@ -247,7 +243,7 @@ const QuestionCard = ({
               type="button"
               onClick={handleChildTap}
               disabled={childTaps >= spec.taps}
-              aria-label="Tap to split the shape"
+              aria-label={aria}
               className={
                 childTaps < spec.taps
                   ? "cursor-pointer transition-transform hover:scale-105 active:scale-95"
@@ -255,11 +251,7 @@ const QuestionCard = ({
               }
               style={{ background: "transparent", border: "none", padding: 0 }}
             >
-              <ShapeSVG
-                kind={spec.kind}
-                taps={childTaps}
-                filled={childCorrect}
-              />
+              <FoodSVG kind={spec.kind} taps={childTaps} filled={childCorrect} />
             </button>
           </div>
 
@@ -277,7 +269,9 @@ const QuestionCard = ({
           {childReady && !childCorrect && (
             <div className="mt-6 space-y-5 animate-fade-in">
               <div className="flex flex-col items-center gap-2">
-                <p className="text-base text-foreground">There are ___ equal parts</p>
+                <p className="text-base text-foreground">
+                  There are ___ equal {unitPlural}
+                </p>
                 <div className="flex flex-wrap justify-center gap-2">
                   {partsOptions.map((n) => (
                     <button
@@ -294,7 +288,9 @@ const QuestionCard = ({
               </div>
 
               <div className="flex flex-col items-center gap-2">
-                <p className="text-base text-foreground">Each part is called ___</p>
+                <p className="text-base text-foreground">
+                  Each {spec.unit} is called ___
+                </p>
                 <div className="flex flex-wrap justify-center gap-2">
                   {nameOptions.map((opt) => (
                     <button
@@ -363,91 +359,55 @@ const QuestionCard = ({
   );
 };
 
-/* ──────────────── SHAPE RENDERER ──────────────── */
-const ShapeSVG = ({
+/* ──────────────── FOOD RENDERER ──────────────── */
+const FoodSVG = ({
   kind,
   taps,
   filled,
 }: {
-  kind: ShapeKind;
+  kind: FoodKind;
   taps: number;
   filled: boolean;
 }) => {
-  if (kind === "halfSquare") {
-    const split = taps >= 1;
+  if (kind === "halfBar") {
     return (
-      <svg width="220" height="220" viewBox="0 0 200 200">
-        <rect x="2" y="2" width="196" height="196" fill={GREY} stroke={GREY_BORDER} strokeWidth="1" rx="6" />
-        {filled && (
-          <rect x="2" y="2" width="98" height="196" fill={TEAL} rx="6" style={{ animation: "fadeFill 200ms ease-in" }} />
-        )}
-        <line
-          x1="100" y1="2" x2="100" y2="198"
-          stroke={LABEL} strokeWidth="2"
-          strokeDasharray="196"
-          strokeDashoffset={split ? 0 : 196}
-          style={{ transition: "stroke-dashoffset 600ms ease-out" }}
-        />
-      </svg>
+      <ChocolateBar
+        width={280}
+        height={120}
+        segments={2}
+        shaded={[0]}
+        breaksDrawn={taps >= 1}
+        filled={filled}
+      />
     );
   }
 
-  if (kind === "quarterCircle") {
-    const half = taps >= 1;
-    const quarter = taps >= 2;
-    const tr = "M 100 100 L 100 5 A 95 95 0 0 1 195 100 Z";
+  if (kind === "quarterPizza") {
+    // 1 tap → halves, 2 taps → quarters
+    const slices = taps >= 2 ? 4 : taps >= 1 ? 2 : 1;
     return (
-      <svg width="220" height="220" viewBox="0 0 200 200">
-        <circle cx="100" cy="100" r="95" fill={GREY} stroke={GREY_BORDER} strokeWidth="1" />
-        {filled && (
-          <path d={tr} fill={TEAL} style={{ animation: "fadeFill 200ms ease-in" }} />
-        )}
-        <line x1="5" y1="100" x2="195" y2="100" stroke={LABEL} strokeWidth="2"
-          strokeDasharray="190" strokeDashoffset={half ? 0 : 190}
-          style={{ transition: "stroke-dashoffset 600ms ease-out" }} />
-        <line x1="100" y1="5" x2="100" y2="195" stroke={LABEL} strokeWidth="2"
-          strokeDasharray="190" strokeDashoffset={quarter ? 0 : 190}
-          style={{ transition: "stroke-dashoffset 600ms ease-out" }} />
-      </svg>
+      <Pizza
+        size={240}
+        slices={slices}
+        shaded={filled ? [0] : []}
+        cutsDrawn={true}
+        filled={filled}
+      />
     );
   }
 
-  // eighthSquare: tap1 = vertical halve, tap2 = horizontal -> quarters, tap3 = second vertical -> eighths (4 columns x 2 rows)
-  const tap1 = taps >= 1;
-  const tap2 = taps >= 2;
-  const tap3 = taps >= 3;
+  // eighthBar: 1 tap → 2, 2 taps → 4, 3 taps → 8
+  const segments = taps >= 3 ? 8 : taps >= 2 ? 4 : taps >= 1 ? 2 : 1;
   return (
-    <svg width="240" height="220" viewBox="0 0 220 200">
-      <rect x="2" y="2" width="216" height="196" fill={GREY} stroke={GREY_BORDER} strokeWidth="1" rx="6" />
-      {filled && (
-        <rect x="2" y="2" width="54" height="98" fill={TEAL} rx="6" style={{ animation: "fadeFill 200ms ease-in" }} />
-      )}
-      {/* Tap 1: middle vertical */}
-      <line x1="110" y1="2" x2="110" y2="198" stroke={LABEL} strokeWidth="2"
-        strokeDasharray="196" strokeDashoffset={tap1 ? 0 : 196}
-        style={{ transition: "stroke-dashoffset 500ms ease-out" }} />
-      {/* Tap 2: horizontal */}
-      <line x1="2" y1="100" x2="218" y2="100" stroke={LABEL} strokeWidth="2"
-        strokeDasharray="216" strokeDashoffset={tap2 ? 0 : 216}
-        style={{ transition: "stroke-dashoffset 500ms ease-out" }} />
-      {/* Tap 3: two more verticals at quarters */}
-      <line x1="56" y1="2" x2="56" y2="198" stroke={LABEL} strokeWidth="2"
-        strokeDasharray="196" strokeDashoffset={tap3 ? 0 : 196}
-        style={{ transition: "stroke-dashoffset 500ms ease-out" }} />
-      <line x1="164" y1="2" x2="164" y2="198" stroke={LABEL} strokeWidth="2"
-        strokeDasharray="196" strokeDashoffset={tap3 ? 0 : 196}
-        style={{ transition: "stroke-dashoffset 500ms ease-out" }} />
-    </svg>
+    <ChocolateBar
+      width={320}
+      height={110}
+      segments={segments}
+      shaded={[0]}
+      breaksDrawn={true}
+      filled={filled}
+    />
   );
 };
-
-const Keyframes = () => (
-  <style>{`
-    @keyframes fadeFill {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-  `}</style>
-);
 
 export default HalvesQuartersEighthsWeDo;
