@@ -534,10 +534,8 @@ const Plus10StrategyWeDo = () => {
           </p>
         </div>
 
-        {/* Question indicator */}
-        <p className="mt-4 text-center text-sm font-medium text-muted-foreground">
-          Question {qIndex + 1} of {QUESTIONS.length}
-        </p>
+        {/* ProgressIndicator inserted directly — move into shared QuestionCard wrapper when refactor occurs. */}
+        <ProgressIndicator mode="learn" phase="wedo" current={qIndex + 1} total={QUESTIONS.length} />
 
         <div className="mt-6 rounded-2xl border border-border bg-card p-6 sm:p-8">
           {step === "computer" ? (
