@@ -815,6 +815,25 @@ const HalvesQuartersEighthsPractise = () => {
 
         <LevelSelector level={level} onChange={handleLevelChange} l3Unlocked={l3Unlocked} />
 
+        {showL2PromoBanner && (
+          <div className="mt-4 rounded-xl border-2 border-primary bg-secondary p-4 text-center animate-fade-in">
+            <p className="text-lg font-semibold text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
+              Nice work — 5 in a row! 🎉
+            </p>
+            <p className="mt-1 text-muted-foreground">
+              You're ready for Level 2 — Quarters 🍕
+            </p>
+            <div className="mt-3">
+              <button
+                onClick={() => setShowL2PromoBanner(false)}
+                className="rounded-xl bg-primary px-6 py-3 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+              >
+                Let's go
+              </button>
+            </div>
+          </div>
+        )}
+
         {showUnlockBanner && (
           <div className="mt-4 rounded-xl border-2 border-primary bg-secondary p-4 text-center animate-fade-in">
             <p className="text-lg font-semibold text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
