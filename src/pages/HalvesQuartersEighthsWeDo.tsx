@@ -195,10 +195,8 @@ const QuestionCard = ({
   };
 
   const handleCheck = () => {
-    const partsOk = Number(partsInput) === spec.totalParts;
-    const nameOk = spec.acceptedNames.includes(
-      nameInput.trim().toLowerCase()
-    );
+    const partsOk = partsChoice === spec.totalParts;
+    const nameOk = nameChoice === spec.partName;
     if (partsOk && nameOk) {
       setChildCorrect(true);
       setHint("");
@@ -206,6 +204,14 @@ const QuestionCard = ({
       setHint(spec.wrongHint);
     }
   };
+
+  const chipStyle = (selected: boolean): React.CSSProperties => ({
+    backgroundColor: selected ? "#E1F5EE" : "#FFFFFF",
+    borderColor: selected ? TEAL : GREY_BORDER,
+    borderWidth: selected ? 2 : 1,
+    color: LABEL,
+    minHeight: 44,
+  });
 
   return (
     <div className="mt-8 space-y-6">
