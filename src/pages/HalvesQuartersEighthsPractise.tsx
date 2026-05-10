@@ -230,15 +230,6 @@ const HALVES_TEMPLATES: L3Template[] = [
       key: `halves-share-friend`,
     }),
   },
-  {
-    fractionType: "halves",
-    build: (n, o) => ({
-      text: `A ${o} was cut into 2 equal pieces. ${n} took both pieces. What fraction of the ${o} did ${n} take?`,
-      inputMode: "fraction",
-      acceptable: ["2/2", "1", "1/1"],
-      key: `halves-took-both`,
-    }),
-  },
 ];
 
 const QUARTERS_TEMPLATES: L3Template[] = [
@@ -1186,19 +1177,14 @@ const L3WordCard = ({
 }) => {
   const [num, setNum] = useState("");
   const [den, setDen] = useState("");
-  const [whole, setWhole] = useState("");
   const [hint, setHint] = useState("");
   const [done, setDone] = useState(false);
   const [hadWrong, setHadWrong] = useState(false);
 
   const check = () => {
-    let candidate = "";
-    if (num && den) candidate = `${num.trim()}/${den.trim()}`;
-    else if (whole) candidate = whole.trim();
-    else if (num && !den) candidate = num.trim();
-
+    const candidate = num && den ? `${num.trim()}/${den.trim()}` : "";
     const normalised = normaliseAnswer(candidate);
-    const ok = q.acceptable.some((a) => normaliseAnswer(a) === normalised);
+    const ok = !!candidate && q.acceptable.some((a) => normaliseAnswer(a) === normalised);
     if (ok) {
       setDone(true);
       setHint("");
@@ -1258,20 +1244,6 @@ const L3WordCard = ({
             />
           </div>
 
-          <div className="text-center text-xs text-muted-foreground">
-            Or, if the answer is a whole:
-          </div>
-          <input
-            type="text"
-            inputMode="numeric"
-            value={whole}
-            onChange={(e) => setWhole(e.target.value)}
-            className="w-24 rounded-md border-2 px-3 py-2 text-center text-lg font-bold focus:outline-none focus:ring-2 focus:ring-primary"
-            style={{ borderColor: GREY_BORDER, color: LABEL }}
-            placeholder="whole"
-            aria-label="Whole number answer"
-          />
-
           {hint && (
             <p className="text-center text-base font-medium text-destructive animate-fade-in">
               {hint}
@@ -1280,7 +1252,7 @@ const L3WordCard = ({
 
           <button
             onClick={check}
-            disabled={!num && !whole}
+            disabled={!num || !den}
             className="rounded-xl bg-primary px-6 py-3 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Check
