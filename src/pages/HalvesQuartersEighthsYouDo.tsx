@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import ParentSignpost from "@/components/ParentSignpost";
 import { setLearnComplete } from "@/lib/progress";
 import CurriculumBadge from "@/components/CurriculumBadge";
 import { Pizza, ChocolateBar } from "@/components/FractionFood";
@@ -212,6 +213,7 @@ const HalvesQuartersEighthsYouDo = () => {
           />
         )}
       </div>
+      <ParentSignpost strategy="halvesQuartersEighths" />
     </div>
   );
 };

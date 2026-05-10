@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import ParentSignpost from "@/components/ParentSignpost";
 import { setLearnComplete } from "@/lib/progress";
 import CurriculumBadge, { AC9M2N04_PROPS } from "@/components/CurriculumBadge";
 
@@ -130,6 +131,7 @@ const SplitStrategyYouDo = () => {
           />
         )}
       </div>
+      <ParentSignpost strategy="split" />
     </div>
   );
 };
