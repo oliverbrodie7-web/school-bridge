@@ -405,21 +405,35 @@ const ChipRow = <T extends string | number>({
   value,
   onChange,
   label,
+  active = false,
+  pulse = false,
 }: {
   options: T[];
   value: T | null;
   onChange: (v: T) => void;
   label: string;
+  active?: boolean;
+  pulse?: boolean;
 }) => (
-  <div className="flex flex-col items-center gap-2">
+  <div
+    className={`flex flex-col items-center gap-1.5 rounded-2xl px-3 py-2 transition-all ${
+      pulse ? "animate-pulse" : ""
+    }`}
+    style={{
+      boxShadow: active ? `0 0 0 2px ${TEAL}40` : "none",
+    }}
+  >
     <p className="text-sm font-medium text-muted-foreground">{label}</p>
-    <div className="flex flex-wrap justify-center gap-2">
+    {value === null && (
+      <p className="text-[11px] italic text-muted-foreground/70 -mt-1">Tap to choose</p>
+    )}
+    <div className="flex flex-wrap justify-center gap-2 mt-0.5">
       {options.map((o) => (
         <button
           key={String(o)}
           type="button"
           onClick={() => onChange(o)}
-          className="rounded-xl border px-5 py-2.5 text-base font-semibold transition-all hover:bg-[#F5FBF8]"
+          className="rounded-xl border shadow-sm px-5 py-2.5 text-base font-semibold transition-all hover:bg-[#F5FBF8] hover:border-[#1D9E75]/40 active:scale-95"
           style={{
             backgroundColor: value === o ? "#E1F5EE" : "#FFFFFF",
             borderColor: value === o ? TEAL : GREY_BORDER,
@@ -557,9 +571,28 @@ const ShadeCard = ({
           <p className="text-center text-base text-foreground">
             I shaded ___ out of ___ parts = ___
           </p>
-          <ChipRow<number> label="Shaded parts" options={shadeOptions} value={shadeChip} onChange={setShadeChip} />
-          <ChipRow<number> label="Equal parts" options={partsOptions} value={partsChip} onChange={setPartsChip} />
-          <ChipRow<string> label="Fraction" options={fractionOptions} value={fractionChip} onChange={setFractionChip} />
+          <ChipRow<number>
+            label="How many did you shade?"
+            options={shadeOptions}
+            value={shadeChip}
+            onChange={setShadeChip}
+            active={shadeChip === null}
+            pulse={shadeChip === null}
+          />
+          <ChipRow<number>
+            label="How many equal parts are there?"
+            options={partsOptions}
+            value={partsChip}
+            onChange={setPartsChip}
+            active={shadeChip !== null && partsChip === null}
+          />
+          <ChipRow<string>
+            label="Which fraction is it?"
+            options={fractionOptions}
+            value={fractionChip}
+            onChange={setFractionChip}
+            active={partsChip !== null && fractionChip === null}
+          />
 
           {hint && (
             <p className="text-center text-base font-medium text-destructive animate-fade-in">{hint}</p>
@@ -665,7 +698,14 @@ const IdentifyCard = ({
 
       {!done && (
         <div className="mt-6 space-y-4 animate-fade-in">
-          <ChipRow<string> label="Fraction" options={options} value={pick} onChange={setPick} />
+          <ChipRow<string>
+            label="Which fraction is it?"
+            options={options}
+            value={pick}
+            onChange={setPick}
+            active={pick === null}
+            pulse={pick === null}
+          />
 
           {hint && (
             <p className="text-center text-base font-medium text-destructive animate-fade-in">{hint}</p>
