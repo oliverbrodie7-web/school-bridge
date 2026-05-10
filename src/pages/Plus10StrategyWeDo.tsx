@@ -517,7 +517,7 @@ const Plus10StrategyWeDo = () => {
         </Link>
 
         <div className="relative mt-6">
-          <div className="flex justify-end mb-3"><CurriculumBadge {...AC9M2N04_PROPS} pageName="Plus10 Strategy We Do" /></div>
+          <div className="flex justify-end mb-3 -mr-4 sm:-mr-10"><CurriculumBadge {...AC9M2N04_PROPS} pageName="Plus10 Strategy We Do" /></div>
           <h1
             className="text-center text-2xl font-bold text-foreground sm:text-3xl"
             style={{ fontFamily: "var(--font-heading)" }}
