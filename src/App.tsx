@@ -23,6 +23,7 @@ import SplitStrategyPractise from "./pages/SplitStrategyPractise.tsx";
 import HalvesQuartersEighthsLanding from "./pages/HalvesQuartersEighthsLanding.tsx";
 import FractionsStrategies from "./pages/FractionsStrategies.tsx";
 import HalvesQuartersEighthsLearn from "./pages/HalvesQuartersEighthsLearn.tsx";
+import HalvesQuartersEighthsWeDo from "./pages/HalvesQuartersEighthsWeDo.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -54,6 +55,7 @@ const App = () => (
           <Route path="/practise/split-strategy" element={<SplitStrategyPractise />} />
           <Route path="/halves-quarters-eighths" element={<HalvesQuartersEighthsLanding />} />
           <Route path="/learn/halves-quarters-eighths" element={<HalvesQuartersEighthsLearn />} />
+          <Route path="/learn/halves-quarters-eighths/we-do" element={<HalvesQuartersEighthsWeDo />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
