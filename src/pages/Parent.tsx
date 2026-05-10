@@ -1298,7 +1298,7 @@ const HalvesQuartersEighthsParentGuide = () => (
 
           <Card title="If they're stuck">
             <p className="text-sm leading-relaxed text-muted-foreground">
-              <span className="font-semibold text-foreground">Say this:</span> "Let's fold a piece of paper instead. Fold it in half — now how many equal parts can you see? Fold it again — now how many?"
+              <span className="font-semibold text-foreground">Say this:</span> "Let's use a real chocolate bar instead. Snap it into equal pieces — how many pieces did you make? Are they all the same size?"
             </p>
           </Card>
 
