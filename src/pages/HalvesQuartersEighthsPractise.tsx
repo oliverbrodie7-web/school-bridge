@@ -230,15 +230,6 @@ const HALVES_TEMPLATES: L3Template[] = [
       key: `halves-share-friend`,
     }),
   },
-  {
-    fractionType: "halves",
-    build: (n, o) => ({
-      text: `A ${o} was cut into 2 equal pieces. ${n} took both pieces. What fraction of the ${o} did ${n} take?`,
-      inputMode: "fraction",
-      acceptable: ["2/2", "1", "1/1"],
-      key: `halves-took-both`,
-    }),
-  },
 ];
 
 const QUARTERS_TEMPLATES: L3Template[] = [
