@@ -69,7 +69,7 @@ const shuffle = <T,>(arr: T[]): T[] => {
 /* ──────────────── GENERATORS ──────────────── */
 const generateL1 = (): ShadeQ => ({
   type: "shade",
-  shape: pick<ShapeKind>(["square", "circle"]),
+  shape: "bar", // halves always chocolate bar
   taps: 1,
   totalParts: 2,
   shadeCount: 1,
@@ -78,7 +78,7 @@ const generateL1 = (): ShadeQ => ({
 
 const generateL2 = (): ShadeQ => ({
   type: "shade",
-  shape: pick<ShapeKind>(["square", "circle", "rectangle"]),
+  shape: pick<ShapeKind>(["pizza", "bar"]),
   taps: 2,
   totalParts: 4,
   shadeCount: 1,
@@ -90,7 +90,7 @@ const generateL3 = (): Question => {
   if (sub === "eighth") {
     return {
       type: "shade",
-      shape: pick<ShapeKind>(["square", "circle"]),
+      shape: pick<ShapeKind>(["pizza", "bar"]),
       taps: 3,
       totalParts: 8,
       shadeCount: 1,
@@ -108,24 +108,24 @@ const generateL3 = (): Question => {
     const idxs = shuffle([...Array(choice.totalParts).keys()]).slice(0, choice.shadeCount);
     return {
       type: "identify",
-      shape: pick<ShapeKind>(["square", "circle"]),
+      shape: pick<ShapeKind>(["pizza", "bar"]),
       totalParts: choice.totalParts,
       shadedIndices: idxs,
       fraction: choice.fraction,
     };
   }
-  // compare
+  // compare — two pizzas side by side
   const target = pick<FractionStr>(["1/2", "1/4", "1/8"]);
   const targetParts = target === "1/2" ? 2 : target === "1/4" ? 4 : 8;
   const distractor = pick(([2, 4, 8] as const).filter((p) => p !== targetParts));
   const correct = {
-    shape: pick<ShapeKind>(["square", "circle"]),
+    shape: "pizza" as ShapeKind,
     totalParts: targetParts,
     shadedIndices: [0],
     fraction: target,
   };
   const wrong = {
-    shape: pick<ShapeKind>(["square", "circle"]),
+    shape: "pizza" as ShapeKind,
     totalParts: distractor,
     shadedIndices: [0],
     fraction: (distractor === 2 ? "1/2" : distractor === 4 ? "1/4" : "1/8") as FractionStr,
