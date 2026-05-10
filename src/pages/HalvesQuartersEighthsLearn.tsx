@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import CurriculumBadge from "@/components/CurriculumBadge";
+import { Pizza, ChocolateBar } from "@/components/FractionFood";
 
 const TEAL = "#1D9E75";
-const GREY = "#F5F5F5";
-const GREY_BORDER = "#D4D4D4";
 const LABEL = "#0F6E56";
 
 const AC9M2N03_PROPS = {
