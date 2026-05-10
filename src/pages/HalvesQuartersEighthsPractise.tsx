@@ -705,9 +705,11 @@ const HalvesQuartersEighthsPractise = () => {
   const [level, setLevel] = useState<1 | 2 | 3>(1);
   const [question, setQuestion] = useState<Question>(() => generateL1());
   const [questionNum, setQuestionNum] = useState(1);
+  const [l1Streak, setL1Streak] = useState(0);
   const [l2Streak, setL2Streak] = useState(0);
   const [l3Unlocked, setL3Unlocked] = useState(false);
   const [showUnlockBanner, setShowUnlockBanner] = useState(false);
+  const [showL2PromoBanner, setShowL2PromoBanner] = useState(false);
   const [consecutiveCorrect, setConsecutiveCorrect] = useState(0);
   const [consecutiveWrong, setConsecutiveWrong] = useState(0);
 
@@ -731,6 +733,9 @@ const HalvesQuartersEighthsPractise = () => {
     setQuestionNum(1);
     setConsecutiveCorrect(0);
     setConsecutiveWrong(0);
+    if (lvl !== 1) setL1Streak(0);
+    if (lvl !== 2) setL2Streak(0);
+    setShowL2PromoBanner(false);
   };
 
   const handleCorrect = (hadWrong: boolean) => {
@@ -740,6 +745,25 @@ const HalvesQuartersEighthsPractise = () => {
     } else {
       setConsecutiveCorrect((c) => c + 1);
       setConsecutiveWrong(0);
+    }
+
+    if (level === 1) {
+      if (!hadWrong) {
+        const newStreak = l1Streak + 1;
+        setL1Streak(newStreak);
+        if (newStreak >= 5) {
+          setL1Streak(0);
+          setShowL2PromoBanner(true);
+          setLevel(2);
+          setQuestion(genFor(2));
+          setQuestionNum(1);
+          setConsecutiveCorrect(0);
+          setConsecutiveWrong(0);
+          return;
+        }
+      } else {
+        setL1Streak(0);
+      }
     }
 
     if (level === 2 && !hadWrong) {
@@ -790,6 +814,25 @@ const HalvesQuartersEighthsPractise = () => {
         </div>
 
         <LevelSelector level={level} onChange={handleLevelChange} l3Unlocked={l3Unlocked} />
+
+        {showL2PromoBanner && (
+          <div className="mt-4 rounded-xl border-2 border-primary bg-secondary p-4 text-center animate-fade-in">
+            <p className="text-lg font-semibold text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
+              Nice work — 5 in a row! 🎉
+            </p>
+            <p className="mt-1 text-muted-foreground">
+              You're ready for Level 2 — Quarters 🍕
+            </p>
+            <div className="mt-3">
+              <button
+                onClick={() => setShowL2PromoBanner(false)}
+                className="rounded-xl bg-primary px-6 py-3 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+              >
+                Let's go
+              </button>
+            </div>
+          </div>
+        )}
 
         {showUnlockBanner && (
           <div className="mt-4 rounded-xl border-2 border-primary bg-secondary p-4 text-center animate-fade-in">
