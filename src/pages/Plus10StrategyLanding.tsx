@@ -24,7 +24,7 @@ const Plus10StrategyLanding = () => {
         </Link>
 
         <div className="relative mt-8">
-          <div className="absolute right-0 top-0"><CurriculumBadge {...AC9M2N04_PROPS} /></div>
+          <div className="absolute right-0 top-0"><CurriculumBadge {...AC9M2N04_PROPS} pageName="Plus10 Strategy Landing" /></div>
           <div className="text-center">
             <h1
               className="text-3xl font-bold text-foreground sm:text-4xl"
