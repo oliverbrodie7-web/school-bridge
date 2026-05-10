@@ -44,9 +44,9 @@ const getTip = (strategy: Strategy, level: 2 | 3, focus: SplitFocus): string => 
   }
   if (strategy === "halvesQuartersEighths") {
     if (level === 2) {
-      return "Remember — quarters come from halving twice. Tap the shape again.";
+      return "Count the equal parts in the shape. The bottom number is how many parts altogether; the top number is how many are shaded.";
     }
-    return "Eighths come from halving three times — half, then quarter, then eighth. How many parts are there?";
+    return "Find two things in the problem: how many equal parts altogether (that's your bottom number), and how many parts are being talked about (that's your top number).";
   }
   // plusTen
   if (level === 2) {
