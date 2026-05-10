@@ -269,77 +269,177 @@ export const ChocolateBar = ({
   breaksDrawn = true,
   filled = true,
 }: ChocProps) => {
-  const pad = 4;
-  const segW = (width - pad * 2) / segments;
-  const segH = height - pad * 2;
+  const pad = 5;
+  const groove = Math.max(2, Math.min(4, width / segments / 10));
+  const innerW = width - pad * 2;
+  const innerH = height - pad * 2;
+  const segW = innerW / segments;
+  const detail = width >= 200 ? "rich" : width >= 100 ? "med" : "small";
+
+  // Palette
+  const BODY = "#1A0E06";
+  const MILK_TOP = "#7A4422";
+  const MILK_BOT = "#4A2510";
+  const DARK_TOP = "#3A1F0E";
+  const DARK_BOT = "#1F1006";
+  const HILITE = "#A56A3E";
+
+  const gradMilk = `choc-milk-${segments}-${width}`;
+  const gradDark = `choc-dark-${segments}-${width}`;
 
   return (
     <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
-      {/* Outer chocolate body */}
+      <defs>
+        <linearGradient id={gradMilk} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={MILK_TOP} />
+          <stop offset="100%" stopColor={MILK_BOT} />
+        </linearGradient>
+        <linearGradient id={gradDark} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={DARK_TOP} />
+          <stop offset="100%" stopColor={DARK_BOT} />
+        </linearGradient>
+      </defs>
+
+      {/* Outer body / wrapper edge */}
       <rect
         x={1}
         y={1}
         width={width - 2}
         height={height - 2}
         rx={8}
-        fill={CHOC_OUTER}
-        stroke={CHOC_BORDER}
+        fill={BODY}
+        stroke={BODY}
         strokeWidth={2}
       />
-      {/* Pale milk segments */}
+      {/* Subtle inner foil hint */}
+      <rect
+        x={2}
+        y={2}
+        width={width - 4}
+        height={height - 4}
+        rx={7}
+        fill="none"
+        stroke={HILITE}
+        strokeOpacity={0.25}
+        strokeWidth={1}
+      />
+
+      {/* Segments */}
       {Array.from({ length: segments }, (_, i) => {
         const isShaded = shaded.includes(i);
+        const x0 = pad + i * segW + groove / 2;
+        const y0 = pad + groove / 2;
+        const w = segW - groove;
+        const h = innerH - groove;
+        const fill = `url(#${isShaded ? gradDark : gradMilk})`;
+        const showPip = detail === "rich" && w >= 28;
+
         return (
           <g key={i}>
-            <rect
-              x={pad + i * segW + 1.5}
-              y={pad + 1.5}
-              width={segW - 3}
-              height={segH - 3}
-              rx={4}
-              fill={CHOC_PALE}
-              fillOpacity={0.58}
+            {/* Base tile (full width when not shaded; revealed left→right when shaded fills in) */}
+            <rect x={x0} y={y0} width={w} height={h} rx={4} fill={`url(#${gradMilk})`} />
+            {/* Shaded dark fill, animated left→right */}
+            {isShaded && (
+              <rect
+                x={x0}
+                y={y0}
+                width={filled ? w : 0}
+                height={h}
+                rx={4}
+                fill={`url(#${gradDark})`}
+                style={{ transition: "width 240ms ease-out" }}
+              />
+            )}
+
+            {/* Bevels — drawn on top so they always read */}
+            {/* Top highlight */}
+            <line
+              x1={x0 + 2}
+              y1={y0 + 1}
+              x2={x0 + w - 2}
+              y2={y0 + 1}
+              stroke={HILITE}
+              strokeOpacity={isShaded && filled ? 0.35 : 0.6}
+              strokeWidth={1.5}
+              strokeLinecap="round"
             />
-            {/* Shaded fill (left→right reveal via clip width) */}
-            <rect
-              x={pad + i * segW + 1.5}
-              y={pad + 1.5}
-              width={filled && isShaded ? segW - 3 : 0}
-              height={segH - 3}
-              rx={4}
-              fill={CHOC_SHADED}
-              style={{ transition: "width 220ms ease-out" }}
+            {/* Left highlight */}
+            <line
+              x1={x0 + 1}
+              y1={y0 + 2}
+              x2={x0 + 1}
+              y2={y0 + h - 2}
+              stroke={HILITE}
+              strokeOpacity={isShaded && filled ? 0.25 : 0.4}
+              strokeWidth={1}
+              strokeLinecap="round"
             />
-            {/* Inner highlight for depth */}
-            <rect
-              x={pad + i * segW + 4}
-              y={pad + 4}
-              width={Math.max(0, segW - 8)}
-              height={6}
-              rx={2}
-              fill="#fff"
-              fillOpacity={isShaded && filled ? 0.08 : 0.15}
+            {/* Bottom shadow */}
+            <line
+              x1={x0 + 2}
+              y1={y0 + h - 1}
+              x2={x0 + w - 2}
+              y2={y0 + h - 1}
+              stroke={BODY}
+              strokeOpacity={0.7}
+              strokeWidth={1.5}
+              strokeLinecap="round"
             />
+            {/* Right shadow */}
+            <line
+              x1={x0 + w - 1}
+              y1={y0 + 2}
+              x2={x0 + w - 1}
+              y2={y0 + h - 2}
+              stroke={BODY}
+              strokeOpacity={0.55}
+              strokeWidth={1}
+              strokeLinecap="round"
+            />
+
+            {/* Gloss highlight (top-left) */}
+            {detail !== "small" && (
+              <ellipse
+                cx={x0 + w * 0.35}
+                cy={y0 + h * 0.28}
+                rx={w * 0.28}
+                ry={h * 0.12}
+                fill="#FFFFFF"
+                fillOpacity={isShaded && filled ? 0.05 : 0.1}
+              />
+            )}
+
+            {/* Centre embossed pip (only when wide enough) */}
+            {showPip && (
+              <rect
+                x={x0 + w / 2 - w * 0.16}
+                y={y0 + h / 2 - h * 0.16}
+                width={w * 0.32}
+                height={h * 0.32}
+                rx={2}
+                fill="none"
+                stroke={isShaded && filled ? HILITE : BODY}
+                strokeOpacity={isShaded && filled ? 0.35 : 0.45}
+                strokeWidth={1}
+              />
+            )}
           </g>
         );
       })}
-      {/* Break lines top→bottom */}
+
+      {/* Deep grooves between segments (animated reveal as the bar "snaps") */}
       {Array.from({ length: segments - 1 }, (_, i) => {
-        const x = pad + (i + 1) * segW;
-        const len = segH;
+        const gx = pad + (i + 1) * segW - groove / 2;
         return (
-          <line
-            key={`br-${i}`}
-            x1={x}
-            y1={pad}
-            x2={x}
-            y2={pad + segH}
-            stroke={CHOC_BORDER}
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeDasharray={len}
-            strokeDashoffset={breaksDrawn ? 0 : len}
-            style={{ transition: "stroke-dashoffset 600ms ease-out" }}
+          <rect
+            key={`gr-${i}`}
+            x={gx}
+            y={pad}
+            width={groove}
+            height={innerH}
+            fill={BODY}
+            opacity={breaksDrawn ? 1 : 0}
+            style={{ transition: "opacity 500ms ease-out" }}
           />
         );
       })}
