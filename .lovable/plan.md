@@ -1,48 +1,46 @@
-## Goal
-Replace the two free-text inputs in `/learn/halves-quarters-eighths/we-do` with age-appropriate multiple-choice tap buttons. Year 2 children shouldn't be typing words like "one eighth".
+## Make multiple-choice answer obvious on You Do screen
 
-## Scope
-Only `src/pages/HalvesQuartersEighthsWeDo.tsx` — no other pages, no shared components.
+**Scope:** `src/pages/HalvesQuartersEighthsYouDo.tsx` only — the answer block shown after shading is complete (lines ~329–384, plus `ChipRow` and `FractionChipRow` at ~492–560). No other pages, no logic changes.
 
-## Changes
+### Changes
 
-**Question card (after child taps to split shape):**
+1. **Question-style row labels** (replaces muted single-word labels)
+   - "Shaded parts" → *"How many did you shade?"*
+   - "Equal parts" → *"How many equal parts are there?"*
+   - "Fraction" → *"Which fraction is it?"*
 
-Replace the two `<input>` fields with two stacked multiple-choice rows:
+2. **Subtle "Tap to choose" hint** under each row label
+   - Tiny 11px italic muted text, e.g. *"Tap to choose"*
+   - Auto-hides on that row once a value is selected (fades out)
 
-1. **"There are ___ equal parts"** — 3 number chip buttons
-2. **"Each part is called ___"** — 3 fraction-name chip buttons
+3. **Tile affordance — make them feel like buttons**
+   - Add a 1px soft bottom shadow (`shadow-sm`) so they read as raised, not as flat chips
+   - Add `active:scale-95` press animation
+   - Strengthen hover: light teal tint already there, plus border colour shift to teal at 40% opacity
 
-The child taps one chip in each row, then taps **Check**.
+4. **One-time pulse on the first row** to signal "start here"
+   - The "Shaded parts" row gets a gentle 2-second pulse (subtle teal ring) when the answer block first appears
+   - Stops as soon as any chip in that row is tapped
 
-**Per-question options** (correct answer mixed with two distractors drawn from the other questions, shuffled per question but stable per render):
+5. **Sequential next-row highlight**
+   - After "Shaded parts" is answered, "Equal parts" row gets a soft teal ring
+   - After "Equal parts" is answered, "Fraction" row gets the ring
+   - Ring fades out once that row is answered
+   - Implemented by passing an `active` boolean prop into `ChipRow` / `FractionChipRow`
 
-| Q | Parts options | Name options |
-|---|---|---|
-| Halves   | 2, 4, 8 | one half (1/2), one quarter (1/4), one eighth (1/8) |
-| Quarters | 2, 4, 8 | same three |
-| Eighths  | 2, 4, 8 | same three |
+### Technical notes
 
-**Chip styling** (matches existing teal palette):
-- Unselected: white bg, 1px `#D4D4D4` border, `#0F6E56` text, radius 12px, padding 10px 18px
-- Selected: `#E1F5EE` bg, 2px `#1D9E75` border, `#0F6E56` text, slight scale
-- Hover: subtle bg tint
-- Touch-friendly min height 44px
+- `ChipRow` and `FractionChipRow` get two new optional props: `active?: boolean` (drives ring) and `pulse?: boolean` (drives one-time pulse on first appearance).
+- Parent computes:
+  - `pulseShade = shadeInput === null` on first render of the block (use a `useRef` set on first mount)
+  - `activeShade = shadeInput === null`
+  - `activeParts = shadeInput !== null && partsInput === null`
+  - `activeFraction = partsInput !== null && fractionInput === null`
+- Hint text rendering: each row renders the *"Tap to choose"* line only when `value === null`.
+- All colours use existing tokens (`TEAL`, `LABEL`, `GREY_BORDER`) — no new constants.
+- No changes to question generation, answer checking, Supabase writes, or routing.
 
-**State changes:**
-- Replace `partsInput: string` and `nameInput: string` with `partsChoice: number | null` and `nameChoice: string | null` (storing the canonical part name)
-- `handleCheck`: `partsChoice === spec.totalParts && nameChoice === spec.partName` → correct
-- Check button disabled until both selected
-- Existing `wrongHint` and "Try again" flow unchanged
-- Success card (chips showing answer) unchanged
+### Out of scope
 
-**Pedagogy guardrails preserved:**
-- Computer-first → child-second sequence intact
-- No scoring/timers/badges
-- "Almost" tone retained — no "wrong"
-- Concrete (tap to split) → Pictorial (filled shape) → Abstract (chip selection) progression preserved; abstract is now selection rather than typing, which is age-appropriate for Year 2
-
-## Out of scope
-- I Do, You Do, Practise, Parent guide
-- Any other strategy
-- Shared components
+- We Do, I Do, Practise, Parent Guide, entry point.
+- The sentence frame `"I shaded ___ out of ___ equal parts = ___"` stays exactly as-is.
