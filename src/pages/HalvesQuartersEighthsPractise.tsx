@@ -698,7 +698,14 @@ const IdentifyCard = ({
 
       {!done && (
         <div className="mt-6 space-y-4 animate-fade-in">
-          <ChipRow<string> label="Fraction" options={options} value={pick} onChange={setPick} />
+          <ChipRow<string>
+            label="Which fraction is it?"
+            options={options}
+            value={pick}
+            onChange={setPick}
+            active={pick === null}
+            pulse={pick === null}
+          />
 
           {hint && (
             <p className="text-center text-base font-medium text-destructive animate-fade-in">{hint}</p>
