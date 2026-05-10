@@ -1154,7 +1154,7 @@ const HQEParentPractice = () => {
       {shadeDone && feedback !== "correct" && (
         <div className="mt-6 space-y-3 animate-fade-in">
           <div className="flex flex-wrap items-center justify-center gap-2 text-sm text-foreground">
-            <span>I shaded</span>
+            <span>I took</span>
             <input
               type="number" inputMode="numeric" value={shadedIn}
               onChange={(e) => { setShadedIn(e.target.value); setFeedback(null); }}
@@ -1168,7 +1168,7 @@ const HQEParentPractice = () => {
               className="w-16 rounded-lg border border-input bg-background px-3 py-2 text-center font-semibold outline-none focus:border-primary focus:ring-2 focus:ring-ring/20"
               placeholder="?"
             />
-            <span>parts =</span>
+            <span>equal slices =</span>
             <input
               type="text" value={fractionIn}
               onChange={(e) => { setFractionIn(e.target.value); setFeedback(null); }}
@@ -1179,7 +1179,7 @@ const HQEParentPractice = () => {
 
           {feedback === "incorrect" && (
             <p className="text-center text-sm font-medium text-destructive animate-fade-in">
-              Remember — quarters come from halving twice. You shaded 1 of 4 equal parts.
+              Quarters come from slicing or breaking twice. Tap again.
             </p>
           )}
 
