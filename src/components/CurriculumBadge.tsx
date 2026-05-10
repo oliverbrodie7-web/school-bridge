@@ -1,20 +1,48 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, X } from "lucide-react";
 
-interface CurriculumBadgeProps {
+export interface CurriculumBadgeProps {
   code: string;
   title: string;
   description: string;
   year: string;
   strand: string;
+  pageName?: string;
 }
 
 // Track currently open badge so only one can be open at a time
 let activeCloser: (() => void) | null = null;
 
-const CurriculumBadge = ({ code, title, description, year, strand }: CurriculumBadgeProps) => {
+const CurriculumBadge = ({
+  code,
+  title,
+  description,
+  year,
+  strand,
+  pageName = "unknown page",
+}: CurriculumBadgeProps) => {
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement | null>(null);
+
+  // Runtime validation: hide badge if any required prop is missing or empty
+  const isMissing =
+    !code ||
+    !code.trim() ||
+    !title ||
+    !title.trim() ||
+    !description ||
+    !description.trim() ||
+    !year ||
+    !year.trim() ||
+    !strand ||
+    !strand.trim();
+
+  if (isMissing) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `CurriculumBadge: missing props on ${pageName} — badge hidden until props are supplied`
+    );
+  }
 
   useEffect(() => {
     if (!open) return;
@@ -38,7 +66,11 @@ const CurriculumBadge = ({ code, title, description, year, strand }: CurriculumB
   }
 
   return (
-    <div ref={wrapRef} className="relative inline-block">
+    <div
+      ref={wrapRef}
+      className="relative inline-block"
+      style={{ visibility: isMissing ? "hidden" : "visible" }}
+    >
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
@@ -67,7 +99,7 @@ const CurriculumBadge = ({ code, title, description, year, strand }: CurriculumB
         />
       </button>
 
-      {open && (
+      {open && !isMissing && (
         <div
           role="dialog"
           className="curriculum-badge-card"
