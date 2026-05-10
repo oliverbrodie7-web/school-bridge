@@ -365,12 +365,22 @@ const ShadeCard = ({
     setFractionChip(null);
   };
 
+  const isPizza = q.shape === "pizza";
+  const unitWord = isPizza ? "slices" : "pieces";
+  const verbWord = isPizza ? "slice" : "break";
+  const objectWord = isPizza ? "pizza" : "bar";
+
+  const splitPrompt = `Tap the ${objectWord} to ${verbWord} it into ${q.totalParts} equal ${unitWord}.`;
+  const takePrompt = isPizza
+    ? "Now tap a slice to take it."
+    : "Now tap a piece to take it.";
+
   const correctMessage =
     level === 1
-      ? "Perfect — 2 equal parts makes halves."
+      ? "Equal pieces — perfect sharing!"
       : level === 2
-        ? "Great — 4 equal parts makes quarters."
-        : "Excellent — you're thinking in equal parts like a mathematician.";
+        ? "Four equal pieces — that's quarters!"
+        : "You're thinking in equal parts like a mathematician.";
 
   return (
     <div className="relative mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
@@ -398,7 +408,7 @@ const ShadeCard = ({
 
       {!splitDone && (
         <p className="mt-6 text-center text-base font-medium text-muted-foreground animate-fade-in">
-          Tap to split into {q.totalParts} equal parts.
+          {splitPrompt}
           {q.taps > 1 && (
             <span className="block text-sm mt-1">({taps} / {q.taps} taps)</span>
           )}
@@ -407,14 +417,14 @@ const ShadeCard = ({
 
       {splitDone && !shadeDone && (
         <p className="mt-6 text-center text-base font-medium text-muted-foreground animate-fade-in">
-          Now tap a part to shade it.
+          {takePrompt}
         </p>
       )}
 
       {shadeDone && !done && (
         <div className="mt-6 space-y-5 animate-fade-in">
           <p className="text-center text-base text-foreground">
-            I shaded ___ out of ___ parts = ___
+            I took ___ out of ___ equal {unitWord} = ___
           </p>
           <ChipRow<number>
             label="How many did you shade?"
