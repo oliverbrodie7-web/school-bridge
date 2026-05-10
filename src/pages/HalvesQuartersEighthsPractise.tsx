@@ -1242,7 +1242,7 @@ const L3WordCard = ({
               onChange={(e) => setNum(e.target.value)}
               className="w-20 rounded-md border-2 px-3 py-2 text-center text-2xl font-bold focus:outline-none focus:ring-2 focus:ring-primary"
               style={{ borderColor: GREY_BORDER, color: LABEL }}
-              placeholder="top"
+              placeholder=""
               aria-label="Numerator"
             />
             <div style={{ width: 88, height: 2, backgroundColor: LABEL, margin: "6px 0" }} />
@@ -1253,7 +1253,7 @@ const L3WordCard = ({
               onChange={(e) => setDen(e.target.value)}
               className="w-20 rounded-md border-2 px-3 py-2 text-center text-2xl font-bold focus:outline-none focus:ring-2 focus:ring-primary"
               style={{ borderColor: GREY_BORDER, color: LABEL }}
-              placeholder="bottom"
+              placeholder=""
               aria-label="Denominator"
             />
           </div>
