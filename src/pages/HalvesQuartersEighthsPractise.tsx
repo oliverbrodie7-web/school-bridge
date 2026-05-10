@@ -21,7 +21,7 @@ const AC9M2N03_PROPS = {
 };
 
 /* ──────────────── TYPES ──────────────── */
-type ShapeKind = "circle" | "square" | "rectangle";
+type ShapeKind = "pizza" | "bar";
 
 type FractionStr = "1/2" | "1/4" | "1/8" | "2/4" | "2/8" | "3/8" | "4/8";
 
