@@ -285,6 +285,7 @@ export const ChocolateBar = ({
   shaded = [],
   breaksDrawn = true,
   filled = true,
+  onSegmentTap,
 }: ChocProps) => {
   const pad = 5;
   const groove = Math.max(2, Math.min(4, width / segments / 10));
