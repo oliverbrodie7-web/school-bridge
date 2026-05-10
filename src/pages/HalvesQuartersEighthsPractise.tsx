@@ -916,7 +916,7 @@ const L2IdentifyCard = ({
   );
 };
 
-/* ──────────────── L2 MATCH CARD ──────────────── */
+/* ──────────────── L2 MATCH CARD (drag-and-drop, one shape at a time) ──────────────── */
 const L2MatchCard = ({
   q,
   consecutiveCorrect,
@@ -930,39 +930,130 @@ const L2MatchCard = ({
   onCorrect: (hadWrong: boolean) => void;
   hintKey: number;
 }) => {
-  const [selectedShape, setSelectedShape] = useState<string | null>(null);
+  // Active shape index — child works through items in order.
+  const [activeIdx, setActiveIdx] = useState(0);
+  // Map of shapeId -> matched label (for done-stack thumbnails).
   const [matched, setMatched] = useState<Record<string, FractionStr>>({});
-  const [shake, setShake] = useState<{ shapeId: string; label: FractionStr } | null>(null);
+  // Drag state: which label is being dragged (for visual + drop handling).
+  const [draggingLabel, setDraggingLabel] = useState<FractionStr | null>(null);
+  // Pointer position while dragging via touch (HTML5 DnD fallback).
+  const [pointerPos, setPointerPos] = useState<{ x: number; y: number } | null>(null);
+  // True while a drag is hovering the active drop zone.
+  const [overDrop, setOverDrop] = useState(false);
+  // Brief shake animation on the active shape after a wrong drop.
+  const [shake, setShake] = useState(false);
+  // Soft hint shown after a wrong drop; auto-dismisses.
+  const [hint, setHint] = useState("");
   const [done, setDone] = useState(false);
   const [hadWrong, setHadWrong] = useState(false);
 
-  const matchedLabels = Object.values(matched);
-  const allDone = Object.keys(matched).length === q.items.length;
+  const dropRef = useRef<HTMLDivElement | null>(null);
+  const hintTimerRef = useRef<number | null>(null);
 
+  const allDone = activeIdx >= q.items.length;
   useEffect(() => {
-    if (allDone && !done) {
-      setDone(true);
-    }
+    if (allDone && !done) setDone(true);
   }, [allDone, done]);
 
-  const handleShapeTap = (id: string) => {
-    if (done || matched[id]) return;
-    setSelectedShape(id === selectedShape ? null : id);
+  useEffect(() => {
+    return () => {
+      if (hintTimerRef.current) window.clearTimeout(hintTimerRef.current);
+    };
+  }, []);
+
+  const activeItem = !allDone ? q.items[activeIdx] : null;
+  const upcoming = !allDone ? q.items.slice(activeIdx + 1) : [];
+  const doneItems = q.items.slice(0, activeIdx);
+  const usedLabels = Object.values(matched);
+  const availableLabels = q.labels.filter((l) => !usedLabels.includes(l));
+
+  const showSoftHint = () => {
+    setHint("Count the equal parts on the shape — that's the bottom number.");
+    if (hintTimerRef.current) window.clearTimeout(hintTimerRef.current);
+    hintTimerRef.current = window.setTimeout(() => setHint(""), 3000);
   };
 
-  const handleLabelTap = (label: FractionStr) => {
-    if (done || !selectedShape || matchedLabels.includes(label)) return;
-    const item = q.items.find((it) => it.id === selectedShape);
-    if (!item) return;
-    if (item.fraction === label) {
-      setMatched((m) => ({ ...m, [selectedShape]: label }));
-      setSelectedShape(null);
+  /** Resolve a drop: handle correct vs wrong outcomes. */
+  const resolveDrop = (label: FractionStr) => {
+    if (!activeItem || done) return;
+    if (label === activeItem.fraction) {
+      setMatched((m) => ({ ...m, [activeItem.id]: label }));
+      setHint("");
+      setActiveIdx((i) => i + 1);
     } else {
       setHadWrong(true);
-      setShake({ shapeId: selectedShape, label });
-      setTimeout(() => setShake(null), 400);
-      setSelectedShape(null);
+      setShake(true);
+      window.setTimeout(() => setShake(false), 400);
+      showSoftHint();
     }
+  };
+
+  /* ─── HTML5 drag handlers (desktop / mouse) ─── */
+  const onChipDragStart = (label: FractionStr) => (e: React.DragEvent) => {
+    if (done) return;
+    setDraggingLabel(label);
+    e.dataTransfer.setData("text/plain", label);
+    e.dataTransfer.effectAllowed = "move";
+  };
+  const onChipDragEnd = () => {
+    setDraggingLabel(null);
+    setOverDrop(false);
+  };
+  const onDropZoneDragOver = (e: React.DragEvent) => {
+    if (done || !draggingLabel) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    if (!overDrop) setOverDrop(true);
+  };
+  const onDropZoneDragLeave = () => setOverDrop(false);
+  const onDropZoneDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const label = (e.dataTransfer.getData("text/plain") as FractionStr) || draggingLabel;
+    setOverDrop(false);
+    setDraggingLabel(null);
+    if (label) resolveDrop(label);
+  };
+
+  /* ─── Pointer fallback (touch / iOS Safari) ─── */
+  const onChipPointerDown = (label: FractionStr) => (e: React.PointerEvent) => {
+    if (done) return;
+    // Only hijack for touch/pen — leave mouse to native HTML5 DnD above.
+    if (e.pointerType === "mouse") return;
+    e.preventDefault();
+    setDraggingLabel(label);
+    setPointerPos({ x: e.clientX, y: e.clientY });
+
+    const onMove = (ev: PointerEvent) => {
+      setPointerPos({ x: ev.clientX, y: ev.clientY });
+      const rect = dropRef.current?.getBoundingClientRect();
+      if (rect) {
+        const inside =
+          ev.clientX >= rect.left &&
+          ev.clientX <= rect.right &&
+          ev.clientY >= rect.top &&
+          ev.clientY <= rect.bottom;
+        setOverDrop(inside);
+      }
+    };
+    const onUp = (ev: PointerEvent) => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+      const rect = dropRef.current?.getBoundingClientRect();
+      const inside =
+        rect &&
+        ev.clientX >= rect.left &&
+        ev.clientX <= rect.right &&
+        ev.clientY >= rect.top &&
+        ev.clientY <= rect.bottom;
+      setOverDrop(false);
+      setPointerPos(null);
+      setDraggingLabel(null);
+      if (inside) resolveDrop(label);
+    };
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
   };
 
   return (
@@ -979,26 +1070,16 @@ const L2MatchCard = ({
         Match each shape to its fraction.
       </p>
 
-      <div className="mt-6 grid grid-cols-2 gap-4 items-center">
-        <div className="flex flex-col gap-3">
-          {q.items.map((it) => {
-            const isMatched = !!matched[it.id];
-            const isSelected = selectedShape === it.id;
-            const isShake = shake?.shapeId === it.id;
-            return (
-              <button
-                key={it.id}
-                onClick={() => handleShapeTap(it.id)}
-                disabled={done || isMatched}
-                className="rounded-xl border-2 p-2 transition-all flex justify-center"
-                style={{
-                  borderColor: isMatched ? TEAL : isSelected ? TEAL : GREY_BORDER,
-                  backgroundColor: isMatched || isSelected ? TEAL_LIGHT : "#FFFFFF",
-                  animation: isShake ? "matchShake 0.4s ease" : undefined,
-                  opacity: isMatched ? 0.85 : 1,
-                  cursor: isMatched ? "default" : "pointer",
-                }}
-              >
+      {/* Done stack — small thumbnails of shapes already matched */}
+      {doneItems.length > 0 && (
+        <div className="mt-4 flex flex-wrap justify-center gap-3">
+          {doneItems.map((it) => (
+            <div
+              key={it.id}
+              className="flex items-center gap-2 rounded-lg border px-2 py-1"
+              style={{ borderColor: TEAL, backgroundColor: TEAL_LIGHT }}
+            >
+              <div style={{ transform: "scale(0.55)", transformOrigin: "center", width: 80, height: 40, display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <AnyShapeRenderer
                   shape={it.shape}
                   totalParts={it.totalParts}
@@ -1006,36 +1087,128 @@ const L2MatchCard = ({
                   interactive={false}
                   size="small"
                 />
-              </button>
-            );
-          })}
+              </div>
+              <span className="text-sm font-bold" style={{ color: LABEL }}>
+                ✓ {matched[it.id]}
+              </span>
+            </div>
+          ))}
         </div>
+      )}
 
-        <div className="flex flex-col gap-3">
-          {q.labels.map((label) => {
-            const isUsed = matchedLabels.includes(label);
-            const isShake = shake?.label === label;
+      {/* Active drop zone */}
+      {activeItem && (
+        <div
+          ref={dropRef}
+          onDragOver={onDropZoneDragOver}
+          onDragLeave={onDropZoneDragLeave}
+          onDrop={onDropZoneDrop}
+          className="mt-5 mx-auto rounded-2xl border-2 transition-colors flex flex-col items-center justify-center"
+          style={{
+            borderColor: overDrop ? TEAL : GREY_BORDER,
+            backgroundColor: overDrop ? TEAL_LIGHT : "#FFFFFF",
+            borderStyle: "dashed",
+            padding: 16,
+            minHeight: 180,
+            maxWidth: 360,
+            animation: shake ? "matchShake 0.4s ease" : undefined,
+          }}
+        >
+          <AnyShapeRenderer
+            shape={activeItem.shape}
+            totalParts={activeItem.totalParts}
+            shaded={activeItem.shadedIndices}
+            interactive={false}
+            size="small"
+          />
+          <p className="mt-3 text-xs text-muted-foreground">
+            {draggingLabel ? "Drop to match" : "Drag a fraction here"}
+          </p>
+        </div>
+      )}
+
+      {/* Draggable chip row */}
+      {activeItem && (
+        <div className="mt-5 flex flex-wrap justify-center gap-3" style={{ touchAction: "none" }}>
+          {availableLabels.map((label) => {
+            const isDragging = draggingLabel === label;
             return (
-              <button
+              <div
                 key={label}
-                onClick={() => handleLabelTap(label)}
-                disabled={done || isUsed || !selectedShape}
-                className="rounded-xl border-2 px-4 py-4 text-2xl font-bold transition-all"
+                draggable
+                onDragStart={onChipDragStart(label)}
+                onDragEnd={onChipDragEnd}
+                onPointerDown={onChipPointerDown(label)}
+                role="button"
+                aria-label={`Drag fraction ${label}`}
+                className="select-none rounded-xl border-2 px-5 py-3 text-2xl font-bold transition-transform"
                 style={{
-                  borderColor: isUsed ? TEAL : GREY_BORDER,
-                  backgroundColor: isUsed ? TEAL_LIGHT : "#FFFFFF",
+                  borderColor: GREY_BORDER,
+                  backgroundColor: "#FFFFFF",
                   color: LABEL,
-                  animation: isShake ? "matchShake 0.4s ease" : undefined,
-                  opacity: isUsed ? 0.6 : selectedShape ? 1 : 0.7,
-                  cursor: isUsed || !selectedShape ? "default" : "pointer",
+                  cursor: "grab",
+                  boxShadow: isDragging ? "0 4px 12px rgba(0,0,0,0.15)" : "none",
+                  transform: isDragging ? "scale(1.05)" : "scale(1)",
+                  opacity: isDragging && pointerPos ? 0.4 : 1,
+                  touchAction: "none",
                 }}
               >
                 {label}
-              </button>
+              </div>
             );
           })}
         </div>
-      </div>
+      )}
+
+      {/* Soft hint after a wrong drop */}
+      {hint && !done && (
+        <p className="mt-4 text-center text-sm font-medium text-muted-foreground animate-fade-in">
+          {hint}
+        </p>
+      )}
+
+      {/* Up next strip */}
+      {upcoming.length > 0 && (
+        <div className="mt-5 flex flex-col items-center gap-1">
+          <span className="text-[11px] uppercase tracking-wide text-muted-foreground">Up next</span>
+          <div className="flex gap-2 opacity-50">
+            {upcoming.map((it) => (
+              <div
+                key={it.id}
+                className="rounded-lg border p-1"
+                style={{ borderColor: GREY_BORDER, backgroundColor: "#FFFFFF" }}
+              >
+                <div style={{ transform: "scale(0.55)", transformOrigin: "center", width: 70, height: 40, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <AnyShapeRenderer
+                    shape={it.shape}
+                    totalParts={it.totalParts}
+                    shaded={it.shadedIndices}
+                    interactive={false}
+                    size="small"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Touch drag ghost — follows finger */}
+      {draggingLabel && pointerPos && (
+        <div
+          className="pointer-events-none fixed z-50 rounded-xl border-2 px-4 py-2 text-xl font-bold"
+          style={{
+            left: pointerPos.x - 30,
+            top: pointerPos.y - 24,
+            borderColor: TEAL,
+            backgroundColor: TEAL_LIGHT,
+            color: LABEL,
+            boxShadow: "0 6px 16px rgba(0,0,0,0.2)",
+          }}
+        >
+          {draggingLabel}
+        </div>
+      )}
 
       {done && (
         <div className="mt-6 space-y-4 text-center animate-fade-in">
