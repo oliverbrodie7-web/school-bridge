@@ -22,6 +22,7 @@ import SplitStrategyYouDo from "./pages/SplitStrategyYouDo.tsx";
 import SplitStrategyPractise from "./pages/SplitStrategyPractise.tsx";
 import HalvesQuartersEighthsLanding from "./pages/HalvesQuartersEighthsLanding.tsx";
 import FractionsStrategies from "./pages/FractionsStrategies.tsx";
+import HalvesQuartersEighthsLearn from "./pages/HalvesQuartersEighthsLearn.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
