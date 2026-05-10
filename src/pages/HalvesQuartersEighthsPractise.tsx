@@ -150,9 +150,9 @@ const LevelSelector = ({
   l3Unlocked: boolean;
 }) => {
   const levels = [
-    { n: 1, label: "Level 1", desc: "Halves", locked: false },
-    { n: 2, label: "Level 2", desc: "Quarters", locked: false },
-    { n: 3, label: "Level 3", desc: "Eighths & mixed", locked: !l3Unlocked },
+    { n: 1, label: "Level 1", desc: "Halves 🍫", locked: false },
+    { n: 2, label: "Level 2", desc: "Quarters 🍕", locked: false },
+    { n: 3, label: "Level 3", desc: "Eighths & more", locked: !l3Unlocked },
   ];
   return (
     <div className="flex gap-3 justify-center flex-wrap">
