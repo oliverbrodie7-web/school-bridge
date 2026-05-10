@@ -590,7 +590,7 @@ const IdentifyCard = ({
       {done && (
         <div className="mt-6 space-y-4 text-center animate-fade-in">
           <div className="rounded-xl bg-secondary p-4 font-medium text-secondary-foreground">
-            Excellent — you're thinking in equal parts like a mathematician.
+            You're thinking in equal parts like a mathematician.
           </div>
           <button
             onClick={() => onCorrect(hadWrong)}
@@ -686,7 +686,7 @@ const CompareCard = ({
       {done && (
         <div className="mt-6 space-y-4 text-center animate-fade-in">
           <div className="rounded-xl bg-secondary p-4 font-medium text-secondary-foreground">
-            Excellent — you're thinking in equal parts like a mathematician.
+            You're thinking in equal parts like a mathematician.
           </div>
           <button
             onClick={() => onCorrect(hadWrong)}
