@@ -4,6 +4,7 @@ import ParentSignpost from "@/components/ParentSignpost";
 import { setLearnComplete } from "@/lib/progress";
 import CurriculumBadge from "@/components/CurriculumBadge";
 import { Pizza, ChocolateBar } from "@/components/FractionFood";
+import ProgressIndicator from "@/components/ProgressIndicator";
 
 const TEAL = "#1D9E75";
 const GREY_BORDER = "#D4D4D4";
