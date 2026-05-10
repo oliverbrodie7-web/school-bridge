@@ -196,6 +196,13 @@ const HalvesQuartersEighthsYouDo = () => {
             </div>
           </div>
         ) : queue[qIndex].type === "shade" ? (
+          // ProgressIndicator: Learn / You Do phase, wired to qIndex/queue.length
+          <></>
+        ) : null}
+        {!finished && (
+          <ProgressIndicator mode="learn" phase="youDo" current={qIndex + 1} total={queue.length} />
+        )}
+        {!finished && queue[qIndex].type === "shade" ? (
           <ShadeCard
             key={`${seed}-${qIndex}-${queue[qIndex].id}`}
             spec={queue[qIndex] as ShadeQuestion}
