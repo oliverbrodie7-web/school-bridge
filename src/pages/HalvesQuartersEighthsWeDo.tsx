@@ -113,6 +113,13 @@ const HalvesQuartersEighthsWeDo = () => {
           </p>
         </div>
 
+        {!finished && (
+          <>
+            {/* ProgressIndicator inserted directly — move into shared QuestionCard wrapper when refactor occurs. */}
+            <ProgressIndicator mode="learn" phase="wedo" current={qIndex + 1} total={QUESTIONS.length} />
+          </>
+        )}
+
         {finished ? (
           <div className="mt-10 text-center space-y-6 animate-fade-in">
             <p
