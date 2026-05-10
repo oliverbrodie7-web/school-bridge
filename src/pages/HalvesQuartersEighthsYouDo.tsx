@@ -333,23 +333,28 @@ const ShadeCard = ({
           </p>
 
           <ChipRow
-            label="Shaded parts"
+            label="How many did you shade?"
             options={[1, 2, 3, 4]}
             value={shadeInput}
             onChange={setShadeInput}
+            active={shadeInput === null}
+            pulse={shadeInput === null}
           />
 
           <ChipRow
-            label="Equal parts"
+            label="How many equal parts are there?"
             options={partsOptions}
             value={partsInput}
             onChange={setPartsInput}
+            active={shadeInput !== null && partsInput === null}
           />
 
           <FractionChipRow
+            label="Which fraction is it?"
             options={fractionOptions}
             value={fractionInput}
             onChange={setFractionInput}
+            active={partsInput !== null && fractionInput === null}
           />
 
           {hint && (
