@@ -1273,7 +1273,7 @@ const HalvesQuartersEighthsParentGuide = () => (
 
         <div className="mt-6 rounded-xl border-l-4 border-foreground/20 bg-muted p-5 sm:p-6">
           <p className="text-sm leading-relaxed text-foreground/80">
-            The most important thing your child is learning is not what 1/4 looks like — it is that a fraction only works when all parts are exactly equal. An unequal split is not a fraction at all. This understanding is the foundation of all fraction work through to high school.
+            The most important thing your child is learning is not what 1/4 looks like — it is that a fraction only works when all parts are exactly equal. An unequal slice is not a fraction at all. Next time you share a pizza or break a chocolate bar, ask your child: are all the pieces the same size? That question is the foundation of all fraction work through to high school.
           </p>
         </div>
       </section>
