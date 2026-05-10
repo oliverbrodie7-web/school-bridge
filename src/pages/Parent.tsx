@@ -685,7 +685,7 @@ const Plus10ParentGuide = () => (
 
       {/* ─── SECTION 1: REASSURANCE ─── */}
       <section className="relative mt-8">
-        <div className="flex justify-end mb-3"><CurriculumBadge {...AC9M2N04_PROPS} pageName="Parent Guide Split" /></div>
+        <div className="flex justify-end mb-3 -mr-4 sm:-mr-10"><CurriculumBadge {...AC9M2N04_PROPS} pageName="Parent Guide Split" /></div>
         <h1
           className="text-2xl font-bold text-foreground sm:text-3xl leading-tight pr-24"
           style={{ fontFamily: "var(--font-heading)" }}
@@ -829,7 +829,7 @@ const SplitParentGuide = () => (
 
       {/* ─── SECTION 1: REASSURANCE ─── */}
       <section className="relative mt-8">
-        <div className="flex justify-end mb-3"><CurriculumBadge {...AC9M2N04_PROPS} pageName="Parent Guide Plus10" /></div>
+        <div className="flex justify-end mb-3 -mr-4 sm:-mr-10"><CurriculumBadge {...AC9M2N04_PROPS} pageName="Parent Guide Plus10" /></div>
         <h1
           className="text-2xl font-bold text-foreground sm:text-3xl leading-tight pr-24"
           style={{ fontFamily: "var(--font-heading)" }}
