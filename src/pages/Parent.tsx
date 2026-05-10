@@ -1124,43 +1124,31 @@ const HQEParentPractice = () => {
     <div className="rounded-xl border border-border bg-card p-6 sm:p-8 animate-fade-in">
       <p className="text-sm text-muted-foreground text-center">
         {!splitDone
-          ? `Tap the circle to split it into quarters. (${taps} / 2 taps)`
+          ? `Tap the pizza to slice it into quarters. (${taps} / 2 taps)`
           : !shadeDone
-            ? "Now tap one quarter to shade it."
+            ? "Now tap one slice to shade it."
             : "Fill in the answer below."}
       </p>
 
       <div className="mt-6 flex justify-center">
-        <button
-          type="button"
-          onClick={handleTap}
-          disabled={splitDone}
+        <div
+          role={!splitDone ? "button" : undefined}
+          onClick={!splitDone ? handleTap : undefined}
+          aria-label="Tap pizza to slice"
           className={
             !splitDone
               ? "cursor-pointer transition-transform hover:scale-105 active:scale-95"
               : "cursor-default"
           }
-          style={{ background: "transparent", border: "none", padding: 0 }}
+          style={{ background: "transparent", border: "none", padding: 0, display: "inline-block" }}
         >
-          <svg width="200" height="200" viewBox="0 0 200 200">
-            <circle cx={cx} cy={cy} r={r} fill={HQE_GREY} stroke={HQE_GREY_BORDER} strokeWidth="1" />
-            {wedges.map((w, i) => (
-              <path
-                key={i}
-                d={w.d}
-                fill={shaded.includes(i) ? HQE_TEAL : "transparent"}
-                style={{ cursor: splitDone && !shadeDone ? "pointer" : "default", animation: shaded.includes(i) ? "fadeFill 200ms ease-in" : undefined }}
-                onClick={() => handleWedgeTap(i)}
-              />
-            ))}
-            <line x1={cx - r} y1={cy} x2={cx + r} y2={cy} stroke={HQE_LABEL} strokeWidth="2"
-              strokeDasharray={r * 2} strokeDashoffset={taps >= 1 ? 0 : r * 2}
-              style={{ transition: "stroke-dashoffset 500ms ease-out" }} />
-            <line x1={cx} y1={cy - r} x2={cx} y2={cy + r} stroke={HQE_LABEL} strokeWidth="2"
-              strokeDasharray={r * 2} strokeDashoffset={taps >= 2 ? 0 : r * 2}
-              style={{ transition: "stroke-dashoffset 500ms ease-out" }} />
-          </svg>
-        </button>
+          <Pizza
+            size={220}
+            slices={splitDone ? 4 : taps >= 1 ? 2 : 1}
+            shaded={shaded}
+            onSliceTap={splitDone && !shadeDone ? handleWedgeTap : undefined}
+          />
+        </div>
       </div>
 
       {shadeDone && feedback !== "correct" && (
