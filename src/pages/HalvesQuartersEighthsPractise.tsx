@@ -208,12 +208,14 @@ const OBJECTS = ["pizza", "sandwich", "chocolate bar", "ribbon", "piece of paper
 
 type L3Template = {
   fractionType: "halves" | "quarters" | "eighths";
+  concrete: boolean;
   build: (name: string, object: string) => { text: string; inputMode: "fraction" | "whole"; acceptable: string[]; key: string };
 };
 
 const HALVES_TEMPLATES: L3Template[] = [
   {
     fractionType: "halves",
+    concrete: true,
     build: (n, o) => ({
       text: `${n} cut a ${o} into 2 equal pieces and ate one piece. What fraction did ${n} eat?`,
       inputMode: "fraction",
@@ -223,6 +225,7 @@ const HALVES_TEMPLATES: L3Template[] = [
   },
   {
     fractionType: "halves",
+    concrete: false,
     build: (n, o) => ({
       text: `${n} had a ${o}. ${n} shared it equally with a friend. What fraction did each person get?`,
       inputMode: "fraction",
@@ -235,6 +238,7 @@ const HALVES_TEMPLATES: L3Template[] = [
 const QUARTERS_TEMPLATES: L3Template[] = [
   {
     fractionType: "quarters",
+    concrete: true,
     build: (n) => ({
       text: `${n} cut a pizza into 4 equal slices and ate one slice. What fraction of the pizza did ${n} eat?`,
       inputMode: "fraction",
@@ -244,6 +248,7 @@ const QUARTERS_TEMPLATES: L3Template[] = [
   },
   {
     fractionType: "quarters",
+    concrete: true,
     build: () => ({
       text: `4 friends shared a chocolate bar equally. What fraction did each friend get?`,
       inputMode: "fraction",
@@ -253,6 +258,7 @@ const QUARTERS_TEMPLATES: L3Template[] = [
   },
   {
     fractionType: "quarters",
+    concrete: true,
     build: (n) => ({
       text: `${n} ate 2 slices of a pizza that was cut into 4 equal slices. What fraction did ${n} eat?`,
       inputMode: "fraction",
@@ -262,6 +268,7 @@ const QUARTERS_TEMPLATES: L3Template[] = [
   },
   {
     fractionType: "quarters",
+    concrete: true,
     build: (n) => ({
       text: `${n} had a ribbon. ${n} cut it into 4 equal pieces and used 3 pieces for a project. What fraction did ${n} use?`,
       inputMode: "fraction",
@@ -274,6 +281,7 @@ const QUARTERS_TEMPLATES: L3Template[] = [
 const EIGHTHS_TEMPLATES: L3Template[] = [
   {
     fractionType: "eighths",
+    concrete: true,
     build: (n) => ({
       text: `${n} cut a sandwich into 8 equal pieces and ate one piece. What fraction did ${n} eat?`,
       inputMode: "fraction",
@@ -283,6 +291,7 @@ const EIGHTHS_TEMPLATES: L3Template[] = [
   },
   {
     fractionType: "eighths",
+    concrete: true,
     build: (n) => ({
       text: `A chocolate bar was broken into 8 equal pieces. ${n} took 2 pieces. What fraction did ${n} take?`,
       inputMode: "fraction",
@@ -292,6 +301,7 @@ const EIGHTHS_TEMPLATES: L3Template[] = [
   },
   {
     fractionType: "eighths",
+    concrete: false,
     build: (n) => ({
       text: `${n} folded a piece of paper in half, then in half again, then in half again. What fraction is each part?`,
       inputMode: "fraction",
@@ -301,14 +311,29 @@ const EIGHTHS_TEMPLATES: L3Template[] = [
   },
 ];
 
-const generateL3 = (avoid: Set<string>): L3WordQ => {
+const generateL3 = (subPos: number, avoid: Set<string>): L3WordQ => {
+  // First 8 of every 10 questions: concrete templates only (denominator stated in text).
+  // Last 2 (positions 9–10): full pool, allowing abstract phrasings.
+  const concreteOnly = subPos <= 8;
+  const filterBucket = (b: L3Template[]) => (concreteOnly ? b.filter((t) => t.concrete) : b);
+
   for (let attempt = 0; attempt < 40; attempt++) {
     const useEighths = Math.random() < 0.3;
-    const bucket = useEighths
-      ? EIGHTHS_TEMPLATES
-      : Math.random() < 0.5
-        ? HALVES_TEMPLATES
-        : QUARTERS_TEMPLATES;
+    let bucket = filterBucket(
+      useEighths
+        ? EIGHTHS_TEMPLATES
+        : Math.random() < 0.5
+          ? HALVES_TEMPLATES
+          : QUARTERS_TEMPLATES,
+    );
+    // If filter emptied the bucket, fall back to any bucket that still has concrete templates.
+    if (bucket.length === 0) {
+      const pools = [HALVES_TEMPLATES, QUARTERS_TEMPLATES, EIGHTHS_TEMPLATES]
+        .map(filterBucket)
+        .filter((b) => b.length > 0);
+      if (pools.length === 0) break;
+      bucket = pick(pools);
+    }
     const tmpl = pick(bucket);
     const name = pick(NAMES);
     const object = pick(OBJECTS);
@@ -327,7 +352,10 @@ const generateL3 = (avoid: Set<string>): L3WordQ => {
     }
   }
   // Fallback
-  const tmpl = pick(HALVES_TEMPLATES);
+  const fallbackPool = concreteOnly
+    ? HALVES_TEMPLATES.filter((t) => t.concrete)
+    : HALVES_TEMPLATES;
+  const tmpl = pick(fallbackPool.length > 0 ? fallbackPool : HALVES_TEMPLATES);
   const built = tmpl.build(pick(NAMES), pick(OBJECTS));
   return {
     type: "l3_word",
@@ -1472,7 +1500,8 @@ const HalvesQuartersEighthsPractise = () => {
       const subPos = ((qNum - 1) % 10) + 1;
       return generateL2(subPos, seenL2.current);
     }
-    return generateL3(seenL3.current);
+    const subPos = ((qNum - 1) % 10) + 1;
+    return generateL3(subPos, seenL3.current);
   }, []);
 
   const [question, setQuestion] = useState<Question>(() => genFor(1, 1));
