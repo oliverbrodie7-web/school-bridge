@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import ParentSignpost from "@/components/ParentSignpost";
 import { getLevel3Unlocked, setLevel3Unlocked } from "@/lib/progress";
 import CurriculumBadge from "@/components/CurriculumBadge";
 import { PractiseHintButton } from "@/components/PractiseHintButton";
@@ -893,6 +894,7 @@ const HalvesQuartersEighthsPractise = () => {
           />
         )}
       </div>
+      <ParentSignpost strategy="halvesQuartersEighths" />
       <Keyframes />
     </div>
   );

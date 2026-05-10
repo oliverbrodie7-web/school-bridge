@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import ParentSignpost from "@/components/ParentSignpost";
 import CurriculumBadge from "@/components/CurriculumBadge";
 import { Pizza, ChocolateBar } from "@/components/FractionFood";
 
@@ -61,6 +62,7 @@ const HalvesQuartersEighthsLearn = () => {
           <QuarterPizzaCard />
         )}
       </div>
+      <ParentSignpost strategy="halvesQuartersEighths" />
     </div>
   );
 };
