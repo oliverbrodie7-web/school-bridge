@@ -750,7 +750,7 @@ const SplitStrategyPractise = () => {
                 </button>
               )}
               <Link
-                to="/parent"
+                to="/parent?strategy=split"
                 className="rounded-xl border-2 border-border px-6 py-3.5 text-lg font-semibold text-muted-foreground transition-colors hover:border-primary hover:text-primary"
               >
                 Show my parent
