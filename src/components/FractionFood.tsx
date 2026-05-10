@@ -248,6 +248,18 @@ export const Pizza = ({
         strokeWidth={1}
         strokeOpacity={0.5}
       />
+
+      {/* Click overlay — transparent slice paths for tap-to-shade */}
+      {onSliceTap && slices >= 2 &&
+        Array.from({ length: slices }, (_, i) => (
+          <path
+            key={`tap-${i}`}
+            d={slicePath(i)}
+            fill="transparent"
+            style={{ cursor: "pointer" }}
+            onClick={() => onSliceTap(i)}
+          />
+        ))}
     </svg>
   );
 };
@@ -262,6 +274,8 @@ type ChocProps = {
   breaksDrawn?: boolean;
   /** Animate dark fill in shaded segments. */
   filled?: boolean;
+  /** When set, segments become clickable (transparent overlay). */
+  onSegmentTap?: (index: number) => void;
 };
 
 export const ChocolateBar = ({
