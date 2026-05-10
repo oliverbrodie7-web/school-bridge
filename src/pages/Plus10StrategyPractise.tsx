@@ -890,9 +890,13 @@ const Plus10StrategyPractise = () => {
           </div>
         )}
 
-        <p className="mt-4 text-center text-sm text-muted-foreground">
-          Question {questionNum}
-        </p>
+        {/* ProgressIndicator inserted directly — move into shared QuestionCard wrapper when refactor occurs. */}
+        <ProgressIndicator
+          mode="practise"
+          level={level as 1 | 2 | 3}
+          current={((questionNum - 1) % 10) + 1}
+          total={10}
+        />
 
         {level === 1 && (
           <QuestionCard
