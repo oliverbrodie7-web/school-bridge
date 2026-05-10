@@ -56,17 +56,17 @@ const HalvesQuartersEighthsLearn = () => {
         </div>
 
         {exIndex === 0 ? (
-          <HalfSquareCard onNext={() => setExIndex(1)} />
+          <HalfChocolateCard onNext={() => setExIndex(1)} />
         ) : (
-          <QuarterCircleCard />
+          <QuarterPizzaCard />
         )}
       </div>
     </div>
   );
 };
 
-/* ──────────────── EXAMPLE 1: HALF (SQUARE) ──────────────── */
-const HalfSquareCard = ({ onNext }: { onNext: () => void }) => {
+/* ──────────────── EXAMPLE 1: HALF (CHOCOLATE BAR) ──────────────── */
+const HalfChocolateCard = ({ onNext }: { onNext: () => void }) => {
   const [phase, setPhase] = useState<SquarePhase>("prompt");
 
   useEffect(() => {
@@ -94,97 +94,52 @@ const HalfSquareCard = ({ onNext }: { onNext: () => void }) => {
           type="button"
           onClick={() => phase === "prompt" && setPhase("splitting")}
           disabled={phase !== "prompt"}
-          aria-label="Tap to split the square"
+          aria-label="Tap the bar to break it"
           className={phase === "prompt" ? "cursor-pointer transition-transform hover:scale-105 active:scale-95" : "cursor-default"}
           style={{ background: "transparent", border: "none", padding: 0 }}
         >
-          <svg width="220" height="220" viewBox="0 0 200 200">
-            {/* Whole square */}
-            <rect
-              x="2"
-              y="2"
-              width="196"
-              height="196"
-              fill={GREY}
-              stroke={GREY_BORDER}
-              strokeWidth="1"
-              rx="6"
-            />
-            {/* Left half teal fill */}
-            {filled && (
-              <rect
-                x="2"
-                y="2"
-                width="98"
-                height="196"
-                fill={TEAL}
-                rx="6"
-                style={{ animation: "fadeFill 200ms ease-in" }}
-              />
-            )}
-            {/* Right half border re-stroke for clarity after fill */}
-            {filled && (
-              <rect
-                x="100"
-                y="2"
-                width="98"
-                height="196"
-                fill="none"
-                stroke={GREY_BORDER}
-                strokeWidth="1"
-              />
-            )}
-            {/* Dividing line */}
-            <line
-              x1="100"
-              y1="2"
-              x2="100"
-              y2="198"
-              stroke={LABEL}
-              strokeWidth="2"
-              strokeDasharray="196"
-              strokeDashoffset={split ? 0 : 196}
-              style={{ transition: "stroke-dashoffset 600ms ease-out" }}
-            />
-          </svg>
+          <ChocolateBar
+            width={280}
+            height={120}
+            segments={2}
+            shaded={[0]}
+            breaksDrawn={split}
+            filled={filled}
+          />
         </button>
       </div>
 
-      {/* Labels */}
       {filled && (
-        <div className="mt-3 flex justify-center gap-[110px] animate-fade-in">
+        <div className="mt-3 flex justify-center gap-[140px] animate-fade-in">
           <span style={{ color: LABEL, fontWeight: 600, fontSize: 18 }}>1/2</span>
           <span style={{ color: LABEL, fontWeight: 600, fontSize: 18 }}>1/2</span>
         </div>
       )}
 
-      {/* Prompt */}
       {phase === "prompt" && (
         <p className="mt-6 text-center text-lg font-medium text-muted-foreground animate-fade-in">
-          Tap the shape to split it into 2 equal parts.
+          Tap the bar to break it into 2 equal pieces.
         </p>
       )}
 
-      {/* Pictorial message */}
       {(phase === "pictorial" || phase === "abstract") && (
         <p className="mt-6 text-center text-base text-foreground animate-fade-in">
-          Each part is the same size. We call each part <strong>one half</strong>.
+          Each piece is the same size. We call each piece <strong>one half</strong>.
         </p>
       )}
 
-      {/* Abstract */}
       {phase === "abstract" && (
         <>
           <p
             className="mt-4 text-center text-lg font-semibold animate-fade-in"
             style={{ color: LABEL }}
           >
-            1 out of 2 equal parts = 1/2
+            1 out of 2 equal pieces = 1/2
           </p>
 
           <Callout>
-            A half is only a half if both parts are exactly equal. Unequal parts
-            are <em>not</em> halves.
+            A half is only a half if both pieces are exactly the same size.
+            Unequal pieces are <em>not</em> halves.
           </Callout>
 
           <div className="mt-6 text-center animate-fade-in">
