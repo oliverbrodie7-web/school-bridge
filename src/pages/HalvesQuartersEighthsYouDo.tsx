@@ -195,29 +195,28 @@ const HalvesQuartersEighthsYouDo = () => {
               </button>
             </div>
           </div>
-        ) : queue[qIndex].type === "shade" ? (
-          // ProgressIndicator: Learn / You Do phase, wired to qIndex/queue.length
-          <></>
-        ) : null}
-        {!finished && (
-          <ProgressIndicator mode="learn" phase="youDo" current={qIndex + 1} total={queue.length} />
-        )}
-        {!finished && queue[qIndex].type === "shade" ? (
-          <ShadeCard
-            key={`${seed}-${qIndex}-${queue[qIndex].id}`}
-            spec={queue[qIndex] as ShadeQuestion}
-            qNum={qIndex + 1}
-            total={queue.length}
-            onNext={() => setQIndex((i) => i + 1)}
-          />
         ) : (
-          <ChooseCard
-            key={`${seed}-${qIndex}-${queue[qIndex].id}`}
-            spec={queue[qIndex] as ChooseQuestion}
-            qNum={qIndex + 1}
-            total={queue.length}
-            onNext={() => setQIndex((i) => i + 1)}
-          />
+          <>
+            {/* ProgressIndicator: Learn / You Do phase, wired to qIndex / queue.length */}
+            <ProgressIndicator mode="learn" phase="youDo" current={qIndex + 1} total={queue.length} />
+            {queue[qIndex].type === "shade" ? (
+              <ShadeCard
+                key={`${seed}-${qIndex}-${queue[qIndex].id}`}
+                spec={queue[qIndex] as ShadeQuestion}
+                qNum={qIndex + 1}
+                total={queue.length}
+                onNext={() => setQIndex((i) => i + 1)}
+              />
+            ) : (
+              <ChooseCard
+                key={`${seed}-${qIndex}-${queue[qIndex].id}`}
+                spec={queue[qIndex] as ChooseQuestion}
+                qNum={qIndex + 1}
+                total={queue.length}
+                onNext={() => setQIndex((i) => i + 1)}
+              />
+            )}
+          </>
         )}
       </div>
       <ParentSignpost strategy="halvesQuartersEighths" />
