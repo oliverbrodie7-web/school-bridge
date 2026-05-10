@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import CurriculumBadge from "@/components/CurriculumBadge";
+import { Pizza, ChocolateBar } from "@/components/FractionFood";
 
 const TEAL = "#1D9E75";
-const GREY = "#F5F5F5";
-const GREY_BORDER = "#D4D4D4";
 const LABEL = "#0F6E56";
 
 const AC9M2N03_PROPS = {
@@ -52,22 +51,22 @@ const HalvesQuartersEighthsLearn = () => {
             Halves, Quarters &amp; Eighths — I Do
           </h1>
           <p className="mt-2 text-center text-muted-foreground">
-            Watch how shapes split into equal parts.
+            Watch how a chocolate bar and a pizza split into equal pieces.
           </p>
         </div>
 
         {exIndex === 0 ? (
-          <HalfSquareCard onNext={() => setExIndex(1)} />
+          <HalfChocolateCard onNext={() => setExIndex(1)} />
         ) : (
-          <QuarterCircleCard />
+          <QuarterPizzaCard />
         )}
       </div>
     </div>
   );
 };
 
-/* ──────────────── EXAMPLE 1: HALF (SQUARE) ──────────────── */
-const HalfSquareCard = ({ onNext }: { onNext: () => void }) => {
+/* ──────────────── EXAMPLE 1: HALF (CHOCOLATE BAR) ──────────────── */
+const HalfChocolateCard = ({ onNext }: { onNext: () => void }) => {
   const [phase, setPhase] = useState<SquarePhase>("prompt");
 
   useEffect(() => {
@@ -95,97 +94,52 @@ const HalfSquareCard = ({ onNext }: { onNext: () => void }) => {
           type="button"
           onClick={() => phase === "prompt" && setPhase("splitting")}
           disabled={phase !== "prompt"}
-          aria-label="Tap to split the square"
+          aria-label="Tap the bar to break it"
           className={phase === "prompt" ? "cursor-pointer transition-transform hover:scale-105 active:scale-95" : "cursor-default"}
           style={{ background: "transparent", border: "none", padding: 0 }}
         >
-          <svg width="220" height="220" viewBox="0 0 200 200">
-            {/* Whole square */}
-            <rect
-              x="2"
-              y="2"
-              width="196"
-              height="196"
-              fill={GREY}
-              stroke={GREY_BORDER}
-              strokeWidth="1"
-              rx="6"
-            />
-            {/* Left half teal fill */}
-            {filled && (
-              <rect
-                x="2"
-                y="2"
-                width="98"
-                height="196"
-                fill={TEAL}
-                rx="6"
-                style={{ animation: "fadeFill 200ms ease-in" }}
-              />
-            )}
-            {/* Right half border re-stroke for clarity after fill */}
-            {filled && (
-              <rect
-                x="100"
-                y="2"
-                width="98"
-                height="196"
-                fill="none"
-                stroke={GREY_BORDER}
-                strokeWidth="1"
-              />
-            )}
-            {/* Dividing line */}
-            <line
-              x1="100"
-              y1="2"
-              x2="100"
-              y2="198"
-              stroke={LABEL}
-              strokeWidth="2"
-              strokeDasharray="196"
-              strokeDashoffset={split ? 0 : 196}
-              style={{ transition: "stroke-dashoffset 600ms ease-out" }}
-            />
-          </svg>
+          <ChocolateBar
+            width={280}
+            height={120}
+            segments={2}
+            shaded={[0]}
+            breaksDrawn={split}
+            filled={filled}
+          />
         </button>
       </div>
 
-      {/* Labels */}
       {filled && (
-        <div className="mt-3 flex justify-center gap-[110px] animate-fade-in">
+        <div className="mt-3 flex justify-center gap-[140px] animate-fade-in">
           <span style={{ color: LABEL, fontWeight: 600, fontSize: 18 }}>1/2</span>
           <span style={{ color: LABEL, fontWeight: 600, fontSize: 18 }}>1/2</span>
         </div>
       )}
 
-      {/* Prompt */}
       {phase === "prompt" && (
         <p className="mt-6 text-center text-lg font-medium text-muted-foreground animate-fade-in">
-          Tap the shape to split it into 2 equal parts.
+          Tap the bar to break it into 2 equal pieces.
         </p>
       )}
 
-      {/* Pictorial message */}
       {(phase === "pictorial" || phase === "abstract") && (
         <p className="mt-6 text-center text-base text-foreground animate-fade-in">
-          Each part is the same size. We call each part <strong>one half</strong>.
+          Each piece is the same size. We call each piece <strong>one half</strong>.
         </p>
       )}
 
-      {/* Abstract */}
       {phase === "abstract" && (
         <>
           <p
             className="mt-4 text-center text-lg font-semibold animate-fade-in"
             style={{ color: LABEL }}
           >
-            1 out of 2 equal parts = 1/2
+            1 out of 2 equal pieces = 1/2
           </p>
 
           <Callout>
-            A half is only a half if both parts are exactly equal. Unequal parts
-            are <em>not</em> halves.
+            A half is only a half if both pieces are exactly the same size.
+            Unequal pieces are <em>not</em> halves.
           </Callout>
 
           <div className="mt-6 text-center animate-fade-in">
@@ -204,8 +158,8 @@ const HalfSquareCard = ({ onNext }: { onNext: () => void }) => {
   );
 };
 
-/* ──────────────── EXAMPLE 2: QUARTER (CIRCLE) ──────────────── */
-const QuarterCircleCard = () => {
+/* ──────────────── EXAMPLE 2: QUARTER (PIZZA) ──────────────── */
+const QuarterPizzaCard = () => {
   const [phase, setPhase] = useState<CirclePhase>("prompt");
 
   useEffect(() => {
@@ -234,8 +188,9 @@ const QuarterCircleCard = () => {
       ? () => setPhase("quartering")
       : null;
 
-  // Top-right quarter sector path (cx=100, cy=100, r=95)
-  const tr = "M 100 100 L 100 5 A 95 95 0 0 1 195 100 Z";
+  // Render with 2 slices (halves) until second tap, then 4 slices (quarters).
+  const slices = quarterDrawn ? 4 : halfDrawn ? 2 : 1;
+  const shaded = filled ? [0] : [];
 
   return (
     <div className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
@@ -248,107 +203,53 @@ const QuarterCircleCard = () => {
           type="button"
           onClick={() => tappable?.()}
           disabled={!tappable}
-          aria-label="Tap to split the circle"
+          aria-label="Tap the pizza to slice it"
           className={tappable ? "cursor-pointer transition-transform hover:scale-105 active:scale-95" : "cursor-default"}
           style={{ background: "transparent", border: "none", padding: 0 }}
         >
-          <svg width="220" height="220" viewBox="0 0 200 200">
-            <circle
-              cx="100"
-              cy="100"
-              r="95"
-              fill={GREY}
-              stroke={GREY_BORDER}
-              strokeWidth="1"
-            />
-            {/* Filled top-right quarter */}
-            {filled && (
-              <path
-                d={tr}
-                fill={TEAL}
-                style={{ animation: "fadeFill 200ms ease-in" }}
-              />
-            )}
-            {/* Horizontal divider */}
-            <line
-              x1="5"
-              y1="100"
-              x2="195"
-              y2="100"
-              stroke={LABEL}
-              strokeWidth="2"
-              strokeDasharray="190"
-              strokeDashoffset={halfDrawn ? 0 : 190}
-              style={{ transition: "stroke-dashoffset 600ms ease-out" }}
-            />
-            {/* Vertical divider */}
-            <line
-              x1="100"
-              y1="5"
-              x2="100"
-              y2="195"
-              stroke={LABEL}
-              strokeWidth="2"
-              strokeDasharray="190"
-              strokeDashoffset={quarterDrawn ? 0 : 190}
-              style={{ transition: "stroke-dashoffset 600ms ease-out" }}
-            />
-          </svg>
+          <Pizza size={240} slices={slices} shaded={shaded} cutsDrawn={true} filled={filled} />
         </button>
       </div>
 
-      {/* Quarter labels */}
       {filled && (
-        <div className="relative mx-auto mt-3 animate-fade-in" style={{ width: 220, height: 24 }}>
-          <div className="absolute inset-0 grid grid-cols-2 grid-rows-1">
-            <span className="text-center" style={{ color: LABEL, fontWeight: 600, fontSize: 16 }}>1/4</span>
-            <span className="text-center" style={{ color: LABEL, fontWeight: 600, fontSize: 16 }}>1/4</span>
-          </div>
-        </div>
-      )}
-      {filled && (
-        <div className="text-center text-xs text-muted-foreground -mt-1 animate-fade-in">
-          (and 1/4 + 1/4 below the line — 4 equal parts)
+        <div className="mt-3 text-center animate-fade-in" style={{ color: LABEL, fontWeight: 600, fontSize: 16 }}>
+          1/4 + 1/4 + 1/4 + 1/4 — 4 equal slices
         </div>
       )}
 
-      {/* Prompts */}
       {phase === "prompt" && (
         <p className="mt-6 text-center text-lg font-medium text-muted-foreground animate-fade-in">
-          Tap the shape to split it in half first.
+          Tap the pizza to slice it in half first.
         </p>
       )}
       {phase === "promptQuarter" && (
         <p className="mt-6 text-center text-lg font-medium text-muted-foreground animate-fade-in">
-          Now tap again to split each half in half.
+          Now tap again to slice each half in half.
         </p>
       )}
 
-      {/* Pictorial message */}
       {(phase === "pictorial" || phase === "abstract") && (
         <p className="mt-6 text-center text-base text-foreground animate-fade-in">
-          We split the half in half again. Now there are 4 equal parts. Each
-          part is <strong>one quarter</strong>.
+          We sliced the pizza in half, then in half again. Now there are 4 equal
+          slices. Each slice is <strong>one quarter</strong>.
         </p>
       )}
 
-      {/* Abstract */}
       {phase === "abstract" && (
         <>
           <p
             className="mt-4 text-center text-lg font-semibold animate-fade-in"
             style={{ color: LABEL }}
           >
-            1 out of 4 equal parts = 1/4
+            1 out of 4 equal slices = 1/4
           </p>
           <p className="mt-1 text-center text-sm text-muted-foreground animate-fade-in">
-            It took 2 halvings to make quarters.
+            It took 2 slices to make quarters.
           </p>
 
           <Callout>
-            Quarters come from halving twice. This is called{" "}
-            <strong>repeated halving</strong> — and it's how your child's teacher
-            explains fractions at school.
+            Quarters come from slicing twice. Next time you share a pizza, count
+            the slices — if there are 4 equal ones, each slice is one quarter.
           </Callout>
 
           <div className="mt-6 text-center animate-fade-in">
@@ -366,6 +267,7 @@ const QuarterCircleCard = () => {
     </div>
   );
 };
+
 
 const Callout = ({ children }: { children: React.ReactNode }) => (
   <div
