@@ -121,6 +121,43 @@ const Plus10VisualHint = ({ q }: { q: Question }) => {
   );
 };
 
+const FractionVisualHint = ({ level }: { level: 2 | 3 }) => {
+  // Animate the halving lines on a square: L2 = 1 halving (vertical),
+  // L3 = 3 halvings (vertical, horizontal, then second vertical pair).
+  const TEAL = "#0F6E56";
+  const FILL = "#F5F5F5";
+  return (
+    <div className="mt-3 flex flex-col items-center gap-2">
+      <svg width="120" height="120" viewBox="0 0 120 120">
+        <rect x="2" y="2" width="116" height="116" fill={FILL} stroke="#D4D4D4" strokeWidth="1" rx="6" />
+        {/* Vertical centre — appears at 0.2s */}
+        <line x1="60" y1="2" x2="60" y2="118" stroke={TEAL} strokeWidth="2"
+          style={{ strokeDasharray: 116, strokeDashoffset: 116, animation: "fractionDraw 0.5s ease-out 0.2s forwards" }} />
+        {level === 3 && (
+          <>
+            {/* Horizontal centre — 0.9s */}
+            <line x1="2" y1="60" x2="118" y2="60" stroke={TEAL} strokeWidth="2"
+              style={{ strokeDasharray: 116, strokeDashoffset: 116, animation: "fractionDraw 0.5s ease-out 0.9s forwards" }} />
+            {/* Quarter verticals — 1.6s */}
+            <line x1="31" y1="2" x2="31" y2="118" stroke={TEAL} strokeWidth="2"
+              style={{ strokeDasharray: 116, strokeDashoffset: 116, animation: "fractionDraw 0.4s ease-out 1.6s forwards" }} />
+            <line x1="89" y1="2" x2="89" y2="118" stroke={TEAL} strokeWidth="2"
+              style={{ strokeDasharray: 116, strokeDashoffset: 116, animation: "fractionDraw 0.4s ease-out 1.6s forwards" }} />
+          </>
+        )}
+        <style>{`
+          @keyframes fractionDraw { to { stroke-dashoffset: 0; } }
+        `}</style>
+      </svg>
+      <p className="text-[13px] font-medium text-foreground">
+        {level === 2
+          ? "Halve it again to make 4 equal parts."
+          : "Three halvings → 8 equal parts. Now you try."}
+      </p>
+    </div>
+  );
+};
+
 export const PractiseHintButton = ({
   strategy,
   level,
@@ -128,6 +165,7 @@ export const PractiseHintButton = ({
   consecutiveWrong,
   question,
   inputFocus = "tens",
+  hintKey,
 }: Props) => {
   const [open, setOpen] = useState(false);
   const [showVisual, setShowVisual] = useState(false);
@@ -136,7 +174,7 @@ export const PractiseHintButton = ({
   useEffect(() => {
     setOpen(false);
     setShowVisual(false);
-  }, [strategy, level, question?.a, question?.b]);
+  }, [strategy, level, question?.a, question?.b, hintKey]);
 
   const hidden = consecutiveCorrect >= 3 && consecutiveWrong < 2;
   if (hidden) return null;
@@ -180,8 +218,14 @@ export const PractiseHintButton = ({
             </button>
           )}
 
-          {showVisual && question && (
-            strategy === "splitStrategy" ? <SplitVisualHint q={question} /> : <Plus10VisualHint q={question} />
+          {showVisual && (
+            strategy === "halvesQuartersEighths"
+              ? <FractionVisualHint level={level} />
+              : strategy === "splitStrategy" && question
+                ? <SplitVisualHint q={question} />
+                : strategy === "plusTen" && question
+                  ? <Plus10VisualHint q={question} />
+                  : null
           )}
         </div>
       )}
