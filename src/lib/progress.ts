@@ -1,7 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { fetchProfiles } from "./profiles";
 
-export type StrategyKey = "splitStrategy" | "plusTen";
+export type StrategyKey = "splitStrategy" | "plusTen" | "halvesQuartersEighths";
 
 /** Resolve the currently selected profile id from Supabase + localStorage index. */
 export const getActiveProfileId = async (): Promise<string | null> => {

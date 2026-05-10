@@ -24,6 +24,7 @@ import HalvesQuartersEighthsLanding from "./pages/HalvesQuartersEighthsLanding.t
 import FractionsStrategies from "./pages/FractionsStrategies.tsx";
 import HalvesQuartersEighthsLearn from "./pages/HalvesQuartersEighthsLearn.tsx";
 import HalvesQuartersEighthsWeDo from "./pages/HalvesQuartersEighthsWeDo.tsx";
+import HalvesQuartersEighthsYouDo from "./pages/HalvesQuartersEighthsYouDo.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -56,6 +57,7 @@ const App = () => (
           <Route path="/halves-quarters-eighths" element={<HalvesQuartersEighthsLanding />} />
           <Route path="/learn/halves-quarters-eighths" element={<HalvesQuartersEighthsLearn />} />
           <Route path="/learn/halves-quarters-eighths/we-do" element={<HalvesQuartersEighthsWeDo />} />
+          <Route path="/learn/halves-quarters-eighths/you-do" element={<HalvesQuartersEighthsYouDo />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
