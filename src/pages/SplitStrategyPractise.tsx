@@ -81,18 +81,18 @@ const incL2Count = () => {
 
 const DifficultySelector = ({ level, onChange, l3Unlocked }: { level: number; onChange: (l: number) => void; l3Unlocked: boolean }) => {
   const levels = [
-    { n: 1, label: "Level 1", desc: "Guided with visuals", locked: false },
-    { n: 2, label: "Level 2", desc: "Type your answers", locked: false },
-    { n: 3, label: "Level 3", desc: "Do it yourself", locked: !l3Unlocked },
+    { n: 1, label: "Level 1", desc: "Beginner", locked: false },
+    { n: 2, label: "Level 2", desc: "Intermediate", locked: false },
+    { n: 3, label: "Level 3", desc: "Advanced", locked: !l3Unlocked },
   ];
   return (
-    <div className="flex gap-3 justify-center flex-wrap">
+    <div className="flex gap-3 justify-center">
       {levels.map((l) => (
         <button
           key={l.n}
           onClick={() => !l.locked && onChange(l.n)}
           disabled={l.locked}
-          className={`rounded-xl px-5 py-3 text-sm font-semibold transition-colors border-2 ${
+          className={`flex-1 rounded-xl px-5 py-3 text-sm font-semibold transition-colors border-2 text-center ${
             l.locked
               ? "border-border text-muted-foreground opacity-50 cursor-not-allowed"
               : level === l.n
@@ -100,9 +100,12 @@ const DifficultySelector = ({ level, onChange, l3Unlocked }: { level: number; on
                 : "border-border text-muted-foreground hover:border-primary hover:text-primary"
           }`}
         >
-          <span className="block">{l.label} {l.locked ? "🔒" : ""}</span>
+          <span className="inline-flex items-center justify-center gap-1">
+            {l.label}
+            {l.locked && <Lock className="h-3.5 w-3.5" aria-hidden="true" />}
+          </span>
           <span className="block text-xs font-normal opacity-70">
-            {l.locked ? `Complete ${L2_THRESHOLD - getL2Count()} more Level 2 Qs` : l.desc}
+            {l.locked ? "Complete 10 correct Level 2 questions to unlock" : l.desc}
           </span>
         </button>
       ))}
