@@ -771,9 +771,6 @@ const SplitStrategyPractise = () => {
               current={currentIndex + 1}
               total={queue.length}
             />
-            <p className="mt-4 text-center text-sm text-muted-foreground">
-              Question {currentIndex + 1} of {queue.length}
-            </p>
             {level === 1 && <Level1Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} consecutiveCorrect={consecutiveCorrect} consecutiveWrong={consecutiveWrong} />}
             {level === 2 && <Level2Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} consecutiveCorrect={consecutiveCorrect} consecutiveWrong={consecutiveWrong} />}
             {level === 3 && <Level3Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} consecutiveCorrect={consecutiveCorrect} consecutiveWrong={consecutiveWrong} />}
