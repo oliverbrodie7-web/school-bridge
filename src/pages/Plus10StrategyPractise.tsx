@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
+import { Lock } from "lucide-react";
 import ParentSignpost from "@/components/ParentSignpost";
 import { ProgressIndicator } from "@/components/ProgressIndicator";
 import { getLevel3Unlocked, setLevel3Unlocked } from "@/lib/progress";
