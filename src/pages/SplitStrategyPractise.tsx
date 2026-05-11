@@ -725,7 +725,7 @@ const SplitStrategyPractise = () => {
             Split Strategy — Practise
           </h1>
           <p className="mt-2 mb-6 text-center text-muted-foreground">
-            Choose your difficulty level.
+            Choose your level.
           </p>
         </div>
 
