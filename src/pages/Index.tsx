@@ -93,21 +93,21 @@ const Index = () => {
 
   if (showSetup || !hasProfiles) {
     return (
-      <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center px-6">
+      <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center px-6" style={{ backgroundColor: "#FFF8F0" }}>
         {!hasProfiles && !showSetup ? (
           <div className="text-center space-y-4">
             <h1
-              className="text-3xl font-bold text-foreground sm:text-4xl"
+              className="text-[22px] font-medium text-[#412402]"
               style={{ fontFamily: "var(--font-heading)" }}
             >
               Welcome
             </h1>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-[13px] text-[#854F0B]">
               Let's set up your first child's profile.
             </p>
             <button
               onClick={() => setShowSetup(true)}
-              className="mt-6 rounded-xl bg-primary px-8 py-4 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+              className="mt-6 rounded-[12px] border-2 border-[#BA7517] bg-[#EF9F27] px-7 py-3 text-[14px] font-medium text-[#412402] transition-colors hover:bg-[#BA7517] hover:text-white"
             >
               Get started
             </button>
