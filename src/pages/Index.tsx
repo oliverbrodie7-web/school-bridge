@@ -93,21 +93,21 @@ const Index = () => {
 
   if (showSetup || !hasProfiles) {
     return (
-      <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center px-6" style={{ backgroundColor: "#FFF8F0" }}>
+      <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center px-6">
         {!hasProfiles && !showSetup ? (
           <div className="text-center space-y-4">
             <h1
-              className="text-[22px] font-medium text-[#412402]"
+              className="text-3xl font-bold text-foreground sm:text-4xl"
               style={{ fontFamily: "var(--font-heading)" }}
             >
               Welcome
             </h1>
-            <p className="text-[13px] text-[#854F0B]">
+            <p className="text-lg text-muted-foreground">
               Let's set up your first child's profile.
             </p>
             <button
               onClick={() => setShowSetup(true)}
-              className="mt-6 rounded-[12px] border-2 border-[#BA7517] bg-[#EF9F27] px-7 py-3 text-[14px] font-medium text-[#412402] transition-colors hover:bg-[#BA7517] hover:text-white"
+              className="mt-6 rounded-xl bg-primary px-8 py-4 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
             >
               Get started
             </button>
@@ -124,23 +124,28 @@ const Index = () => {
   }
 
   return (
-    <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center px-6 py-12" style={{ backgroundColor: "#FFF8F0" }}>
+    <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center px-6 py-12">
       <div className="w-full max-w-2xl">
         <h1
-          className="text-center text-[22px] font-medium text-[#412402] mb-1"
+          className="text-center text-3xl font-bold text-foreground sm:text-4xl"
           style={{ fontFamily: "var(--font-heading)" }}
         >
           Who's learning today?
         </h1>
-        <p className="text-center text-[13px] text-[#854F0B] mb-5">Tap your name to get started</p>
 
-        <div className="flex flex-wrap justify-center gap-6">
+        <div className="mt-10 flex flex-wrap justify-center gap-6">
           {profiles.map((profile, i) => (
             <div key={i} className="relative">
               <button
                 onClick={() => handleSelectProfile(profile, i)}
-                className="group flex items-center gap-[10px] rounded-[16px] border-2 border-[#FAC775] bg-white px-4 py-[14px] transition-transform duration-150 ease hover:scale-[1.02] hover:border-[#EF9F27]"
-                style={{ cursor: "pointer" }}
+                className="group flex w-36 flex-col items-center gap-3 p-4 transition-colors hover:bg-[var(--colour-card-hover-inactive)] active:scale-[0.98]"
+                style={{
+                  backgroundColor: "var(--colour-card-bg)",
+                  border: "0.5px solid hsl(var(--colour-card-border))",
+                  borderRadius: "var(--colour-card-radius)",
+                  cursor: "pointer",
+                  width: "100%",
+                }}
               >
                 <div
                   className="flex h-16 w-16 items-center justify-center rounded-full text-2xl font-bold text-white"
@@ -148,9 +153,9 @@ const Index = () => {
                 >
                   {(editingIndex === i ? editName : profile.name).charAt(0).toUpperCase()}
                 </div>
-                <div className="flex flex-col items-start">
+                <div className="text-center w-full">
                   {editingIndex === i ? (
-                    <div className="flex flex-col gap-2" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex flex-col items-center gap-2" onClick={(e) => e.stopPropagation()}>
                       <input
                         type="text"
                         value={editName}
@@ -188,10 +193,10 @@ const Index = () => {
                     </div>
                   ) : (
                     <>
-                      <p className="text-sm font-medium text-[#412402]" style={{ fontFamily: "var(--font-heading)" }}>
+                      <p className="text-lg font-semibold text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
                         {profile.name}
                       </p>
-                      <p className="text-[11px] text-[#854F0B]">Year {profile.yearLevel}</p>
+                      <p className="text-sm text-muted-foreground">Year {profile.yearLevel}</p>
                     </>
                   )}
                 </div>
@@ -212,12 +217,12 @@ const Index = () => {
           ))}
         </div>
 
-        <div className="mt-8 flex justify-center">
+        <div className="mt-8 text-center">
           <button
             onClick={() => setShowSetup(true)}
-            className="flex items-center gap-[10px] rounded-[16px] border-2 border-dashed border-[#FAC775] bg-[#FFF8F0] px-4 py-[14px] text-[13px] font-medium text-[#BA7517] transition-colors hover:bg-[#FAEEDA] hover:border-[#EF9F27]"
+            className="rounded-xl border-2 border-border px-6 py-3 text-base font-semibold text-muted-foreground transition-colors hover:border-primary hover:text-foreground"
           >
-            + Add a child
+            Add a child
           </button>
         </div>
       </div>
