@@ -467,12 +467,16 @@ const ProfileSetup = ({
       <div className="mt-8 flex flex-col items-center gap-3">
         <button
           onClick={handleStartLearning}
+          disabled={submitting}
+          style={submitting ? { opacity: 0.6, cursor: "not-allowed" } : undefined}
           className="rounded-xl bg-primary px-10 py-3.5 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
         >
           Start learning
         </button>
         <button
           onClick={handleAddAnother}
+          disabled={submitting}
+          style={submitting ? { opacity: 0.6, cursor: "not-allowed" } : undefined}
           className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4"
         >
           Add another child
