@@ -316,11 +316,45 @@ const Index = () => {
           </button>
         </div>
 
-        <div className="mt-8 text-center">
-          <Link to="/parent" style={{ fontSize: '12px', color: '#1D9E75', textAlign: 'center' }}>
-            Parent Guide →
+        <div className="mt-8">
+          <p style={{ fontSize: '12px', color: 'var(--color-text-tertiary)', textAlign: 'center', marginBottom: '8px' }}>
+            Not a student? →
+          </p>
+          <Link
+            to="/parent"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              backgroundColor: '#ffffff',
+              border: '1.5px solid #1D9E75',
+              borderRadius: '12px',
+              padding: '10px 24px',
+              fontSize: '14px',
+              fontWeight: 500,
+              color: '#1D9E75',
+              cursor: 'pointer',
+              margin: '0 auto',
+              width: 'fit-content',
+              textDecoration: 'none',
+              transition: '150ms ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#E1F5EE';
+              e.currentTarget.style.borderColor = '#0F6E56';
+              e.currentTarget.style.color = '#0F6E56';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#ffffff';
+              e.currentTarget.style.borderColor = '#1D9E75';
+              e.currentTarget.style.color = '#1D9E75';
+            }}
+          >
+            Parent Guide
+            <ArrowRight size={16} />
           </Link>
         </div>
+
       </div>
     </div>
   );
