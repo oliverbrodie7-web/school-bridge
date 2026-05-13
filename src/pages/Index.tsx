@@ -176,12 +176,23 @@ const Index = () => {
                   e.currentTarget.style.transform = 'scale(1)';
                 }}
               >
+                {/* Avatar placeholder — replace with illustrated character when design is finalised. */}
                 <div
-                  className="flex items-center justify-center text-base font-bold text-white"
-                  style={{ backgroundColor: profile.colour, width: '48px', height: '48px', borderRadius: '50%' }}
+                  className="flex items-center justify-center"
+                  style={{
+                    width: '52px',
+                    height: '52px',
+                    borderRadius: '50%',
+                    backgroundColor: '#E1F5EE',
+                    border: '1.5px solid #1D9E75',
+                    fontSize: '20px',
+                    fontWeight: 500,
+                    color: '#0F6E56',
+                  }}
                 >
                   {(editingIndex === i ? editName : profile.name).charAt(0).toUpperCase()}
                 </div>
+
                 <div className="text-center w-full">
                   {editingIndex === i ? (
                     <div className="flex flex-col items-center gap-2 w-full" onClick={(e) => e.stopPropagation()}>
