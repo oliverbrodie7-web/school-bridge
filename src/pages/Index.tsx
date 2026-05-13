@@ -351,7 +351,7 @@ const Index = () => {
                 <p style={{ fontSize: '14px', fontStyle: 'italic', color: 'var(--color-text-secondary)', lineHeight: 1.6 }}>
                   {q.text}
                 </p>
-                <p style={{ fontSize: '12px', fontStyle: 'normal', fontWeight: 500, color: '#1D9E75', textAlign: 'center', marginTop: '6px' }}>
+                <p style={{ fontSize: '12px', fontStyle: 'italic', fontWeight: 500, color: 'var(--color-text-secondary)', textAlign: 'center', marginTop: '6px' }}>
                   — {q.author}
                 </p>
               </>
