@@ -292,17 +292,23 @@ const ProfileSetup = ({
 
   const yearLabel = yearLevel !== null ? YEAR_LEVELS.find((y) => y.value === yearLevel)?.label : "";
 
-  const doSave = () => {
+  const doSave = async () => {
+    if (submitting) return;
     if (!name.trim() || yearLevel === null) return;
-    onSave({ name: name.trim(), yearLevel, colour });
+    setSubmitting(true);
+    try {
+      await onSave({ name: name.trim(), yearLevel, colour });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleStartLearning = () => {
     doSave();
   };
 
-  const handleAddAnother = () => {
-    doSave();
+  const handleAddAnother = async () => {
+    await doSave();
     setName("");
     setYearLevel(null);
     setYearMessage("");
