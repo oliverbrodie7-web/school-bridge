@@ -1,41 +1,25 @@
-## Goal
+## Fix profile-card edit state
 
-In Level 3 (worded problems) on `/practise/halves-quarters-eighths`, ensure the **first 8 of every 10 questions** use templates where the denominator is stated explicitly (e.g. "cut into 4 equal slices"). Save the more abstract phrasings (e.g. "shared with a friend", "folded in half… in half again") for the last 2 questions in each set of 10.
+Two issues in `src/pages/Index.tsx` only — no other files touched.
 
-## Why
+### 1. Save/Cancel button colours
 
-Worded problems where the child must *infer* the denominator (no number anywhere in the sentence) layer extra abstraction on top of the fraction concept. Year 2 children need the bottom number scaffolded before they can reason about it implicitly.
+Replace the shadcn `bg-primary` / generic-border buttons with brand-teal styling that matches the rest of the home screen.
 
-## Template classification
+- Save: background `#1D9E75`, white text, no border, radius 8px, padding `4px 12px`, font-size 12px, weight 500. Hover `#0F6E56`.
+- Cancel: background transparent, border `1px solid #9FE1CB`, text `#0F6E56`, same size and radius. Hover background `#E1F5EE`.
 
-Each L3 template will be tagged `concrete: true | false`.
+### 2. Save/Cancel buttons bleeding outside the card
 
-**Concrete (number stated in text)**
-- HALVES #1 — "cut a {object} into **2 equal pieces** and ate one piece"
-- QUARTERS #1 — "cut a pizza into **4 equal slices** and ate one slice"
-- QUARTERS #2 — "**4 friends** shared a chocolate bar equally"
-- QUARTERS #3 — "ate **2 slices** of a pizza that was cut into **4 equal slices**"
-- QUARTERS #4 — "cut it into **4 equal pieces** and used 3 pieces"
-- EIGHTHS #1 — "cut a sandwich into **8 equal pieces** and ate one piece"
-- EIGHTHS #2 — "broken into **8 equal pieces**. Took 2 pieces"
+Root cause: card is fixed at `width: 120px` with `padding: 20px 12px` (96px inner width), but the two buttons sit in a horizontal flex row with `gap: 8px` and natural padding, overflowing horizontally.
 
-**Abstract (denominator must be inferred)**
-- HALVES #2 — "shared it equally with a friend"
-- EIGHTHS #3 — "folded a piece of paper in half, then in half again, then in half again"
+Fix: stack the action row to fit the narrow card.
 
-## Implementation
+- Wrap Save + Cancel in a `flex flex-col gap-1 w-full` (full inner width, vertical stack).
+- Each button `width: 100%`, smaller padding (`4px 8px`), font-size 11px so they sit cleanly inside the 96px content area.
+- Also set the name input and year select to `width: 100%`, `box-sizing: border-box`, font-size 12px, padding `4px 6px` so they don't overflow either.
+- Allow the card to grow vertically in edit mode by removing the fixed `min-height: 140px` constraint only when `editingIndex === i` (use `minHeight: editingIndex === i ? 'auto' : '140px'`). Sibling cards keep their footprint.
 
-1. Add `concrete: boolean` to each entry in `HALVES_TEMPLATES`, `QUARTERS_TEMPLATES`, `EIGHTHS_TEMPLATES` per the classification above.
-2. Change `generateL3(avoid)` → `generateL3(subPos, avoid)` where `subPos` is the 1-based position within the current set of 10 (already computed in `genFor` for L2).
-3. Inside `generateL3`:
-   - If `subPos <= 8` → only pick from templates where `concrete === true`.
-   - If `subPos >= 9` → pick from the full pool (concrete + abstract), so abstract phrasings appear roughly in positions 9–10.
-   - Keep the existing fraction-type weighting (≈30% eighths, otherwise halves/quarters split) but apply it *after* filtering by concreteness. If a chosen bucket has no concrete templates at the current `subPos`, fall back to another bucket rather than emitting an abstract one.
-4. Update the call site in `genFor` (line 1475) to pass `subPos = ((qNum - 1) % 10) + 1`, mirroring the L2 pattern.
-5. No changes to L1, L2, ProgressIndicator, hint system, streak logic, or Supabase writes.
+### Out of scope (not changed)
 
-## Out of scope
-
-- Rewording any existing template.
-- Adding new worded templates.
-- Changing the L3 unlock rule (still 10 consecutive L2 correct).
+- Year-select border style, avatar, save/cancel logic, any other page or component.
