@@ -1,6 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
 
-
 const SiteHeader = () => {
   const { pathname } = useLocation();
 
@@ -29,15 +28,9 @@ const SiteHeader = () => {
         {strategy && (
           <Link
             to={`/parent?strategy=${strategy}`}
-            className="flex items-center transition-colors"
-            style={{ color: '#0F6E56', cursor: 'pointer' }}
-            onMouseEnter={(e) => { e.currentTarget.style.color = '#1D9E75'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.color = '#0F6E56'; }}
+            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
-            <>
-              <i className="ti ti-book-2" style={{ fontSize: '16px' }} aria-hidden="true" />
-              <span style={{ fontSize: '11px', marginLeft: '6px' }}>Parent Guide</span>
-            </>
+            Parent Guide
           </Link>
         )}
       </div>

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-
 import {
   Profile,
   fetchProfiles,
@@ -149,36 +148,6 @@ const Index = () => {
         >
           Tap your name to get started
         </p>
-
-        <div
-          style={{
-            backgroundColor: '#E1F5EE',
-            borderRadius: '10px',
-            padding: '8px 14px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: '16px',
-          }}
-        >
-          <span style={{ fontSize: '12px', color: '#0F6E56' }}>
-            Are you a parent? Understand what your child is learning.
-          </span>
-          <Link
-            to="/parent"
-            style={{
-              fontSize: '12px',
-              fontWeight: 500,
-              color: '#1D9E75',
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-              marginLeft: '12px',
-              textDecoration: 'none',
-            }}
-          >
-            Guide →
-          </Link>
-        </div>
 
         <div className="flex flex-row flex-wrap justify-center items-stretch gap-3">
           {profiles.map((profile, i) => (
@@ -347,7 +316,11 @@ const Index = () => {
           </button>
         </div>
 
-
+        <div className="mt-8 text-center">
+          <Link to="/parent" style={{ fontSize: '12px', color: '#1D9E75', textAlign: 'center' }}>
+            Parent Guide →
+          </Link>
+        </div>
       </div>
     </div>
   );
