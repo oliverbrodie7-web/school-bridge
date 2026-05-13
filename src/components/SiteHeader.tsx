@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+import { BookOpen } from "lucide-react";
 
 const SiteHeader = () => {
   const { pathname } = useLocation();
@@ -28,9 +29,14 @@ const SiteHeader = () => {
         {strategy && (
           <Link
             to={`/parent?strategy=${strategy}`}
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            className="flex items-center transition-colors"
+            style={{ color: '#0F6E56', cursor: 'pointer' }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = '#1D9E75'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = '#0F6E56'; }}
           >
-            Parent Guide
+            {/* ti-book-2 equivalent — using lucide BookOpen since project uses lucide-react */}
+            <BookOpen size={16} />
+            <span style={{ fontSize: '11px', marginLeft: '6px' }}>Parent Guide</span>
           </Link>
         )}
       </div>

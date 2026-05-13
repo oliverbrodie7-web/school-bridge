@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+
 import {
   Profile,
   fetchProfiles,
@@ -149,6 +149,36 @@ const Index = () => {
         >
           Tap your name to get started
         </p>
+
+        <div
+          style={{
+            backgroundColor: '#E1F5EE',
+            borderRadius: '10px',
+            padding: '8px 14px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '16px',
+          }}
+        >
+          <span style={{ fontSize: '12px', color: '#0F6E56' }}>
+            Are you a parent? Understand what your child is learning.
+          </span>
+          <Link
+            to="/parent"
+            style={{
+              fontSize: '12px',
+              fontWeight: 500,
+              color: '#1D9E75',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+              marginLeft: '12px',
+              textDecoration: 'none',
+            }}
+          >
+            Guide →
+          </Link>
+        </div>
 
         <div className="flex flex-row flex-wrap justify-center items-stretch gap-3">
           {profiles.map((profile, i) => (
@@ -317,44 +347,6 @@ const Index = () => {
           </button>
         </div>
 
-        <div className="mt-8">
-          <p style={{ fontSize: '12px', color: 'var(--color-text-tertiary)', textAlign: 'center', marginBottom: '8px' }}>
-            Not a student? →
-          </p>
-          <Link
-            to="/parent"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              backgroundColor: '#ffffff',
-              border: '1.5px solid #1D9E75',
-              borderRadius: '12px',
-              padding: '10px 24px',
-              fontSize: '14px',
-              fontWeight: 500,
-              color: '#1D9E75',
-              cursor: 'pointer',
-              margin: '0 auto',
-              width: 'fit-content',
-              textDecoration: 'none',
-              transition: '150ms ease',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#E1F5EE';
-              e.currentTarget.style.borderColor = '#0F6E56';
-              e.currentTarget.style.color = '#0F6E56';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#ffffff';
-              e.currentTarget.style.borderColor = '#1D9E75';
-              e.currentTarget.style.color = '#1D9E75';
-            }}
-          >
-            Parent Guide
-            <ArrowRight size={16} />
-          </Link>
-        </div>
 
       </div>
     </div>
