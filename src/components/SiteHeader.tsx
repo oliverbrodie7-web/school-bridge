@@ -34,9 +34,10 @@ const SiteHeader = () => {
             onMouseEnter={(e) => { e.currentTarget.style.color = '#1D9E75'; }}
             onMouseLeave={(e) => { e.currentTarget.style.color = '#0F6E56'; }}
           >
-            {/* ti-book-2 equivalent — using lucide BookOpen since project uses lucide-react */}
-            <BookOpen size={16} />
-            <span style={{ fontSize: '11px', marginLeft: '6px' }}>Parent Guide</span>
+            <>
+              <i className="ti ti-book-2" style={{ fontSize: '16px' }} aria-hidden="true" />
+              <span style={{ fontSize: '11px', marginLeft: '6px' }}>Parent Guide</span>
+            </>
           </Link>
         )}
       </div>
