@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+
 import {
   Profile,
   fetchProfiles,
