@@ -150,6 +150,36 @@ const Index = () => {
           Tap your name to get started
         </p>
 
+        <div
+          style={{
+            backgroundColor: '#E1F5EE',
+            borderRadius: '10px',
+            padding: '8px 14px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '16px',
+          }}
+        >
+          <span style={{ fontSize: '12px', color: '#0F6E56' }}>
+            Are you a parent? Understand what your child is learning.
+          </span>
+          <Link
+            to="/parent"
+            style={{
+              fontSize: '12px',
+              fontWeight: 500,
+              color: '#1D9E75',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+              marginLeft: '12px',
+              textDecoration: 'none',
+            }}
+          >
+            Guide →
+          </Link>
+        </div>
+
         <div className="flex flex-row flex-wrap justify-center items-stretch gap-3">
           {profiles.map((profile, i) => (
             <div key={i} className="relative" style={{ width: '120px', minHeight: editingIndex === i ? 'auto' : '140px', flexShrink: 0 }}>
