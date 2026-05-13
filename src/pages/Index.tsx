@@ -151,13 +151,13 @@ const Index = () => {
 
         <div className="flex flex-row flex-wrap justify-center items-stretch gap-3">
           {profiles.map((profile, i) => (
-            <div key={i} className="relative" style={{ width: '120px', minHeight: '140px', flexShrink: 0 }}>
+            <div key={i} className="relative" style={{ width: '120px', minHeight: editingIndex === i ? 'auto' : '140px', flexShrink: 0 }}>
               <button
                 onClick={() => handleSelectProfile(profile, i)}
                 className="flex flex-col items-center gap-2"
                 style={{
                   width: '120px',
-                  minHeight: '140px',
+                  minHeight: editingIndex === i ? 'auto' : '140px',
                   flexShrink: 0,
                   backgroundColor: '#ffffff',
                   border: '1.5px solid #1D9E75',
@@ -165,10 +165,11 @@ const Index = () => {
                   padding: '20px 12px',
                   cursor: 'pointer',
                   transition: '150ms ease',
+                  boxSizing: 'border-box',
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.borderColor = '#0F6E56';
-                  e.currentTarget.style.transform = 'scale(1.02)';
+                  if (editingIndex !== i) e.currentTarget.style.transform = 'scale(1.02)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.borderColor = '#1D9E75';
@@ -183,7 +184,7 @@ const Index = () => {
                 </div>
                 <div className="text-center w-full">
                   {editingIndex === i ? (
-                    <div className="flex flex-col items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex flex-col items-center gap-2 w-full" onClick={(e) => e.stopPropagation()}>
                       <input
                         type="text"
                         value={editName}
@@ -193,31 +194,36 @@ const Index = () => {
                           if (e.key === "Escape") handleCancelEdit();
                         }}
                         autoFocus
-                        className="w-full rounded-lg border border-border bg-background px-2 py-1 text-center text-sm text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
+                        style={{ width: '100%', boxSizing: 'border-box', fontSize: '12px', padding: '4px 6px', border: '1px solid #9FE1CB', borderRadius: '6px', textAlign: 'center', color: '#0F6E56', outline: 'none' }}
                       />
                       <select
                         value={editYear}
                         onChange={(e) => setEditYear(Number(e.target.value))}
-                        className="w-full rounded-lg border border-border bg-background px-2 py-1 text-center text-sm text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
+                        style={{ width: '100%', boxSizing: 'border-box', fontSize: '12px', padding: '4px 6px', border: '1px solid #9FE1CB', borderRadius: '6px', textAlign: 'center', color: '#0F6E56', backgroundColor: '#ffffff', outline: 'none' }}
                       >
                         {YEAR_LEVELS.map((yr) => (
                           <option key={yr.value} value={yr.value}>{yr.label}</option>
                         ))}
                       </select>
-                      <div className="flex gap-2">
+                      <div className="flex flex-col gap-1 w-full">
                         <button
                           onClick={handleSaveEdit}
-                          className="rounded-md bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
+                          style={{ width: '100%', backgroundColor: '#1D9E75', color: '#ffffff', border: 'none', borderRadius: '8px', padding: '4px 8px', fontSize: '11px', fontWeight: 500, cursor: 'pointer' }}
+                          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#0F6E56'; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#1D9E75'; }}
                         >
                           Save
                         </button>
                         <button
                           onClick={handleCancelEdit}
-                          className="rounded-md border border-border px-3 py-1 text-xs text-muted-foreground hover:text-foreground"
+                          style={{ width: '100%', backgroundColor: 'transparent', color: '#0F6E56', border: '1px solid #9FE1CB', borderRadius: '8px', padding: '4px 8px', fontSize: '11px', fontWeight: 500, cursor: 'pointer' }}
+                          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#E1F5EE'; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
                         >
                           Cancel
                         </button>
                       </div>
+
                     </div>
                   ) : (
                     <>
