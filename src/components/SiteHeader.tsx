@@ -16,12 +16,12 @@ const SiteHeader = () => {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full bg-white" style={{ borderBottom: '1px solid #E1F5EE' }}>
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6">
         <Link
           to="/"
           className="text-xl font-bold tracking-tight"
-          style={{ fontFamily: "var(--font-heading)", color: "hsl(var(--primary))" }}
+          style={{ fontFamily: "var(--font-heading)", color: "#1D9E75" }}
         >
           [Site Name]
         </Link>
