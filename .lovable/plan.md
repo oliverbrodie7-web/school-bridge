@@ -1,25 +1,15 @@
-## Fix profile-card edit state
+## Problem
 
-Two issues in `src/pages/Index.tsx` only — no other files touched.
+When the edit (pencil) button is clicked, the editing profile card grows taller to fit the name input, year select, Save and Cancel buttons. Because the row container at `src/pages/Index.tsx` line 152 uses `items-stretch`, every sibling — including the "Add a child" card — stretches to match that taller height.
 
-### 1. Save/Cancel button colours
+## Fix
 
-Replace the shadcn `bg-primary` / generic-border buttons with brand-teal styling that matches the rest of the home screen.
+Single change in `src/pages/Index.tsx`:
 
-- Save: background `#1D9E75`, white text, no border, radius 8px, padding `4px 12px`, font-size 12px, weight 500. Hover `#0F6E56`.
-- Cancel: background transparent, border `1px solid #9FE1CB`, text `#0F6E56`, same size and radius. Hover background `#E1F5EE`.
+- Line 152: change the row's alignment from `items-stretch` to `items-start` so each card keeps its own intrinsic height.
 
-### 2. Save/Cancel buttons bleeding outside the card
+Profile cards already declare `minHeight: 140px` (or `auto` while editing) and the "Add a child" card already declares `minHeight: 140px`, so switching to `items-start` keeps the baseline 140px footprint and lets only the editing card grow.
 
-Root cause: card is fixed at `width: 120px` with `padding: 20px 12px` (96px inner width), but the two buttons sit in a horizontal flex row with `gap: 8px` and natural padding, overflowing horizontally.
+## Out of scope
 
-Fix: stack the action row to fit the narrow card.
-
-- Wrap Save + Cancel in a `flex flex-col gap-1 w-full` (full inner width, vertical stack).
-- Each button `width: 100%`, smaller padding (`4px 8px`), font-size 11px so they sit cleanly inside the 96px content area.
-- Also set the name input and year select to `width: 100%`, `box-sizing: border-box`, font-size 12px, padding `4px 6px` so they don't overflow either.
-- Allow the card to grow vertically in edit mode by removing the fixed `min-height: 140px` constraint only when `editingIndex === i` (use `minHeight: editingIndex === i ? 'auto' : '140px'`). Sibling cards keep their footprint.
-
-### Out of scope (not changed)
-
-- Year-select border style, avatar, save/cancel logic, any other page or component.
+- No changes to colours, padding, borders, fonts, the avatar, Save/Cancel styling, edit logic, or any other file.
