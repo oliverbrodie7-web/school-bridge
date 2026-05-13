@@ -149,7 +149,7 @@ const Index = () => {
           Tap your name to get started
         </p>
 
-        <div className="flex flex-row flex-wrap justify-center items-stretch gap-3">
+        <div className="flex flex-row flex-wrap justify-center items-start gap-3">
           {profiles.map((profile, i) => (
             <div key={i} className="relative" style={{ width: '120px', minHeight: editingIndex === i ? 'auto' : '140px', flexShrink: 0 }}>
               <button
