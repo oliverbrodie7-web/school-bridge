@@ -10,6 +10,32 @@ import {
 
 const PALETTE = ["#4A90D9", "#E8934A", "#6BBF8A", "#D96A6A", "#9B6BBF", "#4ABFBF"];
 
+const QUOTES = [
+  { text: "The more that you read, the more things you will know. The more that you learn, the more places you'll go.", author: "Dr. Seuss" },
+  { text: "It always seems impossible until it's done.", author: "Nelson Mandela" },
+  { text: "You don't have to be great to start, but you have to start to be great.", author: "Zig Ziglar" },
+  { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+  { text: "Every expert was once a beginner.", author: "Helen Hayes" },
+  { text: "The beautiful thing about learning is that no one can take it away from you.", author: "B.B. King" },
+  { text: "Do not be embarrassed by your failures, learn from them and start again.", author: "Richard Branson" },
+  { text: "You are braver than you believe, stronger than you seem, and smarter than you think.", author: "A.A. Milne" },
+  { text: "Education is not the filling of a pail, but the lighting of a fire.", author: "W.B. Yeats" },
+  { text: "Tell me and I forget. Teach me and I remember. Involve me and I learn.", author: "Benjamin Franklin" },
+  { text: "The mind is not a vessel to be filled, but a fire to be kindled.", author: "Plutarch" },
+  { text: "Children must be taught how to think, not what to think.", author: "Margaret Mead" },
+  { text: "It is easier to build strong children than to repair broken adults.", author: "Frederick Douglass" },
+  { text: "What we learn with pleasure we never forget.", author: "Alfred Mercier" },
+  { text: "The whole purpose of education is to turn mirrors into windows.", author: "Sydney J. Harris" },
+  { text: "A child who reads will be an adult who thinks.", author: "Unknown" },
+];
+
+function getDailyQuote() {
+  const dayOfYear = Math.floor(
+    (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000
+  );
+  return QUOTES[dayOfYear % QUOTES.length];
+}
+
 const Index = () => {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -315,6 +341,22 @@ const Index = () => {
               + Add a child
             </span>
           </button>
+        </div>
+
+        <div style={{ marginTop: '24px', marginLeft: 'auto', marginRight: 'auto', maxWidth: '480px', textAlign: 'center' }}>
+          {(() => {
+            const q = getDailyQuote();
+            return (
+              <>
+                <p style={{ fontSize: '14px', fontStyle: 'italic', color: 'var(--color-text-secondary)', lineHeight: 1.6 }}>
+                  {q.text}
+                </p>
+                <p style={{ fontSize: '12px', fontStyle: 'normal', fontWeight: 500, color: '#1D9E75', textAlign: 'center', marginTop: '6px' }}>
+                  — {q.author}
+                </p>
+              </>
+            );
+          })()}
         </div>
 
         <div className="mt-8 text-center">
