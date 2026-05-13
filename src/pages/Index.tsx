@@ -260,6 +260,7 @@ const ProfileSetup = ({
   const [nameError, setNameError] = useState("");
   const [yearLevel, setYearLevel] = useState<number | null>(null);
   const [yearMessage, setYearMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const colour = PALETTE[colourIndex % PALETTE.length];
 
