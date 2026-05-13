@@ -352,7 +352,7 @@ const Index = () => {
                   {q.text}
                 </p>
                 <p style={{ fontSize: '12px', fontStyle: 'italic', fontWeight: 500, color: 'var(--color-text-secondary)', textAlign: 'center', marginTop: '6px' }}>
-                  — {q.author}
+                  {q.author}
                 </p>
               </>
             );
