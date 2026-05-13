@@ -260,6 +260,7 @@ const ProfileSetup = ({
   const [nameError, setNameError] = useState("");
   const [yearLevel, setYearLevel] = useState<number | null>(null);
   const [yearMessage, setYearMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const colour = PALETTE[colourIndex % PALETTE.length];
 
@@ -291,17 +292,23 @@ const ProfileSetup = ({
 
   const yearLabel = yearLevel !== null ? YEAR_LEVELS.find((y) => y.value === yearLevel)?.label : "";
 
-  const doSave = () => {
+  const doSave = async () => {
+    if (submitting) return;
     if (!name.trim() || yearLevel === null) return;
-    onSave({ name: name.trim(), yearLevel, colour });
+    setSubmitting(true);
+    try {
+      await onSave({ name: name.trim(), yearLevel, colour });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleStartLearning = () => {
     doSave();
   };
 
-  const handleAddAnother = () => {
-    doSave();
+  const handleAddAnother = async () => {
+    await doSave();
     setName("");
     setYearLevel(null);
     setYearMessage("");
@@ -460,12 +467,16 @@ const ProfileSetup = ({
       <div className="mt-8 flex flex-col items-center gap-3">
         <button
           onClick={handleStartLearning}
+          disabled={submitting}
+          style={submitting ? { opacity: 0.6, cursor: "not-allowed" } : undefined}
           className="rounded-xl bg-primary px-10 py-3.5 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
         >
           Start learning
         </button>
         <button
           onClick={handleAddAnother}
+          disabled={submitting}
+          style={submitting ? { opacity: 0.6, cursor: "not-allowed" } : undefined}
           className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4"
         >
           Add another child
