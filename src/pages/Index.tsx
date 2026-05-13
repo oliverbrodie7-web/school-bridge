@@ -343,6 +343,15 @@ const Index = () => {
           </button>
         </div>
 
+        <div style={{ marginTop: '24px', marginLeft: 'auto', marginRight: 'auto', maxWidth: '480px', textAlign: 'center' }}>
+          <p style={{ fontSize: '14px', fontStyle: 'italic', color: 'var(--color-text-secondary)', lineHeight: 1.6 }}>
+            {getDailyQuote().text}
+          </p>
+          <p style={{ fontSize: '12px', fontStyle: 'normal', fontWeight: 500, color: '#1D9E75', textAlign: 'center', marginTop: '6px' }}>
+            — {getDailyQuote().author}
+          </p>
+        </div>
+
         <div className="mt-8 text-center">
           <Link to="/parent" style={{ fontSize: '12px', color: '#1D9E75', textAlign: 'center' }}>
             Parent Guide →
