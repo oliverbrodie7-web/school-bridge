@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
   Profile,
   fetchProfiles,
@@ -85,7 +85,7 @@ const Index = () => {
 
   if (loading) {
     return (
-      <div className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center">
+      <div className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center" style={{ backgroundColor: '#FAFAF8' }}>
         <div className="h-6 w-6 animate-spin rounded-full border-2 border-muted border-t-primary" />
       </div>
     );
@@ -93,7 +93,7 @@ const Index = () => {
 
   if (showSetup || !hasProfiles) {
     return (
-      <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center px-6">
+      <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center px-6" style={{ backgroundColor: '#FAFAF8' }}>
         {!hasProfiles && !showSetup ? (
           <div className="text-center space-y-4">
             <h1
@@ -124,32 +124,60 @@ const Index = () => {
   }
 
   return (
-    <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center px-6 py-12">
+    <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center px-6 py-12" style={{ backgroundColor: '#FAFAF8' }}>
       <div className="w-full max-w-2xl">
         <h1
-          className="text-center text-3xl font-bold text-foreground sm:text-4xl"
-          style={{ fontFamily: "var(--font-heading)" }}
+          style={{
+            fontFamily: 'var(--font-heading)',
+            fontSize: '24px',
+            fontWeight: 500,
+            color: '#1D9E75',
+            textAlign: 'center',
+            marginBottom: '6px',
+          }}
         >
           Who's learning today?
         </h1>
+        <p
+          style={{
+            fontSize: '13px',
+            color: '#0F6E56',
+            textAlign: 'center',
+            marginBottom: '28px',
+          }}
+        >
+          Tap your name to get started
+        </p>
 
-        <div className="mt-10 flex flex-wrap justify-center gap-6">
+        <div className="flex flex-row flex-wrap justify-center items-stretch gap-3">
           {profiles.map((profile, i) => (
-            <div key={i} className="relative">
+            <div key={i} className="relative" style={{ width: '120px', minHeight: '140px', flexShrink: 0 }}>
               <button
                 onClick={() => handleSelectProfile(profile, i)}
-                className="group flex w-36 flex-col items-center gap-3 p-4 transition-colors hover:bg-[var(--colour-card-hover-inactive)] active:scale-[0.98]"
+                className="flex flex-col items-center gap-2"
                 style={{
-                  backgroundColor: "var(--colour-card-bg)",
-                  border: "0.5px solid hsl(var(--colour-card-border))",
-                  borderRadius: "var(--colour-card-radius)",
-                  cursor: "pointer",
-                  width: "100%",
+                  width: '120px',
+                  minHeight: '140px',
+                  flexShrink: 0,
+                  backgroundColor: '#ffffff',
+                  border: '1.5px solid #1D9E75',
+                  borderRadius: '16px',
+                  padding: '20px 12px',
+                  cursor: 'pointer',
+                  transition: '150ms ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = '#0F6E56';
+                  e.currentTarget.style.transform = 'scale(1.02)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = '#1D9E75';
+                  e.currentTarget.style.transform = 'scale(1)';
                 }}
               >
                 <div
-                  className="flex h-16 w-16 items-center justify-center rounded-full text-2xl font-bold text-white"
-                  style={{ backgroundColor: profile.colour }}
+                  className="flex items-center justify-center text-base font-bold text-white"
+                  style={{ backgroundColor: profile.colour, width: '48px', height: '48px', borderRadius: '50%' }}
                 >
                   {(editingIndex === i ? editName : profile.name).charAt(0).toUpperCase()}
                 </div>
@@ -193,10 +221,23 @@ const Index = () => {
                     </div>
                   ) : (
                     <>
-                      <p className="text-lg font-semibold text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
+                      <p style={{ fontSize: '14px', fontWeight: 500, color: '#1D9E75', fontFamily: 'var(--font-heading)' }}>
                         {profile.name}
                       </p>
-                      <p className="text-sm text-muted-foreground">Year {profile.yearLevel}</p>
+                      <span
+                        style={{
+                          display: 'inline-block',
+                          backgroundColor: '#E1F5EE',
+                          border: '1px solid #9FE1CB',
+                          borderRadius: '99px',
+                          padding: '2px 8px',
+                          fontSize: '11px',
+                          color: '#0F6E56',
+                          marginTop: '4px',
+                        }}
+                      >
+                        Year {profile.yearLevel}
+                      </span>
                     </>
                   )}
                 </div>
@@ -215,15 +256,53 @@ const Index = () => {
               )}
             </div>
           ))}
+          <button
+            onClick={() => setShowSetup(true)}
+            className="flex flex-col items-center justify-center gap-2"
+            style={{
+              width: '120px',
+              minHeight: '140px',
+              flexShrink: 0,
+              backgroundColor: '#F5F5F5',
+              border: '1.5px dashed #9FE1CB',
+              borderRadius: '16px',
+              padding: '20px 12px',
+              cursor: 'pointer',
+              transition: '150ms ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#E1F5EE';
+              e.currentTarget.style.borderColor = '#1D9E75';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#F5F5F5';
+              e.currentTarget.style.borderColor = '#9FE1CB';
+            }}
+          >
+            <div
+              className="flex items-center justify-center"
+              style={{
+                width: '48px',
+                height: '48px',
+                borderRadius: '50%',
+                backgroundColor: '#E1F5EE',
+                border: '1.5px solid #9FE1CB',
+                fontSize: '22px',
+                color: '#1D9E75',
+              }}
+            >
+              +
+            </div>
+            <span style={{ fontSize: '13px', fontWeight: 500, color: '#1D9E75', textAlign: 'center' }}>
+              + Add a child
+            </span>
+          </button>
         </div>
 
         <div className="mt-8 text-center">
-          <button
-            onClick={() => setShowSetup(true)}
-            className="rounded-xl border-2 border-border px-6 py-3 text-base font-semibold text-muted-foreground transition-colors hover:border-primary hover:text-foreground"
-          >
-            Add a child
-          </button>
+          <Link to="/parent" style={{ fontSize: '12px', color: '#1D9E75', textAlign: 'center' }}>
+            Parent Guide →
+          </Link>
         </div>
       </div>
     </div>
