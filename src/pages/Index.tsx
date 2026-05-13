@@ -225,14 +225,6 @@ const Index = () => {
                         >
                           Save
                         </button>
-                        <button
-                          onClick={handleCancelEdit}
-                          style={{ width: '100%', backgroundColor: 'transparent', color: '#0F6E56', border: '1px solid #9FE1CB', borderRadius: '8px', padding: '4px 8px', fontSize: '11px', fontWeight: 500, cursor: 'pointer' }}
-                          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#E1F5EE'; }}
-                          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
-                        >
-                          Cancel
-                        </button>
                       </div>
 
                     </div>
@@ -259,18 +251,27 @@ const Index = () => {
                   )}
                 </div>
               </button>
-              {editingIndex !== i && (
-                <button
-                  onClick={(e) => handleStartEdit(e, i)}
-                  className="absolute top-2 right-2 rounded-full p-1 text-muted-foreground/50 hover:text-foreground hover:bg-muted transition-colors"
-                  title="Edit name"
-                >
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (editingIndex === i) handleCancelEdit();
+                  else handleStartEdit(e, i);
+                }}
+                className="absolute top-2 right-2 rounded-full p-1 text-muted-foreground/50 hover:text-foreground hover:bg-muted transition-colors"
+                title={editingIndex === i ? "Close" : "Edit name"}
+              >
+                {editingIndex === i ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                  </svg>
+                ) : (
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
                     <path d="m15 5 4 4" />
                   </svg>
-                </button>
-              )}
+                )}
+              </button>
             </div>
           ))}
           <button
