@@ -109,31 +109,84 @@ const Index = () => {
     setEditYear(2);
   };
 
+  const NUNITO = "'Nunito', sans-serif";
+  const PAGE_BG = "linear-gradient(135deg, #E8EFFE 0%, #EDE9F6 100%)";
+
+  const AVATAR_GRADIENTS = [
+    "linear-gradient(135deg, #5B7FE8, #7B6FD0)",
+    "linear-gradient(135deg, #E87B5B, #D06F9B)",
+    "linear-gradient(135deg, #5BB8E8, #5BE8B0)",
+    "linear-gradient(135deg, #E8C45B, #E87B5B)",
+    "linear-gradient(135deg, #7BE87B, #5BB8E8)",
+    "linear-gradient(135deg, #D06F9B, #7B6FD0)",
+  ];
+
+  const PILL_STYLES: { bg: string; color: string; border: string }[] = [
+    { bg: "#E8EFFE", color: "#3355CC", border: "rgba(91,127,232,0.3)" },
+    { bg: "#FEE8E8", color: "#CC3355", border: "rgba(232,91,91,0.3)" },
+    { bg: "#E8F7FE", color: "#1A7FAA", border: "rgba(91,183,232,0.3)" },
+    { bg: "#FEF8E8", color: "#AA7A1A", border: "rgba(232,196,91,0.3)" },
+    { bg: "#E8FEE8", color: "#1AAA55", border: "rgba(91,232,123,0.3)" },
+    { bg: "#FEE8F5", color: "#AA1A7A", border: "rgba(208,111,155,0.3)" },
+  ];
+
   if (loading) {
     return (
-      <div className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center" style={{ backgroundColor: '#FAFAF8' }}>
-        <div className="h-6 w-6 animate-spin rounded-full border-2 border-muted border-t-primary" />
+      <div
+        className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center"
+        style={{ background: PAGE_BG, fontFamily: NUNITO }}
+      >
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-white/40 border-t-[#5B7FE8]" />
       </div>
     );
   }
 
   if (showSetup || !hasProfiles) {
     return (
-      <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center px-6" style={{ backgroundColor: '#FAFAF8' }}>
+      <div
+        className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center px-6"
+        style={{ background: PAGE_BG, fontFamily: NUNITO }}
+      >
         {!hasProfiles && !showSetup ? (
-          <div className="text-center space-y-4">
+          <div className="text-center" style={{ fontFamily: NUNITO }}>
             <h1
-              className="text-3xl font-bold text-foreground sm:text-4xl"
-              style={{ fontFamily: "var(--font-heading)" }}
+              style={{
+                fontFamily: NUNITO,
+                fontSize: 32,
+                fontWeight: 800,
+                color: "#1A1A2E",
+                letterSpacing: "-0.02em",
+                marginBottom: 10,
+              }}
             >
-              Welcome
+              Welcome 👋
             </h1>
-            <p className="text-lg text-muted-foreground">
+            <p style={{ fontFamily: NUNITO, fontSize: 15, fontWeight: 500, color: "#5B7FE8", marginBottom: 28 }}>
               Let's set up your first child's profile.
             </p>
             <button
               onClick={() => setShowSetup(true)}
-              className="mt-6 rounded-xl bg-primary px-8 py-4 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+              onMouseEnter={(e) => {
+                e.currentTarget.style.opacity = "0.9";
+                e.currentTarget.style.transform = "translateY(-1px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.opacity = "1";
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
+              style={{
+                fontFamily: NUNITO,
+                background: "linear-gradient(135deg, #5B7FE8, #7B6FD0)",
+                border: "none",
+                borderRadius: 14,
+                padding: "14px 32px",
+                fontSize: 15,
+                fontWeight: 800,
+                color: "#ffffff",
+                cursor: "pointer",
+                boxShadow: "0 4px 16px rgba(91,127,232,0.3)",
+                transition: "all 200ms ease",
+              }}
             >
               Get started
             </button>
@@ -149,223 +202,347 @@ const Index = () => {
     );
   }
 
-  return (
-    <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center px-6 py-12" style={{ backgroundColor: '#FAFAF8' }}>
-      <div className="w-full max-w-2xl">
-        <h1
-          style={{
-            fontFamily: 'var(--font-heading)',
-            fontSize: '24px',
-            fontWeight: 500,
-            color: '#1D9E75',
-            textAlign: 'center',
-            marginBottom: '6px',
-          }}
-        >
-          Who's learning today?
-        </h1>
-        <p
-          style={{
-            fontSize: '13px',
-            color: '#0F6E56',
-            textAlign: 'center',
-            marginBottom: '28px',
-          }}
-        >
-          Tap your name to get started
-        </p>
+  const quote = getDailyQuote();
 
-        <div className="flex flex-row flex-wrap justify-center items-start gap-3">
-          {profiles.map((profile, i) => (
-            <div key={i} className="relative" style={{ width: '120px', minHeight: editingIndex === i ? 'auto' : '140px', flexShrink: 0 }}>
-              <button
-                onClick={() => handleSelectProfile(profile, i)}
-                className="flex flex-col items-center gap-2"
-                style={{
-                  width: '120px',
-                  minHeight: editingIndex === i ? 'auto' : '140px',
-                  flexShrink: 0,
-                  backgroundColor: '#ffffff',
-                  border: '1.5px solid #1D9E75',
-                  borderRadius: '16px',
-                  padding: '20px 12px',
-                  cursor: 'pointer',
-                  transition: '150ms ease',
-                  boxSizing: 'border-box',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = '#0F6E56';
-                  if (editingIndex !== i) e.currentTarget.style.transform = 'scale(1.02)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = '#1D9E75';
-                  e.currentTarget.style.transform = 'scale(1)';
-                }}
-              >
-                {/* Avatar placeholder — replace with illustrated character when design is finalised. */}
+  return (
+    <>
+      <style>{`
+        @keyframes profileArrive {
+          from { opacity: 0; transform: scale(0.7) translateY(20px); }
+          to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .profile-card-anim {
+          opacity: 0;
+          animation: profileArrive 400ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        .profile-card-anim:hover .profile-edit-icon { opacity: 1; }
+        .profile-card-anim:hover {
+          border-color: rgba(91,127,232,0.5) !important;
+          transform: scale(1.04) translateY(-2px);
+          box-shadow: 0 8px 24px rgba(91,127,232,0.15);
+        }
+        .add-child-card:hover {
+          background: rgba(232,239,254,0.8) !important;
+          border-color: rgba(91,127,232,0.5) !important;
+        }
+      `}</style>
+      <div
+        className="flex flex-col items-center px-7"
+        style={{
+          background: PAGE_BG,
+          minHeight: "calc(100vh - 3.5rem)",
+          fontFamily: NUNITO,
+          padding: "40px 28px 32px",
+        }}
+      >
+        <div className="w-full max-w-3xl">
+          <h1
+            style={{
+              fontFamily: NUNITO,
+              fontSize: 28,
+              fontWeight: 800,
+              color: "#1A1A2E",
+              textAlign: "center",
+              letterSpacing: "-0.02em",
+              marginBottom: 6,
+            }}
+          >
+            Who's learning today? 👋
+          </h1>
+          <p
+            style={{
+              fontFamily: NUNITO,
+              fontSize: 14,
+              fontWeight: 500,
+              color: "#5B7FE8",
+              textAlign: "center",
+              marginBottom: 32,
+            }}
+          >
+            Tap your name to get started
+          </p>
+
+          <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap", marginBottom: 32 }}>
+            {profiles.map((profile, i) => {
+              const gradient = AVATAR_GRADIENTS[i % AVATAR_GRADIENTS.length];
+              const pill = PILL_STYLES[i % PILL_STYLES.length];
+              const isEditing = editingIndex === i;
+              return (
                 <div
-                  className="flex items-center justify-center"
+                  key={profile.id ?? i}
+                  className="profile-card-anim"
+                  onClick={() => !isEditing && handleSelectProfile(profile, i)}
                   style={{
-                    width: '52px',
-                    height: '52px',
-                    borderRadius: '50%',
-                    backgroundColor: '#E1F5EE',
-                    border: '1.5px solid #1D9E75',
-                    fontSize: '20px',
-                    fontWeight: 500,
-                    color: '#0F6E56',
+                    background: "rgba(255,255,255,0.85)",
+                    border: "1.5px solid rgba(91,127,232,0.25)",
+                    borderRadius: 20,
+                    padding: "22px 14px",
+                    width: 130,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 10,
+                    cursor: "pointer",
+                    position: "relative",
+                    backdropFilter: "blur(4px)",
+                    WebkitBackdropFilter: "blur(4px)",
+                    transition: "all 200ms ease",
+                    animationDelay: `${i * 100}ms`,
+                    fontFamily: NUNITO,
                   }}
                 >
-                  {(editingIndex === i ? editName : profile.name).charAt(0).toUpperCase()}
-                </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (isEditing) handleCancelEdit();
+                      else handleStartEdit(e, i);
+                    }}
+                    className="profile-edit-icon"
+                    title={isEditing ? "Close" : "Edit"}
+                    style={{
+                      position: "absolute",
+                      top: 10,
+                      right: 10,
+                      fontSize: 12,
+                      color: "#7B6FD0",
+                      opacity: isEditing ? 1 : 0,
+                      transition: "opacity 200ms",
+                      background: "transparent",
+                      border: "none",
+                      cursor: "pointer",
+                      fontFamily: NUNITO,
+                      fontWeight: 700,
+                    }}
+                  >
+                    {isEditing ? "✕" : "✎"}
+                  </button>
 
-                <div className="text-center w-full">
-                  {editingIndex === i ? (
-                    <div className="flex flex-col items-center gap-2 w-full" onClick={(e) => e.stopPropagation()}>
+                  <div
+                    style={{
+                      width: 56,
+                      height: 56,
+                      borderRadius: "50%",
+                      background: gradient,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontFamily: NUNITO,
+                      fontSize: 22,
+                      fontWeight: 800,
+                      color: "#ffffff",
+                    }}
+                  >
+                    {(isEditing ? editName : profile.name).charAt(0).toUpperCase()}
+                  </div>
+
+                  {isEditing ? (
+                    <div
+                      onClick={(e) => e.stopPropagation()}
+                      style={{ display: "flex", flexDirection: "column", gap: 6, width: "100%" }}
+                    >
                       <input
                         type="text"
                         value={editName}
+                        autoFocus
                         onChange={(e) => setEditName(e.target.value)}
                         onKeyDown={(e) => {
                           if (e.key === "Enter") handleSaveEdit();
                           if (e.key === "Escape") handleCancelEdit();
                         }}
-                        autoFocus
-                        style={{ width: '100%', boxSizing: 'border-box', fontSize: '12px', padding: '4px 6px', border: '1px solid #9FE1CB', borderRadius: '6px', textAlign: 'center', color: '#0F6E56', outline: 'none' }}
+                        style={{
+                          fontFamily: NUNITO,
+                          fontSize: 12,
+                          padding: "5px 8px",
+                          border: "1px solid rgba(91,127,232,0.3)",
+                          borderRadius: 8,
+                          textAlign: "center",
+                          color: "#1A1A2E",
+                          outline: "none",
+                          background: "#fff",
+                        }}
                       />
                       <select
                         value={editYear}
                         onChange={(e) => setEditYear(Number(e.target.value))}
-                        style={{ width: '100%', boxSizing: 'border-box', fontSize: '12px', padding: '4px 6px', border: '1px solid #9FE1CB', borderRadius: '6px', textAlign: 'center', color: '#0F6E56', backgroundColor: '#ffffff', outline: 'none' }}
+                        style={{
+                          fontFamily: NUNITO,
+                          fontSize: 12,
+                          padding: "5px 8px",
+                          border: "1px solid rgba(91,127,232,0.3)",
+                          borderRadius: 8,
+                          textAlign: "center",
+                          color: "#1A1A2E",
+                          background: "#fff",
+                          outline: "none",
+                        }}
                       >
                         {YEAR_LEVELS.map((yr) => (
-                          <option key={yr.value} value={yr.value}>{yr.label}</option>
+                          <option key={yr.value} value={yr.value}>
+                            {yr.label}
+                          </option>
                         ))}
                       </select>
-                      <div className="flex flex-col gap-1 w-full">
-                        <button
-                          onClick={handleSaveEdit}
-                          style={{ width: '100%', backgroundColor: '#1D9E75', color: '#ffffff', border: 'none', borderRadius: '8px', padding: '4px 8px', fontSize: '11px', fontWeight: 500, cursor: 'pointer' }}
-                          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#0F6E56'; }}
-                          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#1D9E75'; }}
-                        >
-                          Save
-                        </button>
-                      </div>
-
+                      <button
+                        onClick={handleSaveEdit}
+                        style={{
+                          fontFamily: NUNITO,
+                          background: "linear-gradient(135deg, #5B7FE8, #7B6FD0)",
+                          color: "#fff",
+                          border: "none",
+                          borderRadius: 8,
+                          padding: "5px 8px",
+                          fontSize: 11,
+                          fontWeight: 700,
+                          cursor: "pointer",
+                        }}
+                      >
+                        Save
+                      </button>
                     </div>
                   ) : (
                     <>
-                      <p style={{ fontSize: '14px', fontWeight: 500, color: '#1D9E75', fontFamily: 'var(--font-heading)' }}>
+                      <p
+                        style={{
+                          fontFamily: NUNITO,
+                          fontSize: 15,
+                          fontWeight: 700,
+                          color: "#1A1A2E",
+                          margin: 0,
+                          textAlign: "center",
+                        }}
+                      >
                         {profile.name}
                       </p>
                       <span
                         style={{
-                          display: 'inline-block',
-                          backgroundColor: '#E1F5EE',
-                          border: '1px solid #9FE1CB',
-                          borderRadius: '99px',
-                          padding: '2px 8px',
-                          fontSize: '11px',
-                          color: '#0F6E56',
-                          marginTop: '4px',
+                          fontFamily: NUNITO,
+                          fontSize: 10,
+                          fontWeight: 700,
+                          borderRadius: 99,
+                          padding: "3px 10px",
+                          background: pill.bg,
+                          color: pill.color,
+                          border: `1px solid ${pill.border}`,
                         }}
                       >
-                        Year {profile.yearLevel}
+                        {profile.yearLevel === 0 ? "Kindy" : `Year ${profile.yearLevel}`}
                       </span>
                     </>
                   )}
                 </div>
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (editingIndex === i) handleCancelEdit();
-                  else handleStartEdit(e, i);
-                }}
-                className="absolute top-2 right-2 rounded-full p-1 text-muted-foreground/50 hover:text-foreground hover:bg-muted transition-colors"
-                title={editingIndex === i ? "Close" : "Edit name"}
-              >
-                {editingIndex === i ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M18 6 6 18" />
-                    <path d="m6 6 12 12" />
-                  </svg>
-                ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                    <path d="m15 5 4 4" />
-                  </svg>
-                )}
-              </button>
-            </div>
-          ))}
-          <button
-            onClick={() => setShowSetup(true)}
-            className="flex flex-col items-center justify-center gap-2"
-            style={{
-              width: '120px',
-              minHeight: '140px',
-              flexShrink: 0,
-              backgroundColor: '#F5F5F5',
-              border: '1.5px dashed #9FE1CB',
-              borderRadius: '16px',
-              padding: '20px 12px',
-              cursor: 'pointer',
-              transition: '150ms ease',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#E1F5EE';
-              e.currentTarget.style.borderColor = '#1D9E75';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#F5F5F5';
-              e.currentTarget.style.borderColor = '#9FE1CB';
-            }}
-          >
+              );
+            })}
+
             <div
-              className="flex items-center justify-center"
+              className="add-child-card profile-card-anim"
+              onClick={() => setShowSetup(true)}
               style={{
-                width: '48px',
-                height: '48px',
-                borderRadius: '50%',
-                backgroundColor: '#E1F5EE',
-                border: '1.5px solid #9FE1CB',
-                fontSize: '22px',
-                color: '#1D9E75',
+                background: "rgba(255,255,255,0.5)",
+                border: "2px dashed rgba(91,127,232,0.3)",
+                borderRadius: 20,
+                padding: "22px 14px",
+                width: 130,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 10,
+                cursor: "pointer",
+                transition: "all 200ms ease",
+                animationDelay: `${profiles.length * 100}ms`,
+                fontFamily: NUNITO,
               }}
             >
-              +
+              <div
+                style={{
+                  width: 56,
+                  height: 56,
+                  borderRadius: "50%",
+                  background: "rgba(232,239,254,0.8)",
+                  border: "2px dashed rgba(91,127,232,0.4)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 26,
+                  color: "#5B7FE8",
+                  fontFamily: NUNITO,
+                  fontWeight: 700,
+                }}
+              >
+                +
+              </div>
+              <span
+                style={{
+                  fontFamily: NUNITO,
+                  fontSize: 12,
+                  fontWeight: 700,
+                  color: "#5B7FE8",
+                  textAlign: "center",
+                }}
+              >
+                + Add a child
+              </span>
             </div>
-            <span style={{ fontSize: '13px', fontWeight: 500, color: '#1D9E75', textAlign: 'center' }}>
-              + Add a child
-            </span>
-          </button>
-        </div>
+          </div>
 
-        <div style={{ marginTop: '24px', marginLeft: 'auto', marginRight: 'auto', maxWidth: '480px', textAlign: 'center' }}>
-          {(() => {
-            const q = getDailyQuote();
-            return (
-              <>
-                <p style={{ fontSize: '14px', fontStyle: 'italic', color: 'var(--color-text-secondary)', lineHeight: 1.6 }}>
-                  {q.text}
-                </p>
-                <p style={{ fontSize: '12px', fontStyle: 'italic', fontWeight: 500, color: 'var(--color-text-secondary)', textAlign: 'center', marginTop: '6px' }}>
-                  {q.author}
-                </p>
-              </>
-            );
-          })()}
-        </div>
+          <div
+            style={{
+              background: "rgba(255,255,255,0.6)",
+              border: "1px solid rgba(91,127,232,0.15)",
+              borderRadius: 16,
+              padding: "16px 24px",
+              textAlign: "center",
+              maxWidth: 440,
+              margin: "0 auto 20px",
+              backdropFilter: "blur(4px)",
+              WebkitBackdropFilter: "blur(4px)",
+            }}
+          >
+            <p
+              style={{
+                fontFamily: NUNITO,
+                fontSize: 14,
+                fontStyle: "italic",
+                color: "#3A3A5C",
+                lineHeight: 1.6,
+                fontWeight: 500,
+                margin: 0,
+              }}
+            >
+              {quote.text}
+            </p>
+            <p
+              style={{
+                fontFamily: NUNITO,
+                fontSize: 11,
+                fontWeight: 800,
+                color: "#5B7FE8",
+                marginTop: 6,
+                letterSpacing: "0.02em",
+                marginBottom: 0,
+              }}
+            >
+              {quote.author}
+            </p>
+          </div>
 
-        <div className="mt-8 text-center">
-          <Link to="/parent" style={{ fontSize: '12px', color: '#1D9E75', textAlign: 'center' }}>
-            Parent Guide →
-          </Link>
+          <div style={{ textAlign: "center" }}>
+            <Link
+              to="/parent"
+              style={{
+                fontFamily: NUNITO,
+                fontSize: 12,
+                fontWeight: 600,
+                color: "#7B6FD0",
+                opacity: 0.8,
+                textDecoration: "none",
+              }}
+            >
+              Are you a parent? Parent Guide →
+            </Link>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
