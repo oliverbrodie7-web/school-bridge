@@ -196,16 +196,16 @@ const Index = () => {
           Tap your name to get started
         </p>
 
-        <div className="flex flex-row flex-wrap justify-center items-start gap-3">
+        <div className="flex flex-row flex-wrap justify-center items-start gap-2">
           {profiles.map((profile, i) => {
             const avatarColour = AVATAR_PALETTE[i % AVATAR_PALETTE.length];
             return (
-            <div key={i} className="relative" style={{ width: '120px', minHeight: editingIndex === i ? 'auto' : '140px', flexShrink: 0 }}>
+            <div key={i} className="relative" style={{ width: '110px', minHeight: editingIndex === i ? 'auto' : '140px', flexShrink: 0 }}>
               <button
                 onClick={() => handleSelectProfile(profile, i)}
                 className="flex flex-col items-center gap-2 home-card-anim"
                 style={{
-                  width: '120px',
+                  width: '110px',
                   minHeight: editingIndex === i ? 'auto' : '140px',
                   flexShrink: 0,
                   backgroundColor: '#ffffff',
@@ -323,7 +323,7 @@ const Index = () => {
             onClick={() => setShowSetup(true)}
             className="flex flex-col items-center justify-center gap-2 home-card-anim"
             style={{
-              width: '120px',
+              width: '110px',
               minHeight: '140px',
               flexShrink: 0,
               backgroundColor: '#ffffff',
