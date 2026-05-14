@@ -386,7 +386,8 @@ const ExampleCard = ({
       {step >= 4 && (
         <>
           <Divider />
-          <div className="animate-fade-in text-center">
+          <RevealStep>
+          <div className="text-center">
             <p
               style={{
                 fontSize: 22,
