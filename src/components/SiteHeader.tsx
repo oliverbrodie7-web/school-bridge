@@ -15,13 +15,21 @@ const SiteHeader = () => {
     strategy = "halvesQuartersEighths";
   }
 
+  const isHome = pathname === "/";
+
   return (
-    <header className="sticky top-0 z-50 w-full bg-white" style={{ borderBottom: '1px solid #E1F5EE' }}>
+    <header
+      className="sticky top-0 z-50 w-full"
+      style={{
+        backgroundColor: isHome ? '#FFF8EC' : '#ffffff',
+        borderBottom: isHome ? '1px solid rgba(0,0,0,0.06)' : '1px solid #E1F5EE',
+      }}
+    >
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6">
         <Link
           to="/"
           className="text-xl font-bold tracking-tight"
-          style={{ fontFamily: "var(--font-heading)", color: "#1D9E75" }}
+          style={{ fontFamily: "var(--font-heading)", color: isHome ? "#1A1A1A" : "#1D9E75" }}
         >
           [Site Name]
         </Link>
