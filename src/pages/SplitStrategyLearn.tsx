@@ -479,6 +479,7 @@ const ExampleCard = ({
             </div>
           </div>
           </RevealStep>
+          </div>
 
           {showFinalCta && (
             <div className="mt-4 text-center animate-fade-in">
