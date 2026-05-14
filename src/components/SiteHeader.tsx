@@ -16,7 +16,7 @@ const SiteHeader = () => {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white" style={{ borderBottom: '1px solid #E1F5EE' }}>
+    <header className="sticky top-0 z-50 w-full" style={{ backgroundColor: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6">
         <Link
           to="/"
