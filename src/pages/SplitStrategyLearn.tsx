@@ -249,7 +249,7 @@ const ExampleCard = ({
       </p>
 
       {/* STEP 1 */}
-      <div style={{ opacity: opacityFor(1), transition: "opacity 300ms" }}>
+      <div style={{ opacity: opacityFor(1), transition: "opacity 400ms ease-in-out" }}>
         <p className="mt-6 text-center text-base font-semibold text-foreground">
           Step 1: Split the numbers
         </p>
