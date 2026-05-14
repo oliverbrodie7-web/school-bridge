@@ -153,7 +153,7 @@ const Divider = () => {
  * Wraps a newly revealed step. Mounts hidden, then fades + slides up after a delay.
  */
 const RevealStep = ({
-  delay = 200,
+  delay = 350,
   children,
 }: {
   delay?: number;
@@ -206,11 +206,11 @@ const ExampleCard = ({
 
   useEffect(() => {
     if (step === 2) {
-      const t = setTimeout(() => setTensRevealed(true), 1000);
+      const t = setTimeout(() => setTensRevealed(true), 600);
       return () => clearTimeout(t);
     }
     if (step === 3) {
-      const t = setTimeout(() => setOnesRevealed(true), 1000);
+      const t = setTimeout(() => setOnesRevealed(true), 600);
       return () => clearTimeout(t);
     }
     if (step === 4) {
@@ -334,15 +334,32 @@ const ExampleCard = ({
                 <span className="text-2xl font-bold text-muted-foreground">+</span>
                 <Block value={oT} color={BLUE} size="small" />
                 <span className="text-2xl font-bold text-muted-foreground">=</span>
-                <span className="text-2xl font-bold" style={{ color: "#1A2E1A", minWidth: 40 }}>
-                  {tensRevealed ? tSum : "?"}
-                </span>
+                <div
+                  style={{
+                    minHeight: "40px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    transition: "opacity 300ms ease-out",
+                    opacity: tensRevealed ? 1 : 0,
+                  }}
+                >
+                  <span className="text-2xl font-bold" style={{ color: "#1A2E1A", minWidth: 40 }}>
+                    {tSum}
+                  </span>
+                </div>
               </div>
-              {tensRevealed && (
+              <div
+                style={{
+                  minHeight: "36px",
+                  transition: "opacity 300ms ease-out",
+                  opacity: tensRevealed ? 1 : 0,
+                }}
+              >
                 <Callout>
                   The tens: {bT} + {oT} = {tSum}
                 </Callout>
-              )}
+              </div>
             </RevealStep>
           </div>
           {step === 2 && tensRevealed && (
@@ -365,15 +382,32 @@ const ExampleCard = ({
                 <span className="text-2xl font-bold text-muted-foreground">+</span>
                 <Block value={oO} color={ORANGE} size="small" />
                 <span className="text-2xl font-bold text-muted-foreground">=</span>
-                <span className="text-2xl font-bold" style={{ color: "#1A2E1A", minWidth: 40 }}>
-                  {onesRevealed ? oSum : "?"}
-                </span>
+                <div
+                  style={{
+                    minHeight: "40px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    transition: "opacity 300ms ease-out",
+                    opacity: onesRevealed ? 1 : 0,
+                  }}
+                >
+                  <span className="text-2xl font-bold" style={{ color: "#1A2E1A", minWidth: 40 }}>
+                    {oSum}
+                  </span>
+                </div>
               </div>
-              {onesRevealed && (
+              <div
+                style={{
+                  minHeight: "36px",
+                  transition: "opacity 300ms ease-out",
+                  opacity: onesRevealed ? 1 : 0,
+                }}
+              >
                 <Callout>
                   The ones: {bO} + {oO} = {oSum}
                 </Callout>
-              )}
+              </div>
             </RevealStep>
           </div>
           {step === 3 && onesRevealed && (
@@ -386,6 +420,13 @@ const ExampleCard = ({
       {step >= 4 && (
         <>
           <Divider />
+          <div
+            style={{
+              opacity: step >= 4 ? 1 : 0,
+              transition: "opacity 400ms ease-in-out",
+              transitionDelay: step === 4 ? "300ms" : "0ms",
+            }}
+          >
           <RevealStep>
           <div className="text-center">
             <p
@@ -438,6 +479,7 @@ const ExampleCard = ({
             </div>
           </div>
           </RevealStep>
+          </div>
 
           {showFinalCta && (
             <div className="mt-4 text-center animate-fade-in">
