@@ -369,7 +369,7 @@ const QuestionCard = ({
         )}
       </div>
 
-      {/* Step 2 — Tens row with blocks */}
+      {/* Step 2 — Tens row with input */}
       {showStep2 && (
         <div className="mt-8 animate-fade-in">
           <p className="text-center text-lg font-semibold text-muted-foreground mb-3">
@@ -380,12 +380,79 @@ const QuestionCard = ({
             <span className="text-2xl font-bold text-muted-foreground">+</span>
             <Block value={sT} color={BLUE} size="small" />
             <span className="text-2xl font-bold text-muted-foreground">=</span>
-            <span className="text-2xl font-bold text-foreground">{tSum}</span>
+            {phase === "tensInput" ? (
+              <input
+                type="number"
+                inputMode="numeric"
+                value={tensSumInput}
+                onChange={(e) => setTensSumInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && tensSumInput && handleCheckTensSum()}
+                autoFocus
+                style={{
+                  width: 64,
+                  height: 44,
+                  border: `2px solid ${tensSumFlash ? "#E24B4A" : "#1D9E75"}`,
+                  borderRadius: 10,
+                  fontSize: 20,
+                  fontWeight: 500,
+                  color: "#1D9E75",
+                  textAlign: "center",
+                  background: "white",
+                  outline: "none",
+                }}
+              />
+            ) : (
+              <div className="flex items-center gap-2">
+                <div
+                  style={{
+                    width: 64,
+                    height: 44,
+                    border: "2px solid #1D9E75",
+                    borderRadius: 10,
+                    fontSize: 20,
+                    fontWeight: 500,
+                    color: "#1D9E75",
+                    textAlign: "center",
+                    background: "#E1F5EE",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {tSum}
+                </div>
+                <span style={{ color: "#1D9E75", fontSize: 20, fontWeight: 700 }} aria-label="correct">✓</span>
+              </div>
+            )}
           </div>
+          {phase === "tensInput" && (
+            <div className="mt-3 text-center space-y-2">
+              {tensSumHint && (
+                <p className="text-sm font-medium text-muted-foreground animate-fade-in">{tensSumHint}</p>
+              )}
+              <button
+                onClick={handleCheckTensSum}
+                disabled={!tensSumInput}
+                className="rounded-xl bg-primary px-5 py-2.5 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Check
+              </button>
+            </div>
+          )}
+          {phase === "tensCorrect" && (
+            <div className="mt-4 text-center animate-fade-in">
+              <button
+                onClick={() => setPhase("onesInput")}
+                className="rounded-xl bg-primary px-6 py-3 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+              >
+                Next Step
+              </button>
+            </div>
+          )}
         </div>
       )}
 
-      {/* Step 3 — Ones row with blocks */}
+      {/* Step 3 — Ones row with input */}
       {showStep3 && (
         <div className="mt-6 animate-fade-in">
           <p className="text-center text-lg font-semibold text-muted-foreground mb-3">
@@ -396,8 +463,75 @@ const QuestionCard = ({
             <span className="text-2xl font-bold text-muted-foreground">+</span>
             <Block value={sO} color={ORANGE} size="small" />
             <span className="text-2xl font-bold text-muted-foreground">=</span>
-            <span className="text-2xl font-bold text-foreground">{oSum}</span>
+            {phase === "onesInput" ? (
+              <input
+                type="number"
+                inputMode="numeric"
+                value={onesSumInput}
+                onChange={(e) => setOnesSumInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && onesSumInput && handleCheckOnesSum()}
+                autoFocus
+                style={{
+                  width: 64,
+                  height: 44,
+                  border: `2px solid ${onesSumFlash ? "#E24B4A" : "#E8934A"}`,
+                  borderRadius: 10,
+                  fontSize: 20,
+                  fontWeight: 500,
+                  color: "#E8934A",
+                  textAlign: "center",
+                  background: "white",
+                  outline: "none",
+                }}
+              />
+            ) : (
+              <div className="flex items-center gap-2">
+                <div
+                  style={{
+                    width: 64,
+                    height: 44,
+                    border: "2px solid #E8934A",
+                    borderRadius: 10,
+                    fontSize: 20,
+                    fontWeight: 500,
+                    color: "#E8934A",
+                    textAlign: "center",
+                    background: "#FEF3E2",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {oSum}
+                </div>
+                <span style={{ color: "#E8934A", fontSize: 20, fontWeight: 700 }} aria-label="correct">✓</span>
+              </div>
+            )}
           </div>
+          {phase === "onesInput" && (
+            <div className="mt-3 text-center space-y-2">
+              {onesSumHint && (
+                <p className="text-sm font-medium text-muted-foreground animate-fade-in">{onesSumHint}</p>
+              )}
+              <button
+                onClick={handleCheckOnesSum}
+                disabled={!onesSumInput}
+                className="rounded-xl bg-primary px-5 py-2.5 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Check
+              </button>
+            </div>
+          )}
+          {phase === "onesCorrect" && (
+            <div className="mt-4 text-center animate-fade-in">
+              <button
+                onClick={() => setPhase("combine")}
+                className="rounded-xl bg-primary px-6 py-3 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+              >
+                Next Step
+              </button>
+            </div>
+          )}
         </div>
       )}
 
