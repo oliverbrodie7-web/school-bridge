@@ -169,8 +169,14 @@ const Index = () => {
           transition: transform 100ms ease !important;
         }
       `}</style>
-      <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center px-6 py-12" style={{ backgroundColor: '#FAFAF8', fontFamily: "'Nunito', sans-serif" }}>
-      <div className="w-full max-w-2xl">
+      <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center px-6 py-12" style={{ backgroundColor: '#FFFFFF', fontFamily: "'Nunito', sans-serif", position: 'relative' }}>
+        {/* Pastel background blocks */}
+        <div style={{ position: 'absolute', top: 12, left: 12, width: '44%', height: '42%', backgroundColor: '#B2DFDB', borderRadius: 14, zIndex: 0 }} />
+        <div style={{ position: 'absolute', top: 12, right: 12, width: '36%', height: '50%', backgroundColor: '#FFF9C4', borderRadius: 14, zIndex: 0 }} />
+        <div style={{ position: 'absolute', top: '52%', left: 12, width: '32%', height: '36%', backgroundColor: '#FFCDD2', borderRadius: 14, zIndex: 0 }} />
+        <div style={{ position: 'absolute', top: '40%', right: 12, width: '46%', height: '34%', backgroundColor: '#BBDEFB', borderRadius: 14, zIndex: 0 }} />
+        <div style={{ position: 'absolute', top: '22%', left: '40%', width: '22%', height: '22%', backgroundColor: '#B2DFDB', borderRadius: 14, zIndex: 0, opacity: 0.5 }} />
+      <div className="w-full max-w-2xl" style={{ position: 'relative', zIndex: 1 }}>
         <h1
           style={{
             fontFamily: 'var(--font-heading)',
