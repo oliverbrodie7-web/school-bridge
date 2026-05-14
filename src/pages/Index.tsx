@@ -10,7 +10,7 @@ import {
 
 const PALETTE = ["#4A90D9", "#E8934A", "#6BBF8A", "#D96A6A", "#9B6BBF", "#4ABFBF"];
 
-const AVATAR_PALETTE = ["#F4A261", "#2EC4B6", "#4A90D9", "#9B6BBF", "#6BBF8A", "#E8C45B"];
+const AVATAR_PALETTE = ["#F4A261", "#4A90D9", "#9B6BBF", "#6BBF8A", "#E8C45B", "#E87B5B"];
 
 const QUOTES = [
   { text: "The more that you read, the more things you will know. The more that you learn, the more places you'll go.", author: "Dr. Seuss" },
@@ -196,16 +196,16 @@ const Index = () => {
           Tap your name to get started
         </p>
 
-        <div className="flex flex-row flex-wrap justify-center items-start gap-3">
+        <div className="flex flex-row flex-wrap justify-center items-start gap-2">
           {profiles.map((profile, i) => {
             const avatarColour = AVATAR_PALETTE[i % AVATAR_PALETTE.length];
             return (
-            <div key={i} className="relative" style={{ width: '120px', minHeight: editingIndex === i ? 'auto' : '140px', flexShrink: 0 }}>
+            <div key={i} className="relative" style={{ width: '110px', minHeight: editingIndex === i ? 'auto' : '140px', flexShrink: 0 }}>
               <button
                 onClick={() => handleSelectProfile(profile, i)}
                 className="flex flex-col items-center gap-2 home-card-anim"
                 style={{
-                  width: '120px',
+                  width: '110px',
                   minHeight: editingIndex === i ? 'auto' : '140px',
                   flexShrink: 0,
                   backgroundColor: '#ffffff',
@@ -323,7 +323,7 @@ const Index = () => {
             onClick={() => setShowSetup(true)}
             className="flex flex-col items-center justify-center gap-2 home-card-anim"
             style={{
-              width: '120px',
+              width: '110px',
               minHeight: '140px',
               flexShrink: 0,
               backgroundColor: '#ffffff',
