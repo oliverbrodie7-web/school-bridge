@@ -121,7 +121,7 @@ const Index = () => {
 
   if (showSetup || !hasProfiles) {
     return (
-      <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center px-6" style={{ backgroundColor: '#FAFAF8', fontFamily: "'Nunito', sans-serif" }}>
+      <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center px-6" style={{ backgroundColor: '#FFF8EC', fontFamily: "'Nunito', sans-serif" }}>
         {!hasProfiles && !showSetup ? (
           <div className="text-center space-y-4">
             <h1
