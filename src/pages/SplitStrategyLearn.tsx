@@ -206,16 +206,16 @@ const ExampleCard = ({
 
   useEffect(() => {
     if (step === 2) {
-      const t = setTimeout(() => setTensRevealed(true), 800);
+      const t = setTimeout(() => setTensRevealed(true), 1000);
       return () => clearTimeout(t);
     }
     if (step === 3) {
-      const t = setTimeout(() => setOnesRevealed(true), 800);
+      const t = setTimeout(() => setOnesRevealed(true), 1000);
       return () => clearTimeout(t);
     }
     if (step === 4) {
-      const t1 = setTimeout(() => setShowFinalAnswer(true), 100);
-      const t2 = setTimeout(() => setShowFinalCta(true), 1100);
+      const t1 = setTimeout(() => setShowFinalAnswer(true), 400);
+      const t2 = setTimeout(() => setShowFinalCta(true), 1400);
       return () => {
         clearTimeout(t1);
         clearTimeout(t2);
