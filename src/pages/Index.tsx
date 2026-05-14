@@ -171,14 +171,14 @@ const Index = () => {
           transition: transform 100ms ease !important;
         }
       `}</style>
-      <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center px-6 py-12" style={{ backgroundColor: '#FAFAF8', fontFamily: "'Nunito', sans-serif" }}>
+      <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center px-6 py-12" style={{ backgroundColor: '#FFF8EC', fontFamily: "'Nunito', sans-serif" }}>
       <div className="w-full max-w-2xl">
         <h1
           style={{
             fontFamily: 'var(--font-heading)',
             fontSize: '24px',
             fontWeight: 500,
-            color: '#1D9E75',
+            color: '#1A1A1A',
             textAlign: 'center',
             marginBottom: '6px',
           }}
@@ -188,7 +188,7 @@ const Index = () => {
         <p
           style={{
             fontSize: '13px',
-            color: '#0F6E56',
+            color: '#666666',
             textAlign: 'center',
             marginBottom: '28px',
           }}
@@ -197,7 +197,9 @@ const Index = () => {
         </p>
 
         <div className="flex flex-row flex-wrap justify-center items-start gap-3">
-          {profiles.map((profile, i) => (
+          {profiles.map((profile, i) => {
+            const avatarColour = AVATAR_PALETTE[i % AVATAR_PALETTE.length];
+            return (
             <div key={i} className="relative" style={{ width: '120px', minHeight: editingIndex === i ? 'auto' : '140px', flexShrink: 0 }}>
               <button
                 onClick={() => handleSelectProfile(profile, i)}
@@ -207,21 +209,14 @@ const Index = () => {
                   minHeight: editingIndex === i ? 'auto' : '140px',
                   flexShrink: 0,
                   backgroundColor: '#ffffff',
-                  border: '1.5px solid #1D9E75',
+                  border: '1.5px solid #E8E0D4',
                   borderRadius: '16px',
                   padding: '20px 12px',
                   cursor: 'pointer',
                   transition: 'transform 200ms ease, box-shadow 200ms ease',
+                  boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
                   boxSizing: 'border-box',
                   animationDelay: `${Math.min(i, 2) * 120}ms`,
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = '#0F6E56';
-                  if (editingIndex !== i) e.currentTarget.style.transform = 'scale(1.02)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = '#1D9E75';
-                  e.currentTarget.style.transform = 'scale(1)';
                 }}
               >
                 {/* Avatar placeholder — replace with illustrated character when design is finalised. */}
@@ -231,11 +226,12 @@ const Index = () => {
                     width: '52px',
                     height: '52px',
                     borderRadius: '50%',
-                    backgroundColor: '#E1F5EE',
-                    border: '1.5px solid #1D9E75',
+                    backgroundColor: avatarColour,
+                    border: 'none',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
                     fontSize: '20px',
-                    fontWeight: 500,
-                    color: '#0F6E56',
+                    fontWeight: 800,
+                    color: '#ffffff',
                   }}
                 >
                   {(editingIndex === i ? editName : profile.name).charAt(0).toUpperCase()}
@@ -278,18 +274,18 @@ const Index = () => {
                     </div>
                   ) : (
                     <>
-                      <p style={{ fontSize: '14px', fontWeight: 500, color: '#1D9E75', fontFamily: 'var(--font-heading)' }}>
+                      <p style={{ fontSize: '14px', fontWeight: 500, color: '#1A1A1A', fontFamily: 'var(--font-heading)' }}>
                         {profile.name}
                       </p>
                       <span
                         style={{
                           display: 'inline-block',
-                          backgroundColor: '#E1F5EE',
-                          border: '1px solid #9FE1CB',
+                          backgroundColor: '#F0EBE1',
+                          border: '1px solid #D4C9B8',
                           borderRadius: '99px',
                           padding: '2px 8px',
                           fontSize: '11px',
-                          color: '#0F6E56',
+                          color: '#888888',
                           marginTop: '4px',
                         }}
                       >
@@ -321,7 +317,8 @@ const Index = () => {
                 )}
               </button>
             </div>
-          ))}
+            );
+          })}
           <button
             onClick={() => setShowSetup(true)}
             className="flex flex-col items-center justify-center gap-2 home-card-anim"
@@ -329,21 +326,13 @@ const Index = () => {
               width: '120px',
               minHeight: '140px',
               flexShrink: 0,
-              backgroundColor: '#F5F5F5',
-              border: '1.5px dashed #9FE1CB',
+              backgroundColor: '#ffffff',
+              border: '2px dashed #D4C9B8',
               borderRadius: '16px',
               padding: '20px 12px',
               cursor: 'pointer',
               transition: 'transform 200ms ease, box-shadow 200ms ease',
               animationDelay: `${Math.min(profiles.length > 0 ? (profiles.length - 1) * 120 : 0, 240)}ms`,
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#E1F5EE';
-              e.currentTarget.style.borderColor = '#1D9E75';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#F5F5F5';
-              e.currentTarget.style.borderColor = '#9FE1CB';
             }}
           >
             <div
@@ -352,15 +341,15 @@ const Index = () => {
                 width: '48px',
                 height: '48px',
                 borderRadius: '50%',
-                backgroundColor: '#E1F5EE',
-                border: '1.5px solid #9FE1CB',
+                backgroundColor: '#FFF3E0',
+                border: '2px dashed #F4A261',
                 fontSize: '22px',
-                color: '#1D9E75',
+                color: '#F4A261',
               }}
             >
               +
             </div>
-            <span style={{ fontSize: '13px', fontWeight: 500, color: '#1D9E75', textAlign: 'center' }}>
+            <span style={{ fontSize: '13px', fontWeight: 500, color: '#AAAAAA', textAlign: 'center' }}>
               + Add a child
             </span>
           </button>
@@ -371,10 +360,10 @@ const Index = () => {
             const q = getDailyQuote();
             return (
               <>
-                <p style={{ fontSize: '14px', fontStyle: 'italic', color: 'var(--color-text-secondary)', lineHeight: 1.6 }}>
+                <p style={{ fontSize: '14px', fontStyle: 'italic', color: '#555555', lineHeight: 1.6 }}>
                   {q.text}
                 </p>
-                <p style={{ fontSize: '12px', fontStyle: 'italic', fontWeight: 500, color: 'var(--color-text-secondary)', textAlign: 'center', marginTop: '6px' }}>
+                <p style={{ fontSize: '12px', fontStyle: 'italic', fontWeight: 500, color: '#F4A261', textAlign: 'center', marginTop: '6px' }}>
                   {q.author}
                 </p>
               </>
@@ -383,7 +372,7 @@ const Index = () => {
         </div>
 
         <div className="mt-8 text-center">
-          <Link to="/parent" style={{ fontSize: '12px', color: '#1D9E75', textAlign: 'center' }}>
+          <Link to="/parent" style={{ fontSize: '12px', color: '#999999', textAlign: 'center' }}>
             Parent Guide →
           </Link>
         </div>
