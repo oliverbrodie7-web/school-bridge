@@ -53,8 +53,10 @@ type Phase =
   | "childInput"
   | "childWrong"
   | "childCorrect"
-  | "addTens"
-  | "addOnes"
+  | "tensInput"
+  | "tensCorrect"
+  | "onesInput"
+  | "onesCorrect"
   | "combine"
   | "done";
 
@@ -132,6 +134,16 @@ const QuestionCard = ({
   const [onesInput, setOnesInput] = useState("");
   const [hint, setHint] = useState("");
 
+  // Step 2 (add tens) input
+  const [tensSumInput, setTensSumInput] = useState("");
+  const [tensSumFlash, setTensSumFlash] = useState(false);
+  const [tensSumHint, setTensSumHint] = useState("");
+
+  // Step 3 (add ones) input
+  const [onesSumInput, setOnesSumInput] = useState("");
+  const [onesSumFlash, setOnesSumFlash] = useState(false);
+  const [onesSumHint, setOnesSumHint] = useState("");
+
   const bT = tens(q.big), bO = ones(q.big);
   const sT = tens(q.small), sO = ones(q.small);
   const tSum = bT + sT, oSum = bO + sO, total = q.big + q.small;
@@ -142,15 +154,7 @@ const QuestionCard = ({
       return () => clearTimeout(t);
     }
     if (phase === "childCorrect") {
-      const t = setTimeout(() => setPhase("addTens"), 800);
-      return () => clearTimeout(t);
-    }
-    if (phase === "addTens") {
-      const t = setTimeout(() => setPhase("addOnes"), 3500);
-      return () => clearTimeout(t);
-    }
-    if (phase === "addOnes") {
-      const t = setTimeout(() => setPhase("combine"), 3500);
+      const t = setTimeout(() => setPhase("tensInput"), 800);
       return () => clearTimeout(t);
     }
     if (phase === "combine") {
@@ -160,14 +164,19 @@ const QuestionCard = ({
   }, [phase]);
 
   const blueSplit = phase !== "autoSplit";
-  const orangeSplit = ["childCorrect", "addTens", "addOnes", "combine", "done"].includes(phase);
+  const orangeSplit = ![
+    "autoSplit",
+    "promptChild",
+    "childInput",
+    "childWrong",
+  ].includes(phase);
 
-  const tensGone = ["addTens", "addOnes", "combine", "done"].includes(phase);
-  const onesGone = ["addOnes", "combine", "done"].includes(phase);
-
-  const showStep2 = tensGone;
-  const showStep3 = onesGone;
+  const showStep2 = ["tensInput", "tensCorrect", "onesInput", "onesCorrect", "combine", "done"].includes(phase);
+  const showStep3 = ["onesInput", "onesCorrect", "combine", "done"].includes(phase);
   const showStep4 = ["combine", "done"].includes(phase);
+
+  const tensGone = ["onesInput", "onesCorrect", "combine", "done"].includes(phase);
+  const onesGone = ["combine", "done"].includes(phase);
 
   const handleCheck = () => {
     const tOk = Number(tensInput) === sT;
@@ -188,6 +197,34 @@ const QuestionCard = ({
     setTensInput("");
     setOnesInput("");
     setPhase("childInput");
+  };
+
+  const handleCheckTensSum = () => {
+    if (Number(tensSumInput) === tSum) {
+      setPhase("tensCorrect");
+      setTensSumHint("");
+    } else {
+      setTensSumFlash(true);
+      setTensSumHint(`Count the tens — ${bT}, ${tSum}. How many tens altogether?`);
+      setTimeout(() => {
+        setTensSumFlash(false);
+        setTensSumInput("");
+      }, 600);
+    }
+  };
+
+  const handleCheckOnesSum = () => {
+    if (Number(onesSumInput) === oSum) {
+      setPhase("onesCorrect");
+      setOnesSumHint("");
+    } else {
+      setOnesSumFlash(true);
+      setOnesSumHint(`Count the ones — ${bO} and ${sO} more. How many altogether?`);
+      setTimeout(() => {
+        setOnesSumFlash(false);
+        setOnesSumInput("");
+      }, 600);
+    }
   };
 
   return (
@@ -332,7 +369,7 @@ const QuestionCard = ({
         )}
       </div>
 
-      {/* Step 2 — Tens row with blocks */}
+      {/* Step 2 — Tens row with input */}
       {showStep2 && (
         <div className="mt-8 animate-fade-in">
           <p className="text-center text-lg font-semibold text-muted-foreground mb-3">
@@ -343,12 +380,79 @@ const QuestionCard = ({
             <span className="text-2xl font-bold text-muted-foreground">+</span>
             <Block value={sT} color={BLUE} size="small" />
             <span className="text-2xl font-bold text-muted-foreground">=</span>
-            <span className="text-2xl font-bold text-foreground">{tSum}</span>
+            {phase === "tensInput" ? (
+              <input
+                type="number"
+                inputMode="numeric"
+                value={tensSumInput}
+                onChange={(e) => setTensSumInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && tensSumInput && handleCheckTensSum()}
+                autoFocus
+                style={{
+                  width: 64,
+                  height: 44,
+                  border: `2px solid ${tensSumFlash ? "#E24B4A" : "#1D9E75"}`,
+                  borderRadius: 10,
+                  fontSize: 20,
+                  fontWeight: 500,
+                  color: "#1D9E75",
+                  textAlign: "center",
+                  background: "white",
+                  outline: "none",
+                }}
+              />
+            ) : (
+              <div className="flex items-center gap-2">
+                <div
+                  style={{
+                    width: 64,
+                    height: 44,
+                    border: "2px solid #1D9E75",
+                    borderRadius: 10,
+                    fontSize: 20,
+                    fontWeight: 500,
+                    color: "#1D9E75",
+                    textAlign: "center",
+                    background: "#E1F5EE",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {tSum}
+                </div>
+                <span style={{ color: "#1D9E75", fontSize: 20, fontWeight: 700 }} aria-label="correct">✓</span>
+              </div>
+            )}
           </div>
+          {phase === "tensInput" && (
+            <div className="mt-3 text-center space-y-2">
+              {tensSumHint && (
+                <p className="text-sm font-medium text-muted-foreground animate-fade-in">{tensSumHint}</p>
+              )}
+              <button
+                onClick={handleCheckTensSum}
+                disabled={!tensSumInput}
+                className="rounded-xl bg-primary px-5 py-2.5 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Check
+              </button>
+            </div>
+          )}
+          {phase === "tensCorrect" && (
+            <div className="mt-4 text-center animate-fade-in">
+              <button
+                onClick={() => setPhase("onesInput")}
+                className="rounded-xl bg-primary px-6 py-3 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+              >
+                Next Step
+              </button>
+            </div>
+          )}
         </div>
       )}
 
-      {/* Step 3 — Ones row with blocks */}
+      {/* Step 3 — Ones row with input */}
       {showStep3 && (
         <div className="mt-6 animate-fade-in">
           <p className="text-center text-lg font-semibold text-muted-foreground mb-3">
@@ -359,8 +463,75 @@ const QuestionCard = ({
             <span className="text-2xl font-bold text-muted-foreground">+</span>
             <Block value={sO} color={ORANGE} size="small" />
             <span className="text-2xl font-bold text-muted-foreground">=</span>
-            <span className="text-2xl font-bold text-foreground">{oSum}</span>
+            {phase === "onesInput" ? (
+              <input
+                type="number"
+                inputMode="numeric"
+                value={onesSumInput}
+                onChange={(e) => setOnesSumInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && onesSumInput && handleCheckOnesSum()}
+                autoFocus
+                style={{
+                  width: 64,
+                  height: 44,
+                  border: `2px solid ${onesSumFlash ? "#E24B4A" : "#E8934A"}`,
+                  borderRadius: 10,
+                  fontSize: 20,
+                  fontWeight: 500,
+                  color: "#E8934A",
+                  textAlign: "center",
+                  background: "white",
+                  outline: "none",
+                }}
+              />
+            ) : (
+              <div className="flex items-center gap-2">
+                <div
+                  style={{
+                    width: 64,
+                    height: 44,
+                    border: "2px solid #E8934A",
+                    borderRadius: 10,
+                    fontSize: 20,
+                    fontWeight: 500,
+                    color: "#E8934A",
+                    textAlign: "center",
+                    background: "#FEF3E2",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {oSum}
+                </div>
+                <span style={{ color: "#E8934A", fontSize: 20, fontWeight: 700 }} aria-label="correct">✓</span>
+              </div>
+            )}
           </div>
+          {phase === "onesInput" && (
+            <div className="mt-3 text-center space-y-2">
+              {onesSumHint && (
+                <p className="text-sm font-medium text-muted-foreground animate-fade-in">{onesSumHint}</p>
+              )}
+              <button
+                onClick={handleCheckOnesSum}
+                disabled={!onesSumInput}
+                className="rounded-xl bg-primary px-5 py-2.5 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Check
+              </button>
+            </div>
+          )}
+          {phase === "onesCorrect" && (
+            <div className="mt-4 text-center animate-fade-in">
+              <button
+                onClick={() => setPhase("combine")}
+                className="rounded-xl bg-primary px-6 py-3 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+              >
+                Next Step
+              </button>
+            </div>
+          )}
         </div>
       )}
 
