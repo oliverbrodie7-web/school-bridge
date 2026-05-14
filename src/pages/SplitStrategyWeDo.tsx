@@ -53,8 +53,10 @@ type Phase =
   | "childInput"
   | "childWrong"
   | "childCorrect"
-  | "addTens"
-  | "addOnes"
+  | "tensInput"
+  | "tensCorrect"
+  | "onesInput"
+  | "onesCorrect"
   | "combine"
   | "done";
 
