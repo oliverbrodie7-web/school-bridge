@@ -217,6 +217,7 @@ const Index = () => {
                   cursor: 'pointer',
                   transition: 'transform 200ms ease, box-shadow 200ms ease',
                   boxSizing: 'border-box',
+                  boxShadow: '0 6px 20px rgba(0,0,0,0.08)',
                   animationDelay: `${Math.min(i, 2) * 120}ms`,
                 }}
                 onMouseEnter={(e) => {
