@@ -340,6 +340,7 @@ const Index = () => {
               padding: '20px 12px',
               cursor: 'pointer',
               transition: 'transform 200ms ease, box-shadow 200ms ease',
+              boxShadow: '0 6px 20px rgba(0,0,0,0.08)',
               animationDelay: `${Math.min(profiles.length > 0 ? (profiles.length - 1) * 120 : 0, 240)}ms`,
             }}
             onMouseEnter={(e) => {
