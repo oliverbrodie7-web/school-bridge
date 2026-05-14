@@ -130,9 +130,52 @@ const Callout = ({ children }: { children: React.ReactNode }) => (
   </div>
 );
 
-const Divider = () => (
-  <div style={{ height: 1, background: "#E1F5EE", margin: "20px 0" }} />
-);
+const Divider = () => {
+  const [shown, setShown] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setShown(true), 100);
+    return () => clearTimeout(t);
+  }, []);
+  return (
+    <div
+      style={{
+        height: 1,
+        background: "#E1F5EE",
+        margin: "20px 0",
+        opacity: shown ? 1 : 0,
+        transition: "opacity 300ms ease-out",
+      }}
+    />
+  );
+};
+
+/**
+ * Wraps a newly revealed step. Mounts hidden, then fades + slides up after a delay.
+ */
+const RevealStep = ({
+  delay = 200,
+  children,
+}: {
+  delay?: number;
+  children: React.ReactNode;
+}) => {
+  const [entered, setEntered] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setEntered(true), delay);
+    return () => clearTimeout(t);
+  }, [delay]);
+  return (
+    <div
+      style={{
+        opacity: entered ? 1 : 0,
+        transform: entered ? "translateY(0)" : "translateY(12px)",
+        transition: "opacity 400ms ease-out, transform 400ms ease-out",
+      }}
+    >
+      {children}
+    </div>
+  );
+};
 
 const ExampleCard = ({
   example,
@@ -163,16 +206,16 @@ const ExampleCard = ({
 
   useEffect(() => {
     if (step === 2) {
-      const t = setTimeout(() => setTensRevealed(true), 800);
+      const t = setTimeout(() => setTensRevealed(true), 1000);
       return () => clearTimeout(t);
     }
     if (step === 3) {
-      const t = setTimeout(() => setOnesRevealed(true), 800);
+      const t = setTimeout(() => setOnesRevealed(true), 1000);
       return () => clearTimeout(t);
     }
     if (step === 4) {
-      const t1 = setTimeout(() => setShowFinalAnswer(true), 100);
-      const t2 = setTimeout(() => setShowFinalCta(true), 1100);
+      const t1 = setTimeout(() => setShowFinalAnswer(true), 400);
+      const t2 = setTimeout(() => setShowFinalCta(true), 1400);
       return () => {
         clearTimeout(t1);
         clearTimeout(t2);
@@ -206,7 +249,7 @@ const ExampleCard = ({
       </p>
 
       {/* STEP 1 */}
-      <div style={{ opacity: opacityFor(1), transition: "opacity 300ms" }}>
+      <div style={{ opacity: opacityFor(1), transition: "opacity 400ms ease-in-out" }}>
         <p className="mt-6 text-center text-base font-semibold text-foreground">
           Step 1: Split the numbers
         </p>
@@ -281,24 +324,26 @@ const ExampleCard = ({
       {step >= 2 && (
         <>
           <Divider />
-          <div style={{ opacity: opacityFor(2), transition: "opacity 300ms" }} className="animate-fade-in text-center">
-            <p className="text-center text-base font-semibold text-foreground mb-3">
-              Step 2: Add the tens
-            </p>
-            <div className="flex items-center justify-center gap-3">
-              <Block value={bT} color={BLUE} size="small" />
-              <span className="text-2xl font-bold text-muted-foreground">+</span>
-              <Block value={oT} color={BLUE} size="small" />
-              <span className="text-2xl font-bold text-muted-foreground">=</span>
-              <span className="text-2xl font-bold" style={{ color: "#1A2E1A", minWidth: 40 }}>
-                {tensRevealed ? tSum : "?"}
-              </span>
-            </div>
-            {tensRevealed && (
-              <Callout>
-                The tens: {bT} + {oT} = {tSum}
-              </Callout>
-            )}
+          <div style={{ opacity: opacityFor(2), transition: "opacity 400ms ease-in-out" }} className="text-center">
+            <RevealStep>
+              <p className="text-center text-base font-semibold text-foreground mb-3">
+                Step 2: Add the tens
+              </p>
+              <div className="flex items-center justify-center gap-3">
+                <Block value={bT} color={BLUE} size="small" />
+                <span className="text-2xl font-bold text-muted-foreground">+</span>
+                <Block value={oT} color={BLUE} size="small" />
+                <span className="text-2xl font-bold text-muted-foreground">=</span>
+                <span className="text-2xl font-bold" style={{ color: "#1A2E1A", minWidth: 40 }}>
+                  {tensRevealed ? tSum : "?"}
+                </span>
+              </div>
+              {tensRevealed && (
+                <Callout>
+                  The tens: {bT} + {oT} = {tSum}
+                </Callout>
+              )}
+            </RevealStep>
           </div>
           {step === 2 && tensRevealed && (
             <NextStepButton onClick={() => setStep(3)} label="Next Step" />
@@ -310,24 +355,26 @@ const ExampleCard = ({
       {step >= 3 && (
         <>
           <Divider />
-          <div style={{ opacity: opacityFor(3), transition: "opacity 300ms" }} className="animate-fade-in text-center">
-            <p className="text-center text-base font-semibold text-foreground mb-3">
-              Step 3: Add the ones
-            </p>
-            <div className="flex items-center justify-center gap-3">
-              <Block value={bO} color={ORANGE} size="small" />
-              <span className="text-2xl font-bold text-muted-foreground">+</span>
-              <Block value={oO} color={ORANGE} size="small" />
-              <span className="text-2xl font-bold text-muted-foreground">=</span>
-              <span className="text-2xl font-bold" style={{ color: "#1A2E1A", minWidth: 40 }}>
-                {onesRevealed ? oSum : "?"}
-              </span>
-            </div>
-            {onesRevealed && (
-              <Callout>
-                The ones: {bO} + {oO} = {oSum}
-              </Callout>
-            )}
+          <div style={{ opacity: opacityFor(3), transition: "opacity 400ms ease-in-out" }} className="text-center">
+            <RevealStep>
+              <p className="text-center text-base font-semibold text-foreground mb-3">
+                Step 3: Add the ones
+              </p>
+              <div className="flex items-center justify-center gap-3">
+                <Block value={bO} color={ORANGE} size="small" />
+                <span className="text-2xl font-bold text-muted-foreground">+</span>
+                <Block value={oO} color={ORANGE} size="small" />
+                <span className="text-2xl font-bold text-muted-foreground">=</span>
+                <span className="text-2xl font-bold" style={{ color: "#1A2E1A", minWidth: 40 }}>
+                  {onesRevealed ? oSum : "?"}
+                </span>
+              </div>
+              {onesRevealed && (
+                <Callout>
+                  The ones: {bO} + {oO} = {oSum}
+                </Callout>
+              )}
+            </RevealStep>
           </div>
           {step === 3 && onesRevealed && (
             <NextStepButton onClick={() => setStep(4)} label="Next Step" />
@@ -339,7 +386,8 @@ const ExampleCard = ({
       {step >= 4 && (
         <>
           <Divider />
-          <div className="animate-fade-in text-center">
+          <RevealStep>
+          <div className="text-center">
             <p
               style={{
                 fontSize: 22,
@@ -389,6 +437,7 @@ const ExampleCard = ({
               Split, add the parts, put it together. That's the split strategy.
             </div>
           </div>
+          </RevealStep>
 
           {showFinalCta && (
             <div className="mt-4 text-center animate-fade-in">
