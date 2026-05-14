@@ -437,6 +437,7 @@ const ExampleCard = ({
               Split, add the parts, put it together. That's the split strategy.
             </div>
           </div>
+          </RevealStep>
 
           {showFinalCta && (
             <div className="mt-4 text-center animate-fade-in">
