@@ -111,7 +111,7 @@ const Index = () => {
 
   if (loading) {
     return (
-      <div className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center" style={{ backgroundColor: '#FAFAF8' }}>
+      <div className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center" style={{ backgroundColor: '#FAFAF8', fontFamily: "'Nunito', sans-serif" }}>
         <div className="h-6 w-6 animate-spin rounded-full border-2 border-muted border-t-primary" />
       </div>
     );
@@ -119,7 +119,7 @@ const Index = () => {
 
   if (showSetup || !hasProfiles) {
     return (
-      <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center px-6" style={{ backgroundColor: '#FAFAF8' }}>
+      <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center px-6" style={{ backgroundColor: '#FAFAF8', fontFamily: "'Nunito', sans-serif" }}>
         {!hasProfiles && !showSetup ? (
           <div className="text-center space-y-4">
             <h1
@@ -150,7 +150,26 @@ const Index = () => {
   }
 
   return (
-    <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center px-6 py-12" style={{ backgroundColor: '#FAFAF8' }}>
+    <>
+      <style>{`
+        @keyframes bounceIn {
+          from { opacity: 0; transform: scale(0.6) translateY(30px); }
+          to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .home-card-anim {
+          animation: bounceIn 500ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+          transition: transform 200ms ease, box-shadow 200ms ease !important;
+        }
+        .home-card-anim:hover {
+          transform: scale(1.04) translateY(-3px) !important;
+          box-shadow: 0 8px 20px rgba(29, 158, 117, 0.15) !important;
+        }
+        .home-card-anim:active {
+          transform: scale(0.94) !important;
+          transition: transform 100ms ease !important;
+        }
+      `}</style>
+      <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center px-6 py-12" style={{ backgroundColor: '#FAFAF8', fontFamily: "'Nunito', sans-serif" }}>
       <div className="w-full max-w-2xl">
         <h1
           style={{
@@ -180,7 +199,7 @@ const Index = () => {
             <div key={i} className="relative" style={{ width: '120px', minHeight: editingIndex === i ? 'auto' : '140px', flexShrink: 0 }}>
               <button
                 onClick={() => handleSelectProfile(profile, i)}
-                className="flex flex-col items-center gap-2"
+                className="flex flex-col items-center gap-2 home-card-anim"
                 style={{
                   width: '120px',
                   minHeight: editingIndex === i ? 'auto' : '140px',
@@ -190,8 +209,9 @@ const Index = () => {
                   borderRadius: '16px',
                   padding: '20px 12px',
                   cursor: 'pointer',
-                  transition: '150ms ease',
+                  transition: 'transform 200ms ease, box-shadow 200ms ease',
                   boxSizing: 'border-box',
+                  animationDelay: `${Math.min(i, 2) * 120}ms`,
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.borderColor = '#0F6E56';
@@ -302,7 +322,7 @@ const Index = () => {
           ))}
           <button
             onClick={() => setShowSetup(true)}
-            className="flex flex-col items-center justify-center gap-2"
+            className="flex flex-col items-center justify-center gap-2 home-card-anim"
             style={{
               width: '120px',
               minHeight: '140px',
@@ -312,7 +332,8 @@ const Index = () => {
               borderRadius: '16px',
               padding: '20px 12px',
               cursor: 'pointer',
-              transition: '150ms ease',
+              transition: 'transform 200ms ease, box-shadow 200ms ease',
+              animationDelay: `${Math.min(profiles.length > 0 ? (profiles.length - 1) * 120 : 0, 240)}ms`,
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = '#E1F5EE';
@@ -366,6 +387,7 @@ const Index = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
