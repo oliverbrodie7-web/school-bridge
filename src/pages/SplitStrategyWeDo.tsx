@@ -134,6 +134,16 @@ const QuestionCard = ({
   const [onesInput, setOnesInput] = useState("");
   const [hint, setHint] = useState("");
 
+  // Step 2 (add tens) input
+  const [tensSumInput, setTensSumInput] = useState("");
+  const [tensSumFlash, setTensSumFlash] = useState(false);
+  const [tensSumHint, setTensSumHint] = useState("");
+
+  // Step 3 (add ones) input
+  const [onesSumInput, setOnesSumInput] = useState("");
+  const [onesSumFlash, setOnesSumFlash] = useState(false);
+  const [onesSumHint, setOnesSumHint] = useState("");
+
   const bT = tens(q.big), bO = ones(q.big);
   const sT = tens(q.small), sO = ones(q.small);
   const tSum = bT + sT, oSum = bO + sO, total = q.big + q.small;
@@ -144,15 +154,7 @@ const QuestionCard = ({
       return () => clearTimeout(t);
     }
     if (phase === "childCorrect") {
-      const t = setTimeout(() => setPhase("addTens"), 800);
-      return () => clearTimeout(t);
-    }
-    if (phase === "addTens") {
-      const t = setTimeout(() => setPhase("addOnes"), 3500);
-      return () => clearTimeout(t);
-    }
-    if (phase === "addOnes") {
-      const t = setTimeout(() => setPhase("combine"), 3500);
+      const t = setTimeout(() => setPhase("tensInput"), 800);
       return () => clearTimeout(t);
     }
     if (phase === "combine") {
@@ -162,14 +164,19 @@ const QuestionCard = ({
   }, [phase]);
 
   const blueSplit = phase !== "autoSplit";
-  const orangeSplit = ["childCorrect", "addTens", "addOnes", "combine", "done"].includes(phase);
+  const orangeSplit = ![
+    "autoSplit",
+    "promptChild",
+    "childInput",
+    "childWrong",
+  ].includes(phase);
 
-  const tensGone = ["addTens", "addOnes", "combine", "done"].includes(phase);
-  const onesGone = ["addOnes", "combine", "done"].includes(phase);
-
-  const showStep2 = tensGone;
-  const showStep3 = onesGone;
+  const showStep2 = ["tensInput", "tensCorrect", "onesInput", "onesCorrect", "combine", "done"].includes(phase);
+  const showStep3 = ["onesInput", "onesCorrect", "combine", "done"].includes(phase);
   const showStep4 = ["combine", "done"].includes(phase);
+
+  const tensGone = ["onesInput", "onesCorrect", "combine", "done"].includes(phase);
+  const onesGone = ["combine", "done"].includes(phase);
 
   const handleCheck = () => {
     const tOk = Number(tensInput) === sT;
@@ -190,6 +197,34 @@ const QuestionCard = ({
     setTensInput("");
     setOnesInput("");
     setPhase("childInput");
+  };
+
+  const handleCheckTensSum = () => {
+    if (Number(tensSumInput) === tSum) {
+      setPhase("tensCorrect");
+      setTensSumHint("");
+    } else {
+      setTensSumFlash(true);
+      setTensSumHint(`Count the tens — ${bT}, ${tSum}. How many tens altogether?`);
+      setTimeout(() => {
+        setTensSumFlash(false);
+        setTensSumInput("");
+      }, 600);
+    }
+  };
+
+  const handleCheckOnesSum = () => {
+    if (Number(onesSumInput) === oSum) {
+      setPhase("onesCorrect");
+      setOnesSumHint("");
+    } else {
+      setOnesSumFlash(true);
+      setOnesSumHint(`Count the ones — ${bO} and ${sO} more. How many altogether?`);
+      setTimeout(() => {
+        setOnesSumFlash(false);
+        setOnesSumInput("");
+      }, 600);
+    }
   };
 
   return (
