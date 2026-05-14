@@ -113,7 +113,7 @@ const Index = () => {
 
   if (loading) {
     return (
-      <div className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center" style={{ backgroundColor: '#FAFAF8', fontFamily: "'Nunito', sans-serif" }}>
+      <div className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center" style={{ backgroundColor: '#FFF8EC', fontFamily: "'Nunito', sans-serif" }}>
         <div className="h-6 w-6 animate-spin rounded-full border-2 border-muted border-t-primary" />
       </div>
     );
