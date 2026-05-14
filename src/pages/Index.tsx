@@ -10,6 +10,8 @@ import {
 
 const PALETTE = ["#4A90D9", "#E8934A", "#6BBF8A", "#D96A6A", "#9B6BBF", "#4ABFBF"];
 
+const AVATAR_PALETTE = ["#F4A261", "#2EC4B6", "#4A90D9", "#9B6BBF", "#6BBF8A", "#E8C45B"];
+
 const QUOTES = [
   { text: "The more that you read, the more things you will know. The more that you learn, the more places you'll go.", author: "Dr. Seuss" },
   { text: "It always seems impossible until it's done.", author: "Nelson Mandela" },
