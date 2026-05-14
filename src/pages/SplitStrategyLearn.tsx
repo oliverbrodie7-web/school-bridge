@@ -355,24 +355,26 @@ const ExampleCard = ({
       {step >= 3 && (
         <>
           <Divider />
-          <div style={{ opacity: opacityFor(3), transition: "opacity 300ms" }} className="animate-fade-in text-center">
-            <p className="text-center text-base font-semibold text-foreground mb-3">
-              Step 3: Add the ones
-            </p>
-            <div className="flex items-center justify-center gap-3">
-              <Block value={bO} color={ORANGE} size="small" />
-              <span className="text-2xl font-bold text-muted-foreground">+</span>
-              <Block value={oO} color={ORANGE} size="small" />
-              <span className="text-2xl font-bold text-muted-foreground">=</span>
-              <span className="text-2xl font-bold" style={{ color: "#1A2E1A", minWidth: 40 }}>
-                {onesRevealed ? oSum : "?"}
-              </span>
-            </div>
-            {onesRevealed && (
-              <Callout>
-                The ones: {bO} + {oO} = {oSum}
-              </Callout>
-            )}
+          <div style={{ opacity: opacityFor(3), transition: "opacity 400ms ease-in-out" }} className="text-center">
+            <RevealStep>
+              <p className="text-center text-base font-semibold text-foreground mb-3">
+                Step 3: Add the ones
+              </p>
+              <div className="flex items-center justify-center gap-3">
+                <Block value={bO} color={ORANGE} size="small" />
+                <span className="text-2xl font-bold text-muted-foreground">+</span>
+                <Block value={oO} color={ORANGE} size="small" />
+                <span className="text-2xl font-bold text-muted-foreground">=</span>
+                <span className="text-2xl font-bold" style={{ color: "#1A2E1A", minWidth: 40 }}>
+                  {onesRevealed ? oSum : "?"}
+                </span>
+              </div>
+              {onesRevealed && (
+                <Callout>
+                  The ones: {bO} + {oO} = {oSum}
+                </Callout>
+              )}
+            </RevealStep>
           </div>
           {step === 3 && onesRevealed && (
             <NextStepButton onClick={() => setStep(4)} label="Next Step" />
