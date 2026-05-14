@@ -15,8 +15,6 @@ const EXAMPLES = [
 const tens = (n: number) => Math.floor(n / 10) * 10;
 const ones = (n: number) => n % 10;
 
-type Phase = "prompt" | "splitA" | "splitB" | "addTens" | "addOnes" | "combine" | "done";
-
 const SplitStrategyLearn = () => {
   const [exIndex, setExIndex] = useState(0);
   const isLast = exIndex === EXAMPLES.length - 1;
@@ -32,7 +30,9 @@ const SplitStrategyLearn = () => {
         </Link>
 
         <div className="relative mt-6">
-          <div className="flex justify-end mb-3 -mr-4 sm:-mr-10"><CurriculumBadge {...AC9M2N04_PROPS} pageName="Split Strategy Learn" /></div>
+          <div className="flex justify-end mb-3 -mr-4 sm:-mr-10">
+            <CurriculumBadge {...AC9M2N04_PROPS} pageName="Split Strategy Learn" />
+          </div>
           <h1
             className="text-center text-2xl font-bold text-foreground sm:text-3xl"
             style={{ fontFamily: "var(--font-heading)" }}
@@ -59,28 +59,80 @@ const SplitStrategyLearn = () => {
   );
 };
 
-/* ─── Small coloured block used everywhere ─── */
 const Block = ({
   value,
   color,
-  ghost,
   size = "normal",
 }: {
   value: number;
   color: string;
-  ghost?: boolean;
   size?: "normal" | "small";
 }) => {
-  const dim = size === "small" ? "h-14 w-14 text-xl sm:h-16 sm:w-16 sm:text-2xl" : "h-16 w-16 text-2xl sm:h-20 sm:w-20 sm:text-3xl";
+  const dim =
+    size === "small"
+      ? "h-14 w-14 text-xl sm:h-16 sm:w-16 sm:text-2xl"
+      : "h-16 w-16 text-2xl sm:h-20 sm:w-20 sm:text-3xl";
   return (
     <div
-      className={`flex ${dim} items-center justify-center rounded-2xl font-bold text-white transition-opacity duration-500 ${ghost ? "opacity-20" : "opacity-100"}`}
+      className={`flex ${dim} items-center justify-center rounded-2xl font-bold text-white`}
       style={{ backgroundColor: color }}
     >
       {value}
     </div>
   );
 };
+
+const StepPills = ({ current }: { current: 1 | 2 | 3 | 4 }) => (
+  <div className="flex gap-1.5 mb-4">
+    {[1, 2, 3, 4].map((n) => {
+      const completed = n < current;
+      const active = n === current;
+      const style: React.CSSProperties = completed
+        ? { background: "#1D9E75", color: "white", border: "1.5px solid #1D9E75" }
+        : active
+        ? { background: "#E1F5EE", color: "#0F6E56", border: "1.5px solid #1D9E75" }
+        : {
+            background: "transparent",
+            color: "var(--color-text-tertiary)",
+            border: "1px solid var(--color-border-secondary)",
+          };
+      return (
+        <span
+          key={n}
+          style={{
+            ...style,
+            padding: "3px 12px",
+            borderRadius: 99,
+            fontSize: 11,
+            fontWeight: 500,
+          }}
+        >
+          Step {n}
+        </span>
+      );
+    })}
+  </div>
+);
+
+const Callout = ({ children }: { children: React.ReactNode }) => (
+  <div
+    className="mt-3 mx-auto"
+    style={{
+      display: "inline-block",
+      background: "#E1F5EE",
+      color: "#0F6E56",
+      borderRadius: 8,
+      padding: "6px 12px",
+      fontSize: 13,
+    }}
+  >
+    {children}
+  </div>
+);
+
+const Divider = () => (
+  <div style={{ height: 1, background: "#E1F5EE", margin: "20px 0" }} />
+);
 
 const ExampleCard = ({
   example,
@@ -91,191 +143,303 @@ const ExampleCard = ({
   isLast: boolean;
   onNext: () => void;
 }) => {
-  const [phase, setPhase] = useState<Phase>("prompt");
-
   const blueNum = Math.max(example.a, example.b);
   const orangeNum = Math.min(example.a, example.b);
+  const bT = tens(blueNum);
+  const bO = ones(blueNum);
+  const oT = tens(orangeNum);
+  const oO = ones(orangeNum);
+  const tSum = bT + oT;
+  const oSum = bO + oO;
+  const total = blueNum + orangeNum;
 
-  const bT = tens(blueNum), bO = ones(blueNum);
-  const oT = tens(orangeNum), oO = ones(orangeNum);
-  const tSum = bT + oT, oSum = bO + oO, total = blueNum + orangeNum;
+  // step 1 internal: 'whole' -> 'splitA' -> 'splitB' -> 'done' (Next Step shows when done)
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
+  const [s1Phase, setS1Phase] = useState<"whole" | "splitA" | "splitB">("whole");
+  const [tensRevealed, setTensRevealed] = useState(false);
+  const [onesRevealed, setOnesRevealed] = useState(false);
+  const [showFinalAnswer, setShowFinalAnswer] = useState(false);
+  const [showFinalCta, setShowFinalCta] = useState(false);
 
-  // Auto-advance through reveal phases
   useEffect(() => {
-    if (phase === "splitB") {
-      const t = setTimeout(() => setPhase("addTens"), 3000);
+    if (step === 2) {
+      const t = setTimeout(() => setTensRevealed(true), 800);
       return () => clearTimeout(t);
     }
-    if (phase === "addTens") {
-      const t = setTimeout(() => setPhase("addOnes"), 3500);
+    if (step === 3) {
+      const t = setTimeout(() => setOnesRevealed(true), 800);
       return () => clearTimeout(t);
     }
-    if (phase === "addOnes") {
-      const t = setTimeout(() => setPhase("combine"), 3500);
-      return () => clearTimeout(t);
+    if (step === 4) {
+      const t1 = setTimeout(() => setShowFinalAnswer(true), 100);
+      const t2 = setTimeout(() => setShowFinalCta(true), 1100);
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+      };
     }
-    if (phase === "combine") {
-      const t = setTimeout(() => setPhase("done"), 3000);
-      return () => clearTimeout(t);
-    }
-  }, [phase]);
+  }, [step]);
 
-  const blueSplit = phase !== "prompt";
-  const orangeSplit = !["prompt", "splitA"].includes(phase);
+  const s1Complete = s1Phase === "splitB";
 
-  // Which blocks have "moved" to step rows
-  const tensGone = ["addTens", "addOnes", "combine", "done"].includes(phase);
-  const onesGone = ["addOnes", "combine", "done"].includes(phase);
-
-  const showStep2 = tensGone;
-  const showStep3 = onesGone;
-  const showStep4 = ["combine", "done"].includes(phase);
+  const opacityFor = (n: 1 | 2 | 3) => {
+    if (step === 4) return 0.2;
+    if (step > n) return 0.4;
+    return 1;
+  };
 
   return (
     <div className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
+      <StepPills current={step} />
+
       {/* Equation */}
       <p
-        className="text-center text-3xl font-bold text-foreground sm:text-4xl"
-        style={{ fontFamily: "var(--font-heading)" }}
+        style={{
+          fontSize: 28,
+          fontWeight: 500,
+          color: "#1A2E1A",
+          textAlign: "center",
+          fontFamily: "var(--font-heading)",
+        }}
       >
         {example.a} + {example.b}
       </p>
 
-      {/* Step 1 label - always visible */}
-      <p className="mt-6 text-center text-lg font-semibold text-foreground">
-        <span className="text-muted-foreground">Step 1: </span>
-        Split each number into tens and ones
-      </p>
+      {/* STEP 1 */}
+      <div style={{ opacity: opacityFor(1), transition: "opacity 300ms" }}>
+        <p className="mt-6 text-center text-base font-semibold text-foreground">
+          Step 1: Split the numbers
+        </p>
 
-      {/* Step 1 — Number boxes */}
-      <div className="mt-4 flex items-start justify-center gap-8">
-        {/* Blue number */}
-        {!blueSplit ? (
-          <button
-            onClick={() => phase === "prompt" && setPhase("splitA")}
-            disabled={phase !== "prompt"}
-            className={`flex h-20 w-20 items-center justify-center rounded-2xl text-3xl font-bold text-white transition-transform sm:h-24 sm:w-24 sm:text-4xl ${
-              phase === "prompt" ? "cursor-pointer hover:scale-110 active:scale-95" : ""
-            }`}
-            style={{ background: `linear-gradient(to right, ${BLUE} 50%, ${ORANGE} 50%)` }}
-          >
-            {blueNum}
-          </button>
-        ) : (
-          <div className="flex gap-3">
-            <div className="flex flex-col items-center" style={{ animation: "slideLeft 0.4s ease-out" }}>
-              <Block value={bT} color={BLUE} ghost={tensGone} />
-              <span className="mt-1 text-xs font-semibold text-muted-foreground">tens</span>
+        <div className="mt-4 flex items-start justify-center gap-8">
+          {/* Blue number */}
+          {s1Phase === "whole" ? (
+            <button
+              onClick={() => step === 1 && setS1Phase("splitA")}
+              disabled={step !== 1}
+              className="flex h-20 w-20 items-center justify-center rounded-2xl text-3xl font-bold text-white transition-transform sm:h-24 sm:w-24 sm:text-4xl cursor-pointer hover:scale-110 active:scale-95"
+              style={{ background: `linear-gradient(to right, ${BLUE} 50%, ${ORANGE} 50%)` }}
+            >
+              {blueNum}
+            </button>
+          ) : (
+            <div className="flex gap-3">
+              <div className="flex flex-col items-center" style={{ animation: "slideLeft 0.4s ease-out" }}>
+                <Block value={bT} color={BLUE} />
+                <span className="mt-1 text-xs font-semibold text-muted-foreground">tens</span>
+              </div>
+              <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
+                <Block value={bO} color={ORANGE} />
+                <span className="mt-1 text-xs font-semibold text-muted-foreground">ones</span>
+              </div>
             </div>
-            <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
-              <Block value={bO} color={ORANGE} ghost={onesGone} />
-              <span className="mt-1 text-xs font-semibold text-muted-foreground">ones</span>
+          )}
+
+          {/* Orange number */}
+          {s1Phase !== "splitB" ? (
+            <button
+              onClick={() => step === 1 && s1Phase === "splitA" && setS1Phase("splitB")}
+              disabled={step !== 1 || s1Phase !== "splitA"}
+              className={`flex h-20 w-20 items-center justify-center rounded-2xl text-3xl font-bold text-white transition-transform sm:h-24 sm:w-24 sm:text-4xl ${
+                s1Phase === "splitA" ? "cursor-pointer hover:scale-110 active:scale-95" : ""
+              }`}
+              style={{ background: `linear-gradient(to right, ${BLUE} 50%, ${ORANGE} 50%)` }}
+            >
+              {orangeNum}
+            </button>
+          ) : (
+            <div className="flex gap-3">
+              <div className="flex flex-col items-center" style={{ animation: "slideLeft 0.4s ease-out" }}>
+                <Block value={oT} color={BLUE} />
+                <span className="mt-1 text-xs font-semibold text-muted-foreground">tens</span>
+              </div>
+              <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
+                <Block value={oO} color={ORANGE} />
+                <span className="mt-1 text-xs font-semibold text-muted-foreground">ones</span>
+              </div>
             </div>
-          </div>
+          )}
+        </div>
+
+        {step === 1 && s1Phase === "whole" && (
+          <p className="mt-6 text-center text-base font-medium text-muted-foreground animate-fade-in">
+            Tap each number to split it.
+          </p>
         )}
-
-        {/* Orange number */}
-        {!orangeSplit ? (
-          <button
-            onClick={() => phase === "splitA" && setPhase("splitB")}
-            disabled={phase !== "splitA"}
-            className={`flex h-20 w-20 items-center justify-center rounded-2xl text-3xl font-bold text-white transition-transform sm:h-24 sm:w-24 sm:text-4xl ${
-              phase === "splitA" ? "cursor-pointer hover:scale-110 active:scale-95" : ""
-            }`}
-            style={{ background: `linear-gradient(to right, ${BLUE} 50%, ${ORANGE} 50%)` }}
-          >
-            {orangeNum}
-          </button>
-        ) : (
-          <div className="flex gap-3">
-            <div className="flex flex-col items-center" style={{ animation: "slideLeft 0.4s ease-out" }}>
-              <Block value={oT} color={BLUE} ghost={tensGone} />
-              <span className="mt-1 text-xs font-semibold text-muted-foreground">tens</span>
-            </div>
-            <div className="flex flex-col items-center" style={{ animation: "slideRight 0.4s ease-out" }}>
-              <Block value={oO} color={ORANGE} ghost={onesGone} />
-              <span className="mt-1 text-xs font-semibold text-muted-foreground">ones</span>
-            </div>
-          </div>
+        {step === 1 && s1Phase === "splitA" && (
+          <p className="mt-6 text-center text-base font-medium text-muted-foreground animate-fade-in">
+            Now tap the next number.
+          </p>
         )}
       </div>
 
-      {/* Prompt text */}
-      {phase === "prompt" && (
-        <p className="mt-6 text-center text-lg font-medium text-muted-foreground animate-fade-in">
-          Tap each number to split it.
-        </p>
-      )}
-      {phase === "splitA" && (
-        <p className="mt-6 text-center text-lg font-medium text-muted-foreground animate-fade-in">
-          Now tap the next number.
-        </p>
+      {step === 1 && s1Complete && (
+        <NextStepButton onClick={() => setStep(2)} label="Next Step" />
       )}
 
-      {/* Step 2 — Tens row with blocks */}
-      {showStep2 && (
-        <div className="mt-8 animate-fade-in">
-          <p className="text-center text-lg font-semibold text-muted-foreground mb-3">
-            Step 2: <span style={{ color: BLUE }}>Add the tens</span>
-          </p>
-          <div className="flex items-center justify-center gap-3">
-            <Block value={bT} color={BLUE} size="small" />
-            <span className="text-2xl font-bold text-muted-foreground">+</span>
-            <Block value={oT} color={BLUE} size="small" />
-            <span className="text-2xl font-bold text-muted-foreground">=</span>
-            <span className="text-2xl font-bold text-foreground">{tSum}</span>
+      {/* STEP 2 */}
+      {step >= 2 && (
+        <>
+          <Divider />
+          <div style={{ opacity: opacityFor(2), transition: "opacity 300ms" }} className="animate-fade-in text-center">
+            <p className="text-center text-base font-semibold text-foreground mb-3">
+              Step 2: Add the tens
+            </p>
+            <div className="flex items-center justify-center gap-3">
+              <Block value={bT} color={BLUE} size="small" />
+              <span className="text-2xl font-bold text-muted-foreground">+</span>
+              <Block value={oT} color={BLUE} size="small" />
+              <span className="text-2xl font-bold text-muted-foreground">=</span>
+              <span className="text-2xl font-bold" style={{ color: "#1A2E1A", minWidth: 40 }}>
+                {tensRevealed ? tSum : "?"}
+              </span>
+            </div>
+            {tensRevealed && (
+              <Callout>
+                The tens: {bT} + {oT} = {tSum}
+              </Callout>
+            )}
           </div>
-        </div>
-      )}
-
-      {/* Step 3 — Ones row with blocks */}
-      {showStep3 && (
-        <div className="mt-6 animate-fade-in">
-          <p className="text-center text-lg font-semibold text-muted-foreground mb-3">
-            Step 3: <span style={{ color: ORANGE }}>Add the ones</span>
-          </p>
-          <div className="flex items-center justify-center gap-3">
-            <Block value={bO} color={ORANGE} size="small" />
-            <span className="text-2xl font-bold text-muted-foreground">+</span>
-            <Block value={oO} color={ORANGE} size="small" />
-            <span className="text-2xl font-bold text-muted-foreground">=</span>
-            <span className="text-2xl font-bold text-foreground">{oSum}</span>
-          </div>
-        </div>
-      )}
-
-      {/* Step 4 — Combine */}
-      {showStep4 && (
-        <div className="mt-6 animate-fade-in">
-          <p className="text-center text-lg font-semibold animate-fade-in text-primary">
-            <span className="text-muted-foreground">Step 4: </span>
-            Put them together: {tSum} + {oSum} = {total}
-          </p>
-        </div>
-      )}
-
-      {/* Next button */}
-      {phase === "done" && (
-        <div className="mt-6 text-center animate-fade-in">
-          {isLast ? (
-            <Link
-              to="/learn/split-strategy/we-do"
-              className="inline-block rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
-            >
-              We're going to try one together
-            </Link>
-          ) : (
-            <button
-              onClick={onNext}
-              className="rounded-xl bg-primary px-6 py-3.5 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
-            >
-              Next Example
-            </button>
+          {step === 2 && tensRevealed && (
+            <NextStepButton onClick={() => setStep(3)} label="Next Step" />
           )}
-        </div>
+        </>
+      )}
+
+      {/* STEP 3 */}
+      {step >= 3 && (
+        <>
+          <Divider />
+          <div style={{ opacity: opacityFor(3), transition: "opacity 300ms" }} className="animate-fade-in text-center">
+            <p className="text-center text-base font-semibold text-foreground mb-3">
+              Step 3: Add the ones
+            </p>
+            <div className="flex items-center justify-center gap-3">
+              <Block value={bO} color={ORANGE} size="small" />
+              <span className="text-2xl font-bold text-muted-foreground">+</span>
+              <Block value={oO} color={ORANGE} size="small" />
+              <span className="text-2xl font-bold text-muted-foreground">=</span>
+              <span className="text-2xl font-bold" style={{ color: "#1A2E1A", minWidth: 40 }}>
+                {onesRevealed ? oSum : "?"}
+              </span>
+            </div>
+            {onesRevealed && (
+              <Callout>
+                The ones: {bO} + {oO} = {oSum}
+              </Callout>
+            )}
+          </div>
+          {step === 3 && onesRevealed && (
+            <NextStepButton onClick={() => setStep(4)} label="Next Step" />
+          )}
+        </>
+      )}
+
+      {/* STEP 4 */}
+      {step >= 4 && (
+        <>
+          <Divider />
+          <div className="animate-fade-in text-center">
+            <p
+              style={{
+                fontSize: 22,
+                color: "#1A2E1A",
+                fontWeight: 500,
+                textAlign: "center",
+                marginBottom: 8,
+              }}
+            >
+              {example.a} + {example.b} =
+            </p>
+            <div
+              style={{
+                fontSize: 64,
+                fontWeight: 500,
+                color: "#1D9E75",
+                textAlign: "center",
+                lineHeight: 1,
+                transform: showFinalAnswer ? "scale(1)" : "scale(0.6)",
+                opacity: showFinalAnswer ? 1 : 0,
+                transition: "transform 300ms ease-out, opacity 300ms ease-out",
+              }}
+            >
+              {total}
+            </div>
+            <p
+              style={{
+                fontSize: 14,
+                color: "#0F6E56",
+                textAlign: "center",
+                marginTop: 8,
+              }}
+            >
+              {tSum} + {oSum} = {total}
+            </p>
+            <div
+              style={{
+                background: "#E1F5EE",
+                borderRadius: 10,
+                padding: "10px 16px",
+                fontSize: 13,
+                color: "#085041",
+                textAlign: "center",
+                marginTop: 16,
+              }}
+            >
+              Split, add the parts, put it together. That's the split strategy.
+            </div>
+          </div>
+
+          {showFinalCta && (
+            <div className="mt-4 text-center animate-fade-in">
+              {isLast ? (
+                <Link
+                  to="/learn/split-strategy/we-do"
+                  className="inline-block rounded-xl px-6 py-3 text-base font-medium text-white transition-colors"
+                  style={{ background: "#1D9E75" }}
+                >
+                  Let's try one together
+                </Link>
+              ) : (
+                <button
+                  onClick={onNext}
+                  className="rounded-xl px-6 py-3 text-base font-medium text-white transition-colors"
+                  style={{ background: "#1D9E75" }}
+                >
+                  Next Example
+                </button>
+              )}
+            </div>
+          )}
+        </>
       )}
     </div>
   );
 };
+
+const NextStepButton = ({ onClick, label }: { onClick: () => void; label: string }) => (
+  <button
+    onClick={onClick}
+    onMouseEnter={(e) => (e.currentTarget.style.background = "#0F6E56")}
+    onMouseLeave={(e) => (e.currentTarget.style.background = "#1D9E75")}
+    style={{
+      background: "#1D9E75",
+      color: "white",
+      borderRadius: 12,
+      padding: "10px 28px",
+      fontSize: 14,
+      fontWeight: 500,
+      border: "none",
+      cursor: "pointer",
+      marginTop: 16,
+      display: "block",
+      marginLeft: "auto",
+      marginRight: "auto",
+    }}
+    className="animate-fade-in"
+  >
+    {label}
+  </button>
+);
 
 export default SplitStrategyLearn;
