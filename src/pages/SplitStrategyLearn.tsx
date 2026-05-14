@@ -130,9 +130,52 @@ const Callout = ({ children }: { children: React.ReactNode }) => (
   </div>
 );
 
-const Divider = () => (
-  <div style={{ height: 1, background: "#E1F5EE", margin: "20px 0" }} />
-);
+const Divider = () => {
+  const [shown, setShown] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setShown(true), 100);
+    return () => clearTimeout(t);
+  }, []);
+  return (
+    <div
+      style={{
+        height: 1,
+        background: "#E1F5EE",
+        margin: "20px 0",
+        opacity: shown ? 1 : 0,
+        transition: "opacity 300ms ease-out",
+      }}
+    />
+  );
+};
+
+/**
+ * Wraps a newly revealed step. Mounts hidden, then fades + slides up after a delay.
+ */
+const RevealStep = ({
+  delay = 200,
+  children,
+}: {
+  delay?: number;
+  children: React.ReactNode;
+}) => {
+  const [entered, setEntered] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setEntered(true), delay);
+    return () => clearTimeout(t);
+  }, [delay]);
+  return (
+    <div
+      style={{
+        opacity: entered ? 1 : 0,
+        transform: entered ? "translateY(0)" : "translateY(12px)",
+        transition: "opacity 400ms ease-out, transform 400ms ease-out",
+      }}
+    >
+      {children}
+    </div>
+  );
+};
 
 const ExampleCard = ({
   example,
