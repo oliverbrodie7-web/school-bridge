@@ -260,7 +260,39 @@ const Level1Card = ({
         )}
       </div>
 
-      {/* Prompts */}
+      {/* Resolved Step 2 row (renders before active prompt to keep 1→2→3→4 order) */}
+      {showStep2 && (
+        <div className="mt-8 animate-fade-in">
+          <p className="text-center text-lg font-semibold text-muted-foreground mb-3">
+            Step 2: <span style={{ color: BLUE }}>Add the tens</span> ✓
+          </p>
+          <div className="flex items-center justify-center gap-3">
+            <Block value={bT} color={BLUE} size="small" />
+            <span className="text-2xl font-bold text-muted-foreground">+</span>
+            <Block value={sT} color={BLUE} size="small" />
+            <span className="text-2xl font-bold text-muted-foreground">=</span>
+            <span className="text-2xl font-bold text-foreground">{tSum}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Resolved Step 3 row */}
+      {showStep3 && (
+        <div className="mt-6 animate-fade-in">
+          <p className="text-center text-lg font-semibold text-muted-foreground mb-3">
+            Step 3: <span style={{ color: ORANGE }}>Add the ones</span> ✓
+          </p>
+          <div className="flex items-center justify-center gap-3">
+            <Block value={bO} color={ORANGE} size="small" />
+            <span className="text-2xl font-bold text-muted-foreground">+</span>
+            <Block value={sO} color={ORANGE} size="small" />
+            <span className="text-2xl font-bold text-muted-foreground">=</span>
+            <span className="text-2xl font-bold text-foreground">{oSum}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Prompts (active step input) */}
       <div className="mt-6 space-y-4 text-center">
         {phase === "tapFirst" && (
           <p className="text-lg font-medium text-muted-foreground animate-fade-in">Tap the first number to split it.</p>
@@ -355,38 +387,6 @@ const Level1Card = ({
           </div>
         )}
       </div>
-
-      {/* Step 2 resolved row */}
-      {showStep2 && (
-        <div className="mt-8 animate-fade-in">
-          <p className="text-center text-lg font-semibold text-muted-foreground mb-3">
-            Step 2: <span style={{ color: BLUE }}>Add the tens</span> ✓
-          </p>
-          <div className="flex items-center justify-center gap-3">
-            <Block value={bT} color={BLUE} size="small" />
-            <span className="text-2xl font-bold text-muted-foreground">+</span>
-            <Block value={sT} color={BLUE} size="small" />
-            <span className="text-2xl font-bold text-muted-foreground">=</span>
-            <span className="text-2xl font-bold text-foreground">{tSum}</span>
-          </div>
-        </div>
-      )}
-
-      {/* Step 3 resolved row */}
-      {showStep3 && (
-        <div className="mt-6 animate-fade-in">
-          <p className="text-center text-lg font-semibold text-muted-foreground mb-3">
-            Step 3: <span style={{ color: ORANGE }}>Add the ones</span> ✓
-          </p>
-          <div className="flex items-center justify-center gap-3">
-            <Block value={bO} color={ORANGE} size="small" />
-            <span className="text-2xl font-bold text-muted-foreground">+</span>
-            <Block value={sO} color={ORANGE} size="small" />
-            <span className="text-2xl font-bold text-muted-foreground">=</span>
-            <span className="text-2xl font-bold text-foreground">{oSum}</span>
-          </div>
-        </div>
-      )}
 
       {/* Step 4 resolved */}
       {showStep4 && (
