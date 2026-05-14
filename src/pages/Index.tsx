@@ -111,7 +111,7 @@ const Index = () => {
 
   if (loading) {
     return (
-      <div className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center" style={{ backgroundColor: '#FFFFFF', fontFamily: "'Nunito', sans-serif" }}>
+      <div className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center" style={{ backgroundColor: '#FAFAF8', fontFamily: "'Nunito', sans-serif" }}>
         <div className="h-6 w-6 animate-spin rounded-full border-2 border-muted border-t-primary" />
       </div>
     );
@@ -119,7 +119,7 @@ const Index = () => {
 
   if (showSetup || !hasProfiles) {
     return (
-      <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center px-6" style={{ backgroundColor: '#FFFFFF', fontFamily: "'Nunito', sans-serif" }}>
+      <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center px-6" style={{ backgroundColor: '#FAFAF8', fontFamily: "'Nunito', sans-serif" }}>
         {!hasProfiles && !showSetup ? (
           <div className="text-center space-y-4">
             <h1
@@ -169,14 +169,8 @@ const Index = () => {
           transition: transform 100ms ease !important;
         }
       `}</style>
-      <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center px-6 py-12" style={{ backgroundColor: '#FFFFFF', fontFamily: "'Nunito', sans-serif", position: 'relative' }}>
-        {/* Pastel background blocks */}
-        <div style={{ position: 'absolute', top: 12, left: 12, width: '44%', height: '42%', backgroundColor: '#B2DFDB', borderRadius: 14, zIndex: 0 }} />
-        <div style={{ position: 'absolute', top: 12, right: 12, width: '36%', height: '50%', backgroundColor: '#FFF9C4', borderRadius: 14, zIndex: 0 }} />
-        <div style={{ position: 'absolute', top: '52%', left: 12, width: '32%', height: '36%', backgroundColor: '#FFCDD2', borderRadius: 14, zIndex: 0 }} />
-        <div style={{ position: 'absolute', top: '40%', right: 12, width: '46%', height: '34%', backgroundColor: '#BBDEFB', borderRadius: 14, zIndex: 0 }} />
-        <div style={{ position: 'absolute', top: '22%', left: '40%', width: '22%', height: '22%', backgroundColor: '#B2DFDB', borderRadius: 14, zIndex: 0, opacity: 0.5 }} />
-      <div className="w-full max-w-2xl" style={{ position: 'relative', zIndex: 1 }}>
+      <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center px-6 py-12" style={{ backgroundColor: '#FAFAF8', fontFamily: "'Nunito', sans-serif" }}>
+      <div className="w-full max-w-2xl">
         <h1
           style={{
             fontFamily: 'var(--font-heading)',
@@ -217,7 +211,6 @@ const Index = () => {
                   cursor: 'pointer',
                   transition: 'transform 200ms ease, box-shadow 200ms ease',
                   boxSizing: 'border-box',
-                  boxShadow: '0 6px 20px rgba(0,0,0,0.08)',
                   animationDelay: `${Math.min(i, 2) * 120}ms`,
                 }}
                 onMouseEnter={(e) => {
@@ -340,7 +333,6 @@ const Index = () => {
               padding: '20px 12px',
               cursor: 'pointer',
               transition: 'transform 200ms ease, box-shadow 200ms ease',
-              boxShadow: '0 6px 20px rgba(0,0,0,0.08)',
               animationDelay: `${Math.min(profiles.length > 0 ? (profiles.length - 1) * 120 : 0, 240)}ms`,
             }}
             onMouseEnter={(e) => {
