@@ -118,7 +118,7 @@ const SplitStrategyLanding = () => {
           </p>
 
           {/* Section 5: Stacked buttons */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 320, margin: "0 auto 20px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, maxWidth: 320, margin: "0 auto 20px" }}>
             <Link to="/learn/split-strategy" className="ssl-learn-btn">
               Learn
               <span className="ssl-learn-sub">New to this? Start here</span>
