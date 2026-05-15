@@ -83,11 +83,15 @@ const SplitStrategyLanding = () => {
             <CurriculumBadge {...AC9M2N04_PROPS} pageName="Split Strategy Landing" />
           </div>
 
-          {/* Section 2: Hero visual — placeholder blob animation. To be replaced with proper illustrated asset when design is finalised. */}
-          <div className="ssl-blob-wrap mt-6">
-            <div className="ssl-blob-1" />
-            <div className="ssl-blob-2" />
-          </div>
+          <div className="ssl-layout mt-6">
+            <div>
+              {/* Section 2: Hero visual — placeholder blob animation. To be replaced with proper illustrated asset when design is finalised. */}
+              <div className="ssl-blob-wrap">
+                <div className="ssl-blob-1" />
+                <div className="ssl-blob-2" />
+              </div>
+            </div>
+            <div>
 
           {/* Section 3: Strategy name */}
           <h1
