@@ -40,15 +40,18 @@ const SplitStrategyLanding = () => {
           animation: morphB 4s ease-in-out infinite alternate-reverse;
         }
         .ssl-learn-btn {
-          background: #1A1A1A; color: #ffffff; border: none; border-radius: 16px;
+          background: #ffffff; color: #1A1A1A; border: 2px solid #1A1A1A; border-radius: 16px;
           padding: 18px; font-size: 16px; font-weight: 800; width: 100%; cursor: pointer;
           font-family: 'Nunito', sans-serif; text-align: center; text-decoration: none;
           display: block;
           animation: learnPulse 2.5s ease-in-out infinite;
         }
-        .ssl-learn-sub {
-          font-size: 11px; font-weight: 500; opacity: 0.6; display: block; margin-top: 3px;
+        .ssl-learn-btn-done {
+          background: #F5F5F5; color: #AAAAAA; border: 2px solid #E8E8E8;
+          animation: none;
         }
+        .ssl-learn-sub { font-size: 11px; font-weight: 500; color: #666666; display: block; margin-top: 3px; }
+        .ssl-learn-sub-done { color: #AAAAAA; }
         .ssl-practise-btn {
           background: #ffffff; color: #1A1A1A; border: 2px solid #E8E0D4;
           border-radius: 16px; padding: 16px; font-size: 15px; font-weight: 700;
