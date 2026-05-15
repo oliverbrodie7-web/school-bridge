@@ -1339,159 +1339,216 @@ const HQEParentPractice = () => {
 };
 
 const HalvesQuartersEighthsParentGuide = () => (
-  <div className="flex min-h-screen flex-col items-center px-6 py-12">
-    <div className="w-full max-w-2xl">
-      <Link
-        to="/halves-quarters-eighths"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
-      >
-        ← Back
-      </Link>
+  <>
+    <style>{`
+      .hqepg-page {
+        background: #FFF8EC;
+        min-height: 100vh;
+        font-family: 'Nunito', sans-serif;
+      }
+      .hqepg, .hqepg * { font-family: 'Nunito', sans-serif; }
+      .hqepg h1, .hqepg h2 {
+        color: #1A1A1A !important;
+        font-weight: 800 !important;
+      }
+      .hqepg h3 {
+        color: #666666 !important;
+        font-weight: 600 !important;
+      }
+      .hqepg p, .hqepg .text-muted-foreground {
+        color: #555555 !important;
+        font-weight: 500 !important;
+      }
+      .hqepg .text-foreground { color: #1A1A1A !important; }
+      .hqepg hr {
+        border: none !important;
+        border-top: 1px solid #E8E0D4 !important;
+        height: 1px;
+      }
+      /* Phrase + mistake cards (bg-card) — keep callout (bg-muted) untouched */
+      .hqepg .rounded-xl.bg-card {
+        background: #ffffff !important;
+        border: 1.5px solid #E8E0D4 !important;
+        border-radius: 16px !important;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06) !important;
+      }
+      .hqepg .rounded-xl.bg-card .text-xs.font-bold.uppercase {
+        color: #1A1A1A !important;
+        font-weight: 700 !important;
+      }
+      .hqepg .rounded-xl.bg-card p.font-medium {
+        color: #1A1A1A !important;
+        font-weight: 700 !important;
+      }
+      /* Curriculum badge — entry-point warm palette */
+      .hqepg-badge-warm > div > button {
+        background-color: #F5F0E8 !important;
+        border: 1px solid #D4C9B8 !important;
+        color: #1A1A1A !important;
+      }
+      .hqepg-badge-warm > div > button:hover { background-color: #EDE6D7 !important; }
+      .hqepg-badge-warm > div > button > div > span:nth-child(1) {
+        color: #888888 !important;
+      }
+      .hqepg-badge-warm > div > button > div > span:nth-child(2) {
+        color: #1A1A1A !important;
+      }
+      .hqepg-badge-warm > div > button > svg { color: #888888 !important; }
+      /* Open student lesson button */
+      .hqepg-cta-btn {
+        background: #ffffff;
+        border: 2px solid #1A1A1A;
+        border-radius: 99px;
+        padding: 10px 24px;
+        font-size: 14px;
+        font-weight: 700;
+        color: #1A1A1A;
+        font-family: 'Nunito', sans-serif;
+        text-decoration: none;
+        display: inline-block;
+        transition: background 200ms ease;
+      }
+      .hqepg-cta-btn:hover { background: #F5F0E8; }
+    `}</style>
 
-      {/* SECTION 1 — REASSURANCE */}
-      <section className="relative mt-8">
-        <div className="flex justify-end mb-3 -mr-4 sm:-mr-10">
-          <CurriculumBadge {...AC9M2N03_PROPS} pageName="Parent Guide HQE" />
-        </div>
-        <h1
-          className="text-2xl font-bold text-foreground sm:text-3xl leading-tight pr-24"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
-          Fractions look different now than when you were at school.
-        </h1>
-        <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-          If your child came home talking about halves and quarters and you weren't sure how to help — you're not alone. Australian schools now teach fractions by connecting them to equal parts of real objects before ever writing a number. This guide will show you exactly what your child is learning and how to support them at home.
-        </p>
-      </section>
-
-      <hr className="my-10 border-border" />
-
-      {/* SECTION 2 — WHAT IS THIS TOPIC? */}
-      <section>
-        <h2
-          className="text-xl font-bold text-foreground sm:text-2xl"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
-          What are halves, quarters and eighths?
-        </h2>
-        <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-          Your child is learning that a fraction is only a fraction if all parts are equal. A half means 1 of 2 equal parts. A quarter means 1 of 4 equal parts — made by halving twice. An eighth means 1 of 8 equal parts — made by halving three times. This is called <span className="font-semibold text-foreground">repeated halving</span>.
-        </p>
-
-        <h3
-          className="mt-8 text-lg font-bold text-foreground"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
-          Concrete, Pictorial, Abstract
-        </h3>
-        <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-          Your child's teacher uses a three-step approach called Concrete, Pictorial, Abstract. First, children handle real objects — folding paper, cutting food, splitting groups of counters — to feel what equal parts mean. Then they draw and see pictures of those splits. Finally, they write the fraction as a number.
-        </p>
-        <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-          At home, try the Concrete stage first. Get a real pizza or a chocolate bar and ask your child to share it into equal parts before coming to this screen. Cutting a real pizza into quarters, or snapping a chocolate bar into equal pieces, is the physical experience that makes fractions stick. The screen shows the picture — the kitchen table provides the real thing.
-        </p>
-
-        <div className="mt-8">
-          <HQEDemoAnimation />
-        </div>
-
-        <div className="mt-6 rounded-xl border-l-4 border-foreground/20 bg-muted p-5 sm:p-6">
-          <p className="text-sm leading-relaxed text-foreground/80">
-            The most important thing your child is learning is not what 1/4 looks like — it is that a fraction only works when all parts are exactly equal. An unequal slice is not a fraction at all. Next time you share a pizza or break a chocolate bar, ask your child: are all the pieces the same size? That question is the foundation of all fraction work through to high school.
-          </p>
-        </div>
-      </section>
-
-      <hr className="my-10 border-border" />
-
-      {/* SECTION 3 — HOW TO USE WITH YOUR CHILD */}
-      <section>
-        <h2
-          className="text-xl font-bold text-foreground sm:text-2xl"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
-          Sitting down with your child? Here's exactly what to say.
-        </h2>
-
-        <div className="mt-6 space-y-4">
-          <Card title="Getting started">
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              <span className="font-semibold text-foreground">Say this:</span> "Before we write the fraction, let's split the shape. How many equal parts do we need? Are all the parts the same size?"
-            </p>
-          </Card>
-
-          <Card title="If they're stuck">
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              <span className="font-semibold text-foreground">Say this:</span> "Let's use a real chocolate bar instead. Snap it into equal pieces — how many pieces did you make? Are they all the same size?"
-            </p>
-          </Card>
-
-          <Card title="When they get it wrong">
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              <span className="font-semibold text-foreground">Don't say:</span> "That's wrong."
-            </p>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              <span className="font-semibold text-foreground">Do say:</span> "Are all the parts exactly the same size? If not, it's not a fraction yet — let's try splitting it more carefully."
-            </p>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground italic">
-              Remember: equal parts is the whole point.
-            </p>
-          </Card>
-        </div>
-
-        <h3
-          className="mt-10 text-lg font-bold text-foreground"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
-          Common mistakes to watch for:
-        </h3>
-
-        <div className="mt-4 space-y-4">
-          <MistakeCard
-            mistake="Your child splits a shape into unequal parts and calls it a half."
-            explanation="They understand the idea of splitting but haven't yet connected fractions to equal parts."
-            suggestion={`"Are both slices exactly the same size? If one slice is bigger, it's not a half yet — let's try cutting it more carefully."`}
-          />
-          <MistakeCard
-            mistake="Your child confuses the number of shaded parts with the fraction (e.g. shades 2 of 4 parts and says '2' instead of 2/4)."
-            explanation="They haven't yet connected the fraction notation to the number of equal parts."
-            suggestion={`"How many parts did we split it into altogether? That's the bottom number. How many did we shade? That's the top number."`}
-          />
-        </div>
-      </section>
-
-      <hr className="my-10 border-border" />
-
-      {/* SECTION 4 — OPTIONAL PRACTICE */}
-      <section className="pb-12">
-        <h2
-          className="text-xl font-bold text-foreground sm:text-2xl"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
-          Want to try one yourself?
-        </h2>
-        <p className="mt-3 text-base text-muted-foreground">
-          Trying it yourself makes it much easier to explain to your child.
-        </p>
-
-        <div className="mt-6">
-          <HQEParentPractice />
-        </div>
-
-        <div className="mt-10 rounded-xl border border-border bg-card p-6 text-center">
-          <p className="text-base font-medium text-foreground">
-            Ready to sit with your child?
-          </p>
+    <div className="hqepg-page">
+      <div className="hqepg flex flex-col items-center px-6 py-12">
+        <div className="w-full max-w-2xl">
           <Link
-            to="/learn/halves-quarters-eighths"
-            className="mt-4 inline-block rounded-xl bg-foreground px-6 py-3.5 text-base font-semibold text-background transition-colors hover:bg-foreground/90"
+            to="/halves-quarters-eighths"
+            className="inline-flex items-center gap-1 text-sm transition-colors"
+            style={{ color: "#999999", fontSize: 13, fontWeight: 600 }}
           >
-            Open the student lesson
+            ← Back
           </Link>
+
+          {/* SECTION 1 — REASSURANCE */}
+          <section className="relative mt-8">
+            <div className="flex justify-end mb-3 -mr-4 sm:-mr-10">
+              <span className="hqepg-badge-warm">
+                <CurriculumBadge {...AC9M2N03_PROPS} pageName="Parent Guide HQE" />
+              </span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl leading-tight pr-24">
+              Fractions look different now than when you were at school.
+            </h1>
+            <p className="mt-4 text-base leading-relaxed">
+              If your child came home talking about halves and quarters and you weren't sure how to help — you're not alone. Australian schools now teach fractions by connecting them to equal parts of real objects before ever writing a number. This guide will show you exactly what your child is learning and how to support them at home.
+            </p>
+          </section>
+
+          <hr className="my-10" />
+
+          {/* SECTION 2 — WHAT IS THIS TOPIC? */}
+          <section>
+            <h2 className="text-xl sm:text-2xl">
+              What are halves, quarters and eighths?
+            </h2>
+            <p className="mt-4 text-base leading-relaxed">
+              Your child is learning that a fraction is only a fraction if all parts are equal. A half means 1 of 2 equal parts. A quarter means 1 of 4 equal parts — made by halving twice. An eighth means 1 of 8 equal parts — made by halving three times. This is called <span className="font-semibold text-foreground">repeated halving</span>.
+            </p>
+
+            <h3 className="mt-8 text-lg">
+              Concrete, Pictorial, Abstract
+            </h3>
+            <p className="mt-3 text-base leading-relaxed">
+              Your child's teacher uses a three-step approach called Concrete, Pictorial, Abstract. First, children handle real objects — folding paper, cutting food, splitting groups of counters — to feel what equal parts mean. Then they draw and see pictures of those splits. Finally, they write the fraction as a number.
+            </p>
+            <p className="mt-3 text-base leading-relaxed">
+              At home, try the Concrete stage first. Get a real pizza or a chocolate bar and ask your child to share it into equal parts before coming to this screen. Cutting a real pizza into quarters, or snapping a chocolate bar into equal pieces, is the physical experience that makes fractions stick. The screen shows the picture — the kitchen table provides the real thing.
+            </p>
+
+            <div className="mt-8">
+              <HQEDemoAnimation />
+            </div>
+
+            <div className="mt-6 rounded-xl border-l-4 border-foreground/20 bg-muted p-5 sm:p-6">
+              <p className="text-sm leading-relaxed text-foreground/80">
+                The most important thing your child is learning is not what 1/4 looks like — it is that a fraction only works when all parts are exactly equal. An unequal slice is not a fraction at all. Next time you share a pizza or break a chocolate bar, ask your child: are all the pieces the same size? That question is the foundation of all fraction work through to high school.
+              </p>
+            </div>
+          </section>
+
+          <hr className="my-10" />
+
+          {/* SECTION 3 — HOW TO USE WITH YOUR CHILD */}
+          <section>
+            <h2 className="text-xl sm:text-2xl">
+              Sitting down with your child? Here's exactly what to say.
+            </h2>
+
+            <div className="mt-6 space-y-4">
+              <Card title="Getting started">
+                <p className="text-sm leading-relaxed">
+                  <span className="font-semibold text-foreground">Say this:</span> "Before we write the fraction, let's split the shape. How many equal parts do we need? Are all the parts the same size?"
+                </p>
+              </Card>
+
+              <Card title="If they're stuck">
+                <p className="text-sm leading-relaxed">
+                  <span className="font-semibold text-foreground">Say this:</span> "Let's use a real chocolate bar instead. Snap it into equal pieces — how many pieces did you make? Are they all the same size?"
+                </p>
+              </Card>
+
+              <Card title="When they get it wrong">
+                <p className="text-sm leading-relaxed">
+                  <span className="font-semibold text-foreground">Don't say:</span> "That's wrong."
+                </p>
+                <p className="mt-2 text-sm leading-relaxed">
+                  <span className="font-semibold text-foreground">Do say:</span> "Are all the parts exactly the same size? If not, it's not a fraction yet — let's try splitting it more carefully."
+                </p>
+                <p className="mt-2 text-sm leading-relaxed italic">
+                  Remember: equal parts is the whole point.
+                </p>
+              </Card>
+            </div>
+
+            <h3 className="mt-10 text-lg">
+              Common mistakes to watch for:
+            </h3>
+
+            <div className="mt-4 space-y-4">
+              <MistakeCard
+                mistake="Your child splits a shape into unequal parts and calls it a half."
+                explanation="They understand the idea of splitting but haven't yet connected fractions to equal parts."
+                suggestion={`"Are both slices exactly the same size? If one slice is bigger, it's not a half yet — let's try cutting it more carefully."`}
+              />
+              <MistakeCard
+                mistake="Your child confuses the number of shaded parts with the fraction (e.g. shades 2 of 4 parts and says '2' instead of 2/4)."
+                explanation="They haven't yet connected the fraction notation to the number of equal parts."
+                suggestion={`"How many parts did we split it into altogether? That's the bottom number. How many did we shade? That's the top number."`}
+              />
+            </div>
+          </section>
+
+          <hr className="my-10" />
+
+          {/* SECTION 4 — OPTIONAL PRACTICE */}
+          <section className="pb-12">
+            <h2 className="text-xl sm:text-2xl">
+              Want to try one yourself?
+            </h2>
+            <p className="mt-3 text-base">
+              Trying it yourself makes it much easier to explain to your child.
+            </p>
+
+            <div className="mt-6">
+              <HQEParentPractice />
+            </div>
+
+            <div className="mt-10 rounded-xl bg-card p-6 text-center">
+              <p className="text-base font-medium">
+                Ready to sit with your child?
+              </p>
+              <Link to="/learn/halves-quarters-eighths" className="hqepg-cta-btn mt-4">
+                Open the student lesson
+              </Link>
+            </div>
+          </section>
         </div>
-      </section>
+      </div>
     </div>
-  </div>
+  </>
 );
 
 /* ═══════════════════════════════════════════════════
