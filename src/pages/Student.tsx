@@ -24,8 +24,13 @@ const topics: TopicCard[] = [
 const Student = () => {
   const [tappedTopic, setTappedTopic] = useState<string | null>(null);
 
+  // Track index for stagger delay across active cards only
+  let activeIndex = -1;
+
   const renderCard = (topic: TopicCard) => {
     const isActive = topic.active && topic.to;
+    if (isActive) activeIndex += 1;
+    const delayMs = isActive ? activeIndex * 80 : 0;
 
     const iconTile = (
       <div
@@ -35,10 +40,10 @@ const Student = () => {
           width: 44,
           height: 44,
           borderRadius: 12,
-          backgroundColor: isActive ? "var(--colour-active-light)" : "hsl(var(--colour-coming-soon-bg))",
-          color: isActive ? "var(--colour-active-dark)" : "hsl(var(--colour-coming-soon-text))",
+          backgroundColor: isActive ? "#F0EBE1" : "var(--colour-border)",
+          color: isActive ? "var(--colour-heading)" : "var(--colour-muted)",
           fontSize: topic.symbol.length > 1 ? 14 : 20,
-          fontWeight: 600,
+          fontWeight: 700,
         }}
       >
         {topic.symbol}
@@ -48,36 +53,70 @@ const Student = () => {
     const content = (
       <>
         {iconTile}
-        <span style={{ fontSize: "var(--font-topic-name-size)", fontWeight: "var(--font-topic-name)", marginTop: 10, color: isActive ? "hsl(var(--foreground))" : "hsl(var(--colour-coming-soon-text))" }}>
+        <span
+          style={{
+            fontSize: "var(--font-size-body)",
+            fontWeight: isActive ? "var(--font-weight-heading)" : "var(--font-weight-label)",
+            marginTop: 10,
+            color: isActive ? "var(--colour-heading)" : "var(--colour-muted)",
+            fontFamily: "var(--font-family)",
+          }}
+        >
           {topic.name}
         </span>
-        <span style={{ fontSize: "var(--font-description-size)", lineHeight: "var(--font-description-lh)", fontWeight: "var(--font-description-weight)", marginTop: 4, color: "hsl(var(--muted-foreground))", textAlign: "center" }}>
+        <span
+          style={{
+            fontSize: "var(--font-size-small)",
+            lineHeight: 1.4,
+            fontWeight: "var(--font-weight-body)",
+            marginTop: 4,
+            color: isActive ? "var(--colour-subheading)" : "var(--colour-muted)",
+            textAlign: "center",
+            fontFamily: "var(--font-family)",
+          }}
+        >
           {topic.description}
         </span>
         {!isActive && (
-          <span style={{ fontSize: "var(--font-badge-size)", fontWeight: "var(--font-badge-weight)", marginTop: 8, backgroundColor: "hsl(var(--colour-coming-soon-bg))", color: "hsl(var(--colour-coming-soon-text))", borderRadius: 6, padding: "2px 6px" }}>
+          <span
+            style={{
+              fontSize: "var(--font-size-pill)",
+              fontWeight: "var(--font-weight-label)",
+              marginTop: 8,
+              backgroundColor: "var(--colour-pill-bg)",
+              color: "var(--colour-pill-text)",
+              border: "1px solid var(--colour-pill-border)",
+              borderRadius: "var(--border-radius-pill)",
+              padding: "2px 10px",
+            }}
+          >
             Coming soon
           </span>
         )}
         {!isActive && tappedTopic === topic.name && (
-          <span className="animate-fade-in" style={{ fontSize: "var(--font-description-size)", marginTop: 6, color: "hsl(var(--muted-foreground))", textAlign: "center" }}>
+          <span
+            className="animate-fade-in"
+            style={{
+              fontSize: "var(--font-size-small)",
+              marginTop: 6,
+              color: "var(--colour-muted)",
+              textAlign: "center",
+            }}
+          >
             We're building this now — check back soon!
           </span>
         )}
       </>
     );
 
-    const cardStyle: React.CSSProperties = {
+    const baseStyle: React.CSSProperties = {
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
-      padding: "16px 12px",
-      borderRadius: "var(--colour-card-radius)",
-      border: isActive ? `0.5px solid var(--colour-active-border)` : `0.5px solid hsl(var(--colour-card-border))`,
-      backgroundColor: "var(--colour-card-bg)",
+      padding: "var(--card-padding)",
+      borderRadius: "var(--border-radius-card)",
       textDecoration: "none",
-      transition: "background-color 0.15s",
-      cursor: "pointer",
+      fontFamily: "var(--font-family)",
     };
 
     if (isActive) {
@@ -85,8 +124,15 @@ const Student = () => {
         <Link
           key={topic.name}
           to={topic.to!}
-          className="hover:bg-[var(--colour-card-hover-active)]"
-          style={cardStyle}
+          className="topic-card-active"
+          style={{
+            ...baseStyle,
+            backgroundColor: "var(--colour-card-bg)",
+            border: "2px solid #1A1A1A",
+            boxShadow: "var(--shadow-card)",
+            cursor: "pointer",
+            animationDelay: `${delayMs}ms`,
+          }}
         >
           {content}
         </Link>
@@ -97,8 +143,13 @@ const Student = () => {
       <button
         key={topic.name}
         onClick={() => setTappedTopic(tappedTopic === topic.name ? null : topic.name)}
-        className="hover:bg-[var(--colour-card-hover-inactive)]"
-        style={{ ...cardStyle, cursor: "default" }}
+        style={{
+          ...baseStyle,
+          backgroundColor: "var(--colour-card-bg-muted)",
+          border: "1.5px solid var(--colour-border)",
+          opacity: 0.65,
+          cursor: "default",
+        }}
       >
         {content}
       </button>
@@ -106,32 +157,74 @@ const Student = () => {
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center px-6 py-12">
-      <div className="w-full max-w-4xl">
-        <Link
-          to="/home"
-          className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
-        >
-          ← Back
-        </Link>
+    <>
+      <style>{`
+        @keyframes bounceIn {
+          from { transform: scale(0.6) translateY(30px); opacity: 0; }
+          to   { transform: scale(1) translateY(0); opacity: 1; }
+        }
+        .topic-card-active {
+          animation: var(--animation-bounce-in);
+          transition: var(--transition-hover);
+        }
+        .topic-card-active:hover {
+          transform: var(--animation-hover-transform);
+          box-shadow: var(--shadow-card-hover);
+        }
+        .topic-card-active:active {
+          transform: var(--animation-press-transform);
+          transition: var(--transition-press);
+        }
+      `}</style>
 
-        <div className="mt-8 text-center">
-          <h1
-            className="text-3xl font-bold text-foreground sm:text-4xl"
-            style={{ fontFamily: "var(--font-heading)" }}
+      <div
+        className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center px-6 py-12"
+        style={{ backgroundColor: "var(--colour-page-bg)" }}
+      >
+        <div className="w-full max-w-4xl">
+          <Link
+            to="/home"
+            className="inline-flex items-center gap-1 transition-colors"
+            style={{
+              color: "var(--colour-muted)",
+              fontSize: "var(--font-size-label)",
+              fontWeight: "var(--font-weight-label)",
+              fontFamily: "var(--font-family)",
+            }}
           >
-            Year 2 Maths
-          </h1>
-          <p className="mt-3 text-lg text-muted-foreground">
-            What would you like to work on?
-          </p>
-        </div>
+            ← Back
+          </Link>
 
-        <div className="mt-10 grid gap-[10px] grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-          {topics.map(renderCard)}
+          <div className="mt-8 text-center">
+            <h1
+              style={{
+                fontFamily: "var(--font-family)",
+                fontSize: "var(--font-size-heading-xl)",
+                fontWeight: "var(--font-weight-heading)",
+                color: "var(--colour-heading)",
+              }}
+            >
+              Year 2 Maths
+            </h1>
+            <p
+              className="mt-3"
+              style={{
+                fontSize: "var(--font-size-subheading)",
+                fontWeight: "var(--font-weight-body)",
+                color: "var(--colour-subheading)",
+                fontFamily: "var(--font-family)",
+              }}
+            >
+              What would you like to work on?
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-[10px] grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+            {topics.map(renderCard)}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
