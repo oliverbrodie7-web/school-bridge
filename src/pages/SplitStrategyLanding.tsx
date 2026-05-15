@@ -166,10 +166,10 @@ const SplitStrategyLanding = () => {
                 style={{
                   background: "#ffffff",
                   border: "1.5px solid #E8E0D4",
-                  borderRadius: 10,
-                  padding: "8px 14px",
+                  borderRadius: 8,
+                  padding: "6px 12px",
                   width: "100%",
-                  maxWidth: 320,
+                  maxWidth: 160,
                   margin: "0 auto",
                   display: "flex",
                   alignItems: "center",
@@ -190,14 +190,14 @@ const SplitStrategyLanding = () => {
                 }}
               >
                 <div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: "#1A1A1A", fontFamily: "'Nunito', sans-serif" }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: "#1A1A1A", fontFamily: "'Nunito', sans-serif" }}>
                     Parent Guide
                   </div>
-                  <div style={{ fontSize: 10, fontWeight: 500, color: "#999999", marginTop: 2, fontFamily: "'Nunito', sans-serif" }}>
+                  <div style={{ fontSize: 9, fontWeight: 500, color: "#999999", marginTop: 2, fontFamily: "'Nunito', sans-serif" }}>
                     Understand what your child is learning
                   </div>
                 </div>
-                <div style={{ fontSize: 13, color: "#CCCCCC", fontFamily: "'Nunito', sans-serif" }}>
+                <div style={{ fontSize: 11, color: "#CCCCCC", fontFamily: "'Nunito', sans-serif" }}>
                   →
                 </div>
               </Link>
