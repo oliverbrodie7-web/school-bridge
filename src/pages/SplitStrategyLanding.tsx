@@ -16,121 +16,145 @@ const SplitStrategyLanding = () => {
   return (
     <>
       <style>{`
-        .entry-btn-primary {
-          background: var(--btn-primary-bg);
-          color: var(--btn-primary-text);
-          border-radius: var(--btn-primary-radius);
-          padding: var(--btn-primary-padding);
-          font-size: var(--btn-primary-font-size);
-          font-weight: var(--btn-primary-font-weight);
-          font-family: var(--font-family);
-          border: none;
-          box-shadow: var(--shadow-card);
-          cursor: pointer;
-          display: inline-block;
-          text-decoration: none;
-          transition: opacity 200ms ease, transform 100ms ease;
+        @keyframes morphA {
+          from { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+          to   { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
         }
-        .entry-btn-primary:hover { opacity: 0.85; }
-        .entry-btn-primary:active { transform: scale(0.97); }
-        .entry-btn-secondary {
-          background: var(--btn-secondary-bg);
-          border: var(--btn-secondary-border);
-          color: var(--btn-secondary-text);
-          border-radius: var(--btn-secondary-radius);
-          padding: var(--btn-secondary-padding);
-          font-weight: var(--font-weight-label);
-          font-family: var(--font-family);
-          cursor: pointer;
-          display: inline-block;
-          text-decoration: none;
-          transition: background 200ms ease, transform 100ms ease;
+        @keyframes morphB {
+          from { border-radius: 40% 60% 60% 40% / 40% 40% 60% 60%; }
+          to   { border-radius: 60% 40% 40% 60% / 60% 60% 40% 40%; }
         }
-        .entry-btn-secondary:hover { background: #F0EBE1; }
-        .entry-btn-secondary:active { transform: scale(0.97); }
+        @keyframes learnPulse {
+          0%, 100% { box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+          50%      { box-shadow: 0 4px 24px rgba(0,0,0,0.35), 0 0 0 6px rgba(0,0,0,0.06); }
+        }
+        .ssl-blob-wrap { width: 200px; height: 200px; position: relative; margin: 0 auto 8px; }
+        .ssl-blob-1 {
+          width: 160px; height: 160px; position: absolute; top: 0; left: 20px;
+          background: #C8E6C9;
+          animation: morphA 4s ease-in-out infinite alternate;
+        }
+        .ssl-blob-2 {
+          width: 120px; height: 120px; position: absolute; top: 20px; left: 20px;
+          background: #6BBF8A; opacity: 0.75;
+          animation: morphB 4s ease-in-out infinite alternate-reverse;
+        }
+        .ssl-learn-btn {
+          background: #1A1A1A; color: #ffffff; border: none; border-radius: 16px;
+          padding: 18px; font-size: 16px; font-weight: 800; width: 100%; cursor: pointer;
+          font-family: 'Nunito', sans-serif; text-align: center; text-decoration: none;
+          display: block;
+          animation: learnPulse 2.5s ease-in-out infinite;
+        }
+        .ssl-learn-sub {
+          font-size: 11px; font-weight: 500; opacity: 0.6; display: block; margin-top: 3px;
+        }
+        .ssl-practise-btn {
+          background: #ffffff; color: #1A1A1A; border: 2px solid #E8E0D4;
+          border-radius: 16px; padding: 16px; font-size: 15px; font-weight: 700;
+          width: 100%; cursor: pointer; font-family: 'Nunito', sans-serif;
+          text-align: center; text-decoration: none; display: block;
+          transition: background 150ms ease, transform 100ms ease;
+        }
+        .ssl-practise-btn:hover { background: #F5F0E8; }
+        .ssl-practise-btn:active { transform: scale(0.98); }
       `}</style>
-      <div
-        className="flex min-h-screen flex-col items-center px-6 py-12"
-        style={{ backgroundColor: "var(--colour-page-bg)" }}
-      >
-        <div className="w-full max-w-md">
-          <Link
-            to="/student/addition"
-            className="inline-flex items-center gap-1 transition-colors"
-            style={{
-              color: "var(--colour-muted)",
-              fontSize: "var(--font-size-label)",
-              fontWeight: "var(--font-weight-label)",
-              fontFamily: "var(--font-family)",
-            }}
-          >
-            ← Back
-          </Link>
 
-          <div className="relative mt-8">
-            <div className="flex justify-end mb-3 -mr-4 sm:-mr-10">
-              <CurriculumBadge {...AC9M2N04_PROPS} pageName="Split Strategy Landing" />
-            </div>
-            <div className="text-center">
-              <h1
-                style={{
-                  fontFamily: "var(--font-family)",
-                  fontSize: "var(--font-size-heading-xl)",
-                  fontWeight: "var(--font-weight-heading)",
-                  color: "var(--colour-heading)",
-                }}
-              >
-                Split Strategy
-              </h1>
-              <p
-                className="mt-3"
-                style={{
-                  fontSize: "var(--font-size-subheading)",
-                  fontWeight: "var(--font-weight-body)",
-                  color: "var(--colour-subheading)",
-                  fontFamily: "var(--font-family)",
-                }}
-              >
-                The split strategy breaks numbers into tens and ones to make addition easier.
-              </p>
-            </div>
+      <div style={{ backgroundColor: "#FFF8EC", minHeight: "100vh" }}>
+        <div style={{ maxWidth: 560, margin: "0 auto", padding: "0 24px 40px" }}>
+          {/* Section 1: Header row */}
+          <div className="flex items-start justify-between pt-6">
+            <Link
+              to="/student/addition"
+              style={{ fontSize: 13, fontWeight: 600, color: "#999999", fontFamily: "'Nunito', sans-serif", textDecoration: "none" }}
+            >
+              ← Back
+            </Link>
+            <CurriculumBadge {...AC9M2N04_PROPS} pageName="Split Strategy Landing" />
           </div>
 
-          <div className="text-center space-y-8 mt-8">
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-center sm:items-start">
-              <Link to="/learn/split-strategy" className="entry-btn-primary">Learn</Link>
-              <div className="flex flex-col items-center">
-                <Link to="/practise/split-strategy" className="entry-btn-secondary">Practise</Link>
-                {learnComplete && (
-                  <p
-                    className="mt-3 max-w-[260px] animate-fade-in"
-                    style={{
-                      background: "#FFF3E0",
-                      border: "1px solid #F4A261",
-                      borderRadius: 12,
-                      padding: "10px 16px",
-                      fontSize: "var(--font-size-label)",
-                      color: "var(--colour-body)",
-                      fontFamily: "var(--font-family)",
-                    }}
-                  >
-                    Welcome back — looks like you've already done the lesson. Ready to practise on your own?
-                  </p>
-                )}
-              </div>
-            </div>
+          {/* Section 2: Hero visual — placeholder blob animation. To be replaced with proper illustrated asset when design is finalised. */}
+          <div className="ssl-blob-wrap mt-6">
+            <div className="ssl-blob-1" />
+            <div className="ssl-blob-2" />
+          </div>
 
-            <Link
-              to="/parent?strategy=split"
-              className="inline-block transition-colors"
+          {/* Section 3: Strategy name */}
+          <h1
+            style={{
+              fontFamily: "'Nunito', sans-serif",
+              fontSize: 28,
+              fontWeight: 800,
+              color: "#1A1A1A",
+              textAlign: "center",
+              marginBottom: 8,
+              letterSpacing: "-0.02em",
+            }}
+          >
+            Split Strategy
+          </h1>
+
+          {/* Section 4: Description */}
+          <p
+            style={{
+              fontSize: 15,
+              fontWeight: 500,
+              color: "#666666",
+              textAlign: "center",
+              lineHeight: 1.5,
+              maxWidth: 320,
+              margin: "0 auto 28px",
+              fontFamily: "'Nunito', sans-serif",
+            }}
+          >
+            The split strategy breaks numbers into tens and ones to make addition easier.
+          </p>
+
+          {/* Section 5: Stacked buttons */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 320, margin: "0 auto 20px" }}>
+            <Link to="/learn/split-strategy" className="ssl-learn-btn">
+              Learn
+              <span className="ssl-learn-sub">New to this? Start here</span>
+            </Link>
+            <Link to="/practise/split-strategy" className="ssl-practise-btn">
+              Practise
+            </Link>
+          </div>
+
+          {/* Section 6: Returning nudge */}
+          {learnComplete && (
+            <div
+              className="animate-fade-in"
               style={{
-                color: "var(--colour-muted)",
-                fontSize: "var(--font-size-label)",
-                fontWeight: "var(--font-weight-label)",
-                fontFamily: "var(--font-family)",
+                background: "#FFF3E0",
+                border: "1.5px solid #F4A261",
+                borderRadius: 14,
+                padding: "12px 16px",
+                fontSize: 13,
+                color: "#555555",
+                textAlign: "center",
+                maxWidth: 320,
+                margin: "0 auto 16px",
+                fontFamily: "'Nunito', sans-serif",
               }}
             >
-              Parent Guide
+              Welcome back — looks like you've already done the lesson. Ready to practise on your own?
+            </div>
+          )}
+
+          {/* Section 7: Parent Guide link */}
+          <div style={{ textAlign: "center" }}>
+            <Link
+              to="/parent?strategy=split"
+              style={{
+                fontSize: 12,
+                fontWeight: 600,
+                color: "#999999",
+                fontFamily: "'Nunito', sans-serif",
+                textDecoration: "none",
+              }}
+            >
+              Parent Guide →
             </Link>
           </div>
         </div>
