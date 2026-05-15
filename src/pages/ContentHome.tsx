@@ -48,7 +48,7 @@ const ContentHome = () => {
   return (
     <>
       <style>{`
-        @keyframes bounceInContent {
+        @keyframes bounceIn {
           from { transform: scale(0.6) translateY(30px); opacity: 0; }
           to   { transform: scale(1) translateY(0); opacity: 1; }
         }
@@ -64,7 +64,7 @@ const ContentHome = () => {
           transition: var(--transition-press);
         }
         .subject-card-anim {
-          animation: bounceInContent 500ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+          animation: var(--animation-bounce-in);
         }
         .icon-tile {
           width: 44px;
