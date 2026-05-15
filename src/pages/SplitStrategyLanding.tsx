@@ -28,14 +28,14 @@ const SplitStrategyLanding = () => {
           0%, 100% { box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
           50%      { box-shadow: 0 4px 24px rgba(0,0,0,0.35), 0 0 0 6px rgba(0,0,0,0.06); }
         }
-        .ssl-blob-wrap { width: 200px; height: 200px; position: relative; margin: 0 auto 8px; }
+        .ssl-blob-wrap { width: 140px; height: 140px; position: relative; margin: 0 auto 16px; }
         .ssl-blob-1 {
-          width: 160px; height: 160px; position: absolute; top: 0; left: 20px;
+          width: 120px; height: 120px; position: absolute; top: 0; left: 10px;
           background: #C8E6C9;
           animation: morphA 4s ease-in-out infinite alternate;
         }
         .ssl-blob-2 {
-          width: 120px; height: 120px; position: absolute; top: 20px; left: 20px;
+          width: 90px; height: 90px; position: absolute; top: 15px; left: 15px;
           background: #6BBF8A; opacity: 0.75;
           animation: morphB 4s ease-in-out infinite alternate-reverse;
         }
