@@ -20,7 +20,7 @@ const FractionsStrategies = () => {
         }
         .frac-card {
           background: #ffffff;
-          border: 2px solid #1A1A1A;
+          border: 1.5px solid #D4C9B8;
           border-radius: 22px;
           padding: 24px 16px;
           box-shadow: 0 2px 12px rgba(0,0,0,0.06);

@@ -128,7 +128,7 @@ const Student = () => {
           style={{
             ...baseStyle,
             backgroundColor: "var(--colour-card-bg)",
-            border: "2px solid #1A1A1A",
+            border: "1.5px solid #D4C9B8",
             boxShadow: "var(--shadow-card)",
             cursor: "pointer",
             animationDelay: `${delayMs}ms`,
