@@ -110,7 +110,7 @@ const SplitStrategyLanding = () => {
               textAlign: "center",
               lineHeight: 1.5,
               maxWidth: 320,
-              margin: "0 auto 28px",
+              margin: "0 auto 20px",
               fontFamily: "'Nunito', sans-serif",
             }}
           >
