@@ -61,9 +61,16 @@ const SplitStrategyLanding = () => {
       `}</style>
 
       <div style={{ backgroundColor: "#FFF8EC", minHeight: "100vh" }}>
-        <div style={{ maxWidth: 560, margin: "0 auto", padding: "0 24px 40px" }}>
+        <div style={{ maxWidth: 480, margin: "0 auto", padding: "16px 24px 32px" }}>
           {/* Section 1: Header row */}
-          <div className="flex items-start justify-between pt-6">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: "14px 24px",
+            }}
+          >
             <Link
               to="/student/addition"
               style={{ fontSize: 13, fontWeight: 600, color: "#999999", fontFamily: "'Nunito', sans-serif", textDecoration: "none" }}
