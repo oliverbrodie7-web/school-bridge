@@ -149,7 +149,7 @@ const ContentHome = () => {
                 style={{
                   backgroundColor: "var(--colour-card-bg)",
                   borderRadius: "var(--border-radius-card)",
-                  border: "2px solid #1A1A1A",
+                  border: "1.5px solid #D4C9B8",
                   padding: "var(--card-padding)",
                   boxShadow: "var(--shadow-card)",
                   cursor: "pointer",

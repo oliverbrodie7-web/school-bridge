@@ -94,7 +94,7 @@ const AdditionStrategies = () => {
                 className={`${s.className} strategy-card flex flex-col items-center text-center`}
                 style={{
                   backgroundColor: "var(--colour-card-bg)",
-                  border: "2px solid #1A1A1A",
+                  border: "1.5px solid #D4C9B8",
                   borderRadius: "var(--border-radius-card)",
                   padding: "var(--card-padding)",
                   boxShadow: "var(--shadow-card)",
