@@ -116,7 +116,9 @@ const SplitStrategyLanding = () => {
             >
               ← Back
             </Link>
-            <CurriculumBadge {...AC9M2N04_PROPS} pageName="Split Strategy Landing" />
+            <span className="ssl-badge-warm">
+              <CurriculumBadge {...AC9M2N04_PROPS} pageName="Split Strategy Landing" />
+            </span>
           </div>
 
           <div className="ssl-grid mt-8">
