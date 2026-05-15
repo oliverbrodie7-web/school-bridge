@@ -28,14 +28,14 @@ const SplitStrategyLanding = () => {
           0%, 100% { box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
           50%      { box-shadow: 0 4px 24px rgba(0,0,0,0.35), 0 0 0 6px rgba(0,0,0,0.06); }
         }
-        .ssl-blob-wrap { width: 140px; height: 140px; position: relative; margin: 0 auto 16px; }
+        .ssl-blob-wrap { width: 200px; height: 200px; position: relative; margin: 0 auto 8px; }
         .ssl-blob-1 {
-          width: 120px; height: 120px; position: absolute; top: 0; left: 10px;
+          width: 160px; height: 160px; position: absolute; top: 0; left: 20px;
           background: #C8E6C9;
           animation: morphA 4s ease-in-out infinite alternate;
         }
         .ssl-blob-2 {
-          width: 90px; height: 90px; position: absolute; top: 15px; left: 15px;
+          width: 120px; height: 120px; position: absolute; top: 20px; left: 20px;
           background: #6BBF8A; opacity: 0.75;
           animation: morphB 4s ease-in-out infinite alternate-reverse;
         }
@@ -61,16 +61,9 @@ const SplitStrategyLanding = () => {
       `}</style>
 
       <div style={{ backgroundColor: "#FFF8EC", minHeight: "100vh" }}>
-        <div style={{ maxWidth: 480, margin: "0 auto", padding: "16px 24px 32px" }}>
+        <div style={{ maxWidth: 560, margin: "0 auto", padding: "0 24px 40px" }}>
           {/* Section 1: Header row */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: "14px 24px",
-            }}
-          >
+          <div className="flex items-start justify-between pt-6">
             <Link
               to="/student/addition"
               style={{ fontSize: 13, fontWeight: 600, color: "#999999", fontFamily: "'Nunito', sans-serif", textDecoration: "none" }}
@@ -110,7 +103,7 @@ const SplitStrategyLanding = () => {
               textAlign: "center",
               lineHeight: 1.5,
               maxWidth: 320,
-              margin: "0 auto 20px",
+              margin: "0 auto 28px",
               fontFamily: "'Nunito', sans-serif",
             }}
           >
@@ -118,7 +111,7 @@ const SplitStrategyLanding = () => {
           </p>
 
           {/* Section 5: Stacked buttons */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 8, maxWidth: 320, margin: "0 auto 20px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 320, margin: "0 auto 20px" }}>
             <Link to="/learn/split-strategy" className="ssl-learn-btn">
               Learn
               <span className="ssl-learn-sub">New to this? Start here</span>
