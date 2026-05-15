@@ -28,16 +28,26 @@ const SplitStrategyLanding = () => {
           0%, 100% { box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
           50%      { box-shadow: 0 4px 24px rgba(0,0,0,0.35), 0 0 0 6px rgba(0,0,0,0.06); }
         }
-        .ssl-blob-wrap { width: 200px; height: 200px; position: relative; margin: 0 auto 8px; }
+        .ssl-blob-wrap { width: 160px; height: 160px; position: relative; margin: 0 auto 8px; }
         .ssl-blob-1 {
-          width: 160px; height: 160px; position: absolute; top: 0; left: 20px;
+          width: 130px; height: 130px; position: absolute; top: 0; left: 15px;
           background: #C8E6C9;
           animation: morphA 4s ease-in-out infinite alternate;
         }
         .ssl-blob-2 {
-          width: 120px; height: 120px; position: absolute; top: 20px; left: 20px;
+          width: 95px; height: 95px; position: absolute; top: 20px; left: 20px;
           background: #6BBF8A; opacity: 0.75;
           animation: morphB 4s ease-in-out infinite alternate-reverse;
+        }
+        .ssl-layout { display: block; }
+        @media (min-width: 600px) {
+          .ssl-layout {
+            display: grid;
+            grid-template-columns: 40% 60%;
+            gap: 40px;
+            align-items: center;
+          }
+          .ssl-blob-wrap { margin: 0 auto; }
         }
         .ssl-learn-btn {
           background: #1A1A1A; color: #ffffff; border: none; border-radius: 16px;
@@ -61,7 +71,7 @@ const SplitStrategyLanding = () => {
       `}</style>
 
       <div style={{ backgroundColor: "#FFF8EC", minHeight: "100vh" }}>
-        <div style={{ maxWidth: 560, margin: "0 auto", padding: "0 24px 40px" }}>
+        <div style={{ maxWidth: 780, margin: "0 auto", padding: "24px 40px" }}>
           {/* Section 1: Header row */}
           <div className="flex items-start justify-between pt-6">
             <Link
@@ -73,11 +83,15 @@ const SplitStrategyLanding = () => {
             <CurriculumBadge {...AC9M2N04_PROPS} pageName="Split Strategy Landing" />
           </div>
 
-          {/* Section 2: Hero visual — placeholder blob animation. To be replaced with proper illustrated asset when design is finalised. */}
-          <div className="ssl-blob-wrap mt-6">
-            <div className="ssl-blob-1" />
-            <div className="ssl-blob-2" />
-          </div>
+          <div className="ssl-layout mt-6">
+            <div>
+              {/* Section 2: Hero visual — placeholder blob animation. To be replaced with proper illustrated asset when design is finalised. */}
+              <div className="ssl-blob-wrap">
+                <div className="ssl-blob-1" />
+                <div className="ssl-blob-2" />
+              </div>
+            </div>
+            <div>
 
           {/* Section 3: Strategy name */}
           <h1
@@ -156,6 +170,8 @@ const SplitStrategyLanding = () => {
             >
               Parent Guide →
             </Link>
+          </div>
+            </div>
           </div>
         </div>
       </div>
