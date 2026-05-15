@@ -7,8 +7,6 @@ const strategies = [
     symbol: "+10",
     description: "Learn how adding 10s is faster than counting by 1s",
     to: "/plus10-strategy",
-    tileBg: "#FFF3E0",
-    tileColor: "#B35A00",
   },
   {
     className: "strategy-card-split",
@@ -16,8 +14,6 @@ const strategies = [
     symbol: "+",
     description: "Break numbers into tens and ones to make adding easier",
     to: "/split-strategy",
-    tileBg: "#E8F4FD",
-    tileColor: "#1A5D8F",
   },
 ];
 
@@ -26,11 +22,11 @@ const AdditionStrategies = () => {
     <>
       <style>{`
         @keyframes bounceIn {
-          from { transform: scale(0.6) translateY(30px); opacity: 0; }
-          to   { transform: scale(1) translateY(0); opacity: 1; }
+          from { opacity: 0; transform: scale(0.6) translateY(30px); }
+          to   { opacity: 1; transform: scale(1) translateY(0); }
         }
         .strategy-card {
-          animation: var(--animation-bounce-in);
+          animation: bounceIn 500ms cubic-bezier(0.34,1.56,0.64,1) both;
           transition: transform 200ms ease, box-shadow 200ms ease !important;
         }
         .strategy-card:hover {
@@ -86,7 +82,15 @@ const AdditionStrategies = () => {
             </p>
           </div>
 
-          <div className="mt-10 grid gap-4 grid-cols-1 sm:grid-cols-2">
+          <div
+            className="mt-10 grid"
+            style={{
+              maxWidth: 600,
+              margin: "40px auto 0",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 16,
+            }}
+          >
             {strategies.map((s, i) => (
               <Link
                 key={s.label}
@@ -111,12 +115,12 @@ const AdditionStrategies = () => {
                     width: 44,
                     height: 44,
                     borderRadius: 12,
-                    backgroundColor: s.tileBg,
+                    backgroundColor: "#F0EBE1",
                   }}
                 >
                   <span
                     className="font-bold"
-                    style={{ color: s.tileColor, fontSize: 16 }}
+                    style={{ color: "#888888", fontSize: 16 }}
                   >
                     {s.symbol}
                   </span>
