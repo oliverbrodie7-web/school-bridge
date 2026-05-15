@@ -819,147 +819,209 @@ const Plus10ParentGuide = () => (
    SPLIT STRATEGY PARENT GUIDE
    ═══════════════════════════════════════════════════ */
 const SplitParentGuide = () => (
-  <div className="flex min-h-screen flex-col items-center px-6 py-12">
-    <div className="w-full max-w-2xl">
-      <Link
-        to="/split-strategy"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
-      >
-        ← Back
-      </Link>
+  <>
+    <style>{`
+      .spg-page {
+        background: #FFF8EC;
+        min-height: 100vh;
+        font-family: 'Nunito', sans-serif;
+      }
+      .spg, .spg * { font-family: 'Nunito', sans-serif; }
+      .spg h1, .spg h2 {
+        color: #1A1A1A !important;
+        font-weight: 800 !important;
+      }
+      .spg h3 {
+        color: #666666 !important;
+        font-weight: 600 !important;
+      }
+      .spg p, .spg .text-muted-foreground {
+        color: #555555 !important;
+        font-weight: 500 !important;
+      }
+      .spg .text-foreground { color: #1A1A1A !important; }
+      .spg hr {
+        border: none !important;
+        border-top: 1px solid #E8E0D4 !important;
+        height: 1px;
+      }
+      /* Phrase + mistake cards (bg-card) — keep callout (bg-muted) untouched */
+      .spg .rounded-xl.bg-card {
+        background: #ffffff !important;
+        border: 1.5px solid #E8E0D4 !important;
+        border-radius: 16px !important;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06) !important;
+      }
+      .spg .rounded-xl.bg-card .text-xs.font-bold.uppercase {
+        color: #1A1A1A !important;
+        font-weight: 700 !important;
+      }
+      .spg .rounded-xl.bg-card p.font-medium {
+        color: #1A1A1A !important;
+        font-weight: 700 !important;
+      }
+      /* Curriculum badge — entry-point warm palette */
+      .spg-badge-warm > div > button {
+        background-color: #F5F0E8 !important;
+        border: 1px solid #D4C9B8 !important;
+        color: #1A1A1A !important;
+      }
+      .spg-badge-warm > div > button:hover { background-color: #EDE6D7 !important; }
+      .spg-badge-warm > div > button > div > span:nth-child(1) {
+        color: #888888 !important;
+      }
+      .spg-badge-warm > div > button > div > span:nth-child(2) {
+        color: #1A1A1A !important;
+      }
+      .spg-badge-warm > div > button > svg { color: #888888 !important; }
+      /* Open student lesson button */
+      .spg-cta-btn {
+        background: #ffffff;
+        border: 2px solid #1A1A1A;
+        border-radius: 99px;
+        padding: 10px 24px;
+        font-size: 14px;
+        font-weight: 700;
+        color: #1A1A1A;
+        font-family: 'Nunito', sans-serif;
+        text-decoration: none;
+        display: inline-block;
+        transition: background 200ms ease;
+      }
+      .spg-cta-btn:hover { background: #F5F0E8; }
+    `}</style>
 
-      {/* ─── SECTION 1: REASSURANCE ─── */}
-      <section className="relative mt-8">
-        <div className="flex justify-end mb-3 -mr-4 sm:-mr-10"><CurriculumBadge {...AC9M2N04_PROPS} pageName="Parent Guide Plus10" /></div>
-        <h1
-          className="text-2xl font-bold text-foreground sm:text-3xl leading-tight pr-24"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
-          You're not behind. The way maths is taught has changed.
-        </h1>
-        <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-          If your child came home with maths homework and you didn't recognise how they were solving it — that's completely normal. Australian schools now teach strategies like the Split Strategy that most parents were never shown. This guide will explain exactly what your child is learning and how you can help.
-        </p>
-      </section>
-
-      <hr className="my-10 border-border" />
-
-      {/* ─── SECTION 2: WHAT IS IT? ─── */}
-      <section>
-        <h2
-          className="text-xl font-bold text-foreground sm:text-2xl"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
-          What is the Split Strategy?
-        </h2>
-        <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-          Instead of stacking numbers and carrying the one (the way most of us learned), the split strategy teaches children to break numbers into their tens and ones first, add each part separately, then combine the results.
-        </p>
-        <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-          This isn't a shortcut or a gimmick. It's designed to build a deep understanding of how numbers actually work.
-        </p>
-
-        <div className="mt-8">
-          <DemoAnimation />
-        </div>
-
-        <div className="mt-6 rounded-xl border-l-4 border-foreground/20 bg-muted p-5 sm:p-6">
-          <p className="text-sm leading-relaxed text-foreground/80">
-            The goal of Year 2 maths is not to answer questions correctly. It is to develop an understanding of how place value relates to addition and subtraction. When your child splits 34 into 30 and 4, they are showing they understand that 34 is made of 3 tens and 4 ones. That understanding is the whole point.
-          </p>
-        </div>
-      </section>
-
-      <hr className="my-10 border-border" />
-
-      {/* ─── SECTION 3: HOW TO USE WITH YOUR CHILD ─── */}
-      <section>
-        <h2
-          className="text-xl font-bold text-foreground sm:text-2xl"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
-          Sitting down with your child? Here's exactly what to say.
-        </h2>
-
-        <div className="mt-6 space-y-4">
-          <Card title="Getting started">
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              <span className="font-semibold text-foreground">Say this:</span> "Before we add these numbers, let's split them up. What are the tens hiding in this number? What are the ones?"
-            </p>
-          </Card>
-
-          <Card title="If they're stuck">
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              <span className="font-semibold text-foreground">Say this:</span> "Look at the first digit — that tells you the tens. Look at the second digit — that tells you the ones. So 34 has 3 tens, which is 30, and 4 ones, which is just 4."
-            </p>
-          </Card>
-
-          <Card title="When they get it wrong">
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              <span className="font-semibold text-foreground">Don't say:</span> "That's wrong."
-            </p>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              <span className="font-semibold text-foreground">Do say:</span> "Interesting — let's check the tens first. How many tens are hiding in that number?"
-            </p>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground italic">
-              Remember: the goal is understanding, not the answer.
-            </p>
-          </Card>
-        </div>
-
-        <h3
-          className="mt-10 text-lg font-bold text-foreground"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
-          Common mistakes to watch for:
-        </h3>
-
-        <div className="mt-4 space-y-4">
-          <MistakeCard
-            mistake="Your child adds all four digits together (e.g. 3 + 4 + 1 + 2 = 10 instead of 34 + 12 = 46)"
-            explanation="They haven't yet connected the digit to its place value."
-            suggestion={`"The 3 in 34 isn't worth 3 — it's worth 30. It's in the tens column."`}
-          />
-          <MistakeCard
-            mistake="Your child gets the split right but adds the parts incorrectly (e.g. splits correctly but says 30 + 10 = 31)"
-            explanation="The split strategy is working, but basic addition facts need reinforcement."
-            suggestion={`"Great splitting! Now let's count the tens together — 10, 20, 30, 40. So 30 + 10 = 40."`}
-          />
-        </div>
-      </section>
-
-      <hr className="my-10 border-border" />
-
-      {/* ─── SECTION 4: OPTIONAL PRACTICE ─── */}
-      <section className="pb-12">
-        <h2
-          className="text-xl font-bold text-foreground sm:text-2xl"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
-          Want to try one yourself?
-        </h2>
-        <p className="mt-3 text-base text-muted-foreground">
-          Some parents find it helps to try the strategy once before sitting down with their child. No pressure — but it's here if you want it.
-        </p>
-
-        <div className="mt-6">
-          <SplitPracticeQuestion />
-        </div>
-
-        <div className="mt-10 rounded-xl border border-border bg-card p-6 text-center">
-          <p className="text-base font-medium text-foreground">
-            Ready to sit with your child?
-          </p>
+    <div className="spg-page">
+      <div className="spg flex flex-col items-center px-6 py-12">
+        <div className="w-full max-w-2xl">
           <Link
-            to="/learn/split-strategy"
-            className="mt-4 inline-block rounded-xl bg-foreground px-6 py-3.5 text-base font-semibold text-background transition-colors hover:bg-foreground/90"
+            to="/split-strategy"
+            className="inline-flex items-center gap-1 text-sm transition-colors"
+            style={{ color: "#999999", fontSize: 13, fontWeight: 600 }}
           >
-            Open the student lesson
+            ← Back
           </Link>
+
+          {/* ─── SECTION 1: REASSURANCE ─── */}
+          <section className="relative mt-8">
+            <div className="flex justify-end mb-3 -mr-4 sm:-mr-10">
+              <span className="spg-badge-warm">
+                <CurriculumBadge {...AC9M2N04_PROPS} pageName="Parent Guide Plus10" />
+              </span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl leading-tight pr-24">
+              You're not behind. The way maths is taught has changed.
+            </h1>
+            <p className="mt-4 text-base leading-relaxed">
+              If your child came home with maths homework and you didn't recognise how they were solving it — that's completely normal. Australian schools now teach strategies like the Split Strategy that most parents were never shown. This guide will explain exactly what your child is learning and how you can help.
+            </p>
+          </section>
+
+          <hr className="my-10" />
+
+          {/* ─── SECTION 2: WHAT IS IT? ─── */}
+          <section>
+            <h2 className="text-xl sm:text-2xl">
+              What is the Split Strategy?
+            </h2>
+            <p className="mt-4 text-base leading-relaxed">
+              Instead of stacking numbers and carrying the one (the way most of us learned), the split strategy teaches children to break numbers into their tens and ones first, add each part separately, then combine the results.
+            </p>
+            <p className="mt-3 text-base leading-relaxed">
+              This isn't a shortcut or a gimmick. It's designed to build a deep understanding of how numbers actually work.
+            </p>
+
+            <div className="mt-8">
+              <DemoAnimation />
+            </div>
+
+            <div className="mt-6 rounded-xl border-l-4 border-foreground/20 bg-muted p-5 sm:p-6">
+              <p className="text-sm leading-relaxed text-foreground/80">
+                The goal of Year 2 maths is not to answer questions correctly. It is to develop an understanding of how place value relates to addition and subtraction. When your child splits 34 into 30 and 4, they are showing they understand that 34 is made of 3 tens and 4 ones. That understanding is the whole point.
+              </p>
+            </div>
+          </section>
+
+          <hr className="my-10" />
+
+          {/* ─── SECTION 3: HOW TO USE WITH YOUR CHILD ─── */}
+          <section>
+            <h2 className="text-xl sm:text-2xl">
+              Sitting down with your child? Here's exactly what to say.
+            </h2>
+
+            <div className="mt-6 space-y-4">
+              <Card title="Getting started">
+                <p className="text-sm leading-relaxed">
+                  <span className="font-semibold text-foreground">Say this:</span> "Before we add these numbers, let's split them up. What are the tens hiding in this number? What are the ones?"
+                </p>
+              </Card>
+
+              <Card title="If they're stuck">
+                <p className="text-sm leading-relaxed">
+                  <span className="font-semibold text-foreground">Say this:</span> "Look at the first digit — that tells you the tens. Look at the second digit — that tells you the ones. So 34 has 3 tens, which is 30, and 4 ones, which is just 4."
+                </p>
+              </Card>
+
+              <Card title="When they get it wrong">
+                <p className="text-sm leading-relaxed">
+                  <span className="font-semibold text-foreground">Don't say:</span> "That's wrong."
+                </p>
+                <p className="mt-2 text-sm leading-relaxed">
+                  <span className="font-semibold text-foreground">Do say:</span> "Interesting — let's check the tens first. How many tens are hiding in that number?"
+                </p>
+                <p className="mt-2 text-sm leading-relaxed italic">
+                  Remember: the goal is understanding, not the answer.
+                </p>
+              </Card>
+            </div>
+
+            <h3 className="mt-10 text-lg">
+              Common mistakes to watch for:
+            </h3>
+
+            <div className="mt-4 space-y-4">
+              <MistakeCard
+                mistake="Your child adds all four digits together (e.g. 3 + 4 + 1 + 2 = 10 instead of 34 + 12 = 46)"
+                explanation="They haven't yet connected the digit to its place value."
+                suggestion={`"The 3 in 34 isn't worth 3 — it's worth 30. It's in the tens column."`}
+              />
+              <MistakeCard
+                mistake="Your child gets the split right but adds the parts incorrectly (e.g. splits correctly but says 30 + 10 = 31)"
+                explanation="The split strategy is working, but basic addition facts need reinforcement."
+                suggestion={`"Great splitting! Now let's count the tens together — 10, 20, 30, 40. So 30 + 10 = 40."`}
+              />
+            </div>
+          </section>
+
+          <hr className="my-10" />
+
+          {/* ─── SECTION 4: OPTIONAL PRACTICE ─── */}
+          <section className="pb-12">
+            <h2 className="text-xl sm:text-2xl">
+              Want to try one yourself?
+            </h2>
+            <p className="mt-3 text-base">
+              Some parents find it helps to try the strategy once before sitting down with their child. No pressure — but it's here if you want it.
+            </p>
+
+            <div className="mt-6">
+              <SplitPracticeQuestion />
+            </div>
+
+            <div className="mt-10 rounded-xl bg-card p-6 text-center">
+              <p className="text-base font-medium">
+                Ready to sit with your child?
+              </p>
+              <Link to="/learn/split-strategy" className="spg-cta-btn mt-4">
+                Open the student lesson
+              </Link>
+            </div>
+          </section>
         </div>
-      </section>
+      </div>
     </div>
-  </div>
+  </>
 );
 
 /* ═══════════════════════════════════════════════════
