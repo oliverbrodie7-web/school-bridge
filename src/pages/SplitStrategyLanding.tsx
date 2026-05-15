@@ -69,6 +69,41 @@ const SplitStrategyLanding = () => {
           .ssl-right h1 { text-align: left; margin-left: 0; }
           .ssl-right p { text-align: left; margin-left: 0; }
         }
+        .ssl-pg-pill {
+          background: #ffffff; border: 1.5px solid #E8E0D4; border-radius: 99px;
+          padding: 6px 16px; font-size: 12px; font-weight: 700; color: #1A1A1A;
+          display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+          font-family: 'Nunito', sans-serif; text-decoration: none;
+          transition: background 200ms ease, border-color 200ms ease;
+        }
+        .ssl-pg-pill:hover { background: #F5F0E8; border-color: #D4C9B8; }
+        .ssl-pg-arrow { color: #999999; }
+        /* Curriculum badge — warm-palette override, scoped to this screen only */
+        .ssl-badge-warm > div > button {
+          background-color: #F5F0E8 !important;
+          border: 1px solid #D4C9B8 !important;
+          color: #1A1A1A !important;
+        }
+        .ssl-badge-warm > div > button:hover {
+          background-color: #EDE6D7 !important;
+        }
+        .ssl-badge-warm > div > button > div > span:nth-child(1) {
+          color: #888888 !important;
+          font-size: 10px !important;
+          font-weight: 400 !important;
+        }
+        .ssl-badge-warm > div > button > div > span:nth-child(2) {
+          color: #1A1A1A !important;
+          font-size: 11px !important;
+          font-weight: 700 !important;
+        }
+        .ssl-badge-warm > div > button > svg {
+          color: #888888 !important;
+        }
+        .ssl-badge-warm .curriculum-badge-card {
+          background-color: #ffffff !important;
+          border: 1px solid #E8E0D4 !important;
+        }
       `}</style>
 
       <div style={{ backgroundColor: "#FFF8EC", minHeight: "100vh" }}>
@@ -81,7 +116,9 @@ const SplitStrategyLanding = () => {
             >
               ← Back
             </Link>
-            <CurriculumBadge {...AC9M2N04_PROPS} pageName="Split Strategy Landing" />
+            <span className="ssl-badge-warm">
+              <CurriculumBadge {...AC9M2N04_PROPS} pageName="Split Strategy Landing" />
+            </span>
           </div>
 
           <div className="ssl-grid mt-8">
@@ -160,47 +197,13 @@ const SplitStrategyLanding = () => {
                 </div>
               )}
 
-              {/* Section 7: Parent Guide card strip */}
-              <Link
-                to="/parent?strategy=split"
-                style={{
-                  background: "#ffffff",
-                  border: "1.5px solid #E8E0D4",
-                  borderRadius: 8,
-                  padding: "6px 12px",
-                  width: "100%",
-                  maxWidth: 160,
-                  margin: "0 auto",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  cursor: "pointer",
-                  textDecoration: "none",
-                  transition: "all 200ms ease",
-                }}
-                onMouseEnter={(e) => {
-                  const el = e.currentTarget;
-                  el.style.background = "#F5F0E8";
-                  el.style.borderColor = "#D4C9B8";
-                }}
-                onMouseLeave={(e) => {
-                  const el = e.currentTarget;
-                  el.style.background = "#ffffff";
-                  el.style.borderColor = "#E8E0D4";
-                }}
-              >
-                <div>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: "#1A1A1A", fontFamily: "'Nunito', sans-serif" }}>
-                    Parent Guide
-                  </div>
-                  <div style={{ fontSize: 9, fontWeight: 500, color: "#999999", marginTop: 2, fontFamily: "'Nunito', sans-serif" }}>
-                    Understand what your child is learning
-                  </div>
-                </div>
-                <div style={{ fontSize: 11, color: "#CCCCCC", fontFamily: "'Nunito', sans-serif" }}>
-                  →
-                </div>
-              </Link>
+              {/* Section 7: Parent Guide pill */}
+              <div style={{ textAlign: "center" }}>
+                <Link to="/parent?strategy=split" className="ssl-pg-pill">
+                  Parent Guide
+                  <span className="ssl-pg-arrow">→</span>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
