@@ -171,6 +171,8 @@ const SplitStrategyLanding = () => {
               Parent Guide →
             </Link>
           </div>
+            </div>
+          </div>
         </div>
       </div>
     </>
