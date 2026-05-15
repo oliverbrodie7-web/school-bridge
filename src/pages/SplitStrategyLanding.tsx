@@ -128,9 +128,11 @@ const SplitStrategyLanding = () => {
 
               {/* Section 5: Stacked buttons */}
               <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 320, margin: "0 auto 20px" }}>
-                <Link to="/learn/split-strategy" className="ssl-learn-btn">
+                <Link to="/learn/split-strategy" className={learnComplete ? "ssl-learn-btn ssl-learn-btn-done" : "ssl-learn-btn"}>
                   Learn
-                  <span className="ssl-learn-sub">New to this? Start here</span>
+                  <span className={learnComplete ? "ssl-learn-sub ssl-learn-sub-done" : "ssl-learn-sub"}>
+                    {learnComplete ? "Already completed" : "New to this? Start here"}
+                  </span>
                 </Link>
                 <Link to="/practise/split-strategy" className="ssl-practise-btn">
                   Practise
@@ -164,8 +166,8 @@ const SplitStrategyLanding = () => {
                 style={{
                   background: "#ffffff",
                   border: "1.5px solid #E8E0D4",
-                  borderRadius: 14,
-                  padding: "12px 20px",
+                  borderRadius: 10,
+                  padding: "8px 14px",
                   width: "100%",
                   maxWidth: 320,
                   margin: "0 auto",
@@ -188,14 +190,14 @@ const SplitStrategyLanding = () => {
                 }}
               >
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "#1A1A1A", fontFamily: "'Nunito', sans-serif" }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: "#1A1A1A", fontFamily: "'Nunito', sans-serif" }}>
                     Parent Guide
                   </div>
                   <div style={{ fontSize: 10, fontWeight: 500, color: "#999999", marginTop: 2, fontFamily: "'Nunito', sans-serif" }}>
                     Understand what your child is learning
                   </div>
                 </div>
-                <div style={{ fontSize: 16, color: "#999999", fontFamily: "'Nunito', sans-serif" }}>
+                <div style={{ fontSize: 13, color: "#CCCCCC", fontFamily: "'Nunito', sans-serif" }}>
                   →
                 </div>
               </Link>
