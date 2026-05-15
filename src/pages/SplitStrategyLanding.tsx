@@ -197,47 +197,13 @@ const SplitStrategyLanding = () => {
                 </div>
               )}
 
-              {/* Section 7: Parent Guide card strip */}
-              <Link
-                to="/parent?strategy=split"
-                style={{
-                  background: "#ffffff",
-                  border: "1.5px solid #E8E0D4",
-                  borderRadius: 8,
-                  padding: "6px 12px",
-                  width: "100%",
-                  maxWidth: 160,
-                  margin: "0 auto",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  cursor: "pointer",
-                  textDecoration: "none",
-                  transition: "all 200ms ease",
-                }}
-                onMouseEnter={(e) => {
-                  const el = e.currentTarget;
-                  el.style.background = "#F5F0E8";
-                  el.style.borderColor = "#D4C9B8";
-                }}
-                onMouseLeave={(e) => {
-                  const el = e.currentTarget;
-                  el.style.background = "#ffffff";
-                  el.style.borderColor = "#E8E0D4";
-                }}
-              >
-                <div>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: "#1A1A1A", fontFamily: "'Nunito', sans-serif" }}>
-                    Parent Guide
-                  </div>
-                  <div style={{ fontSize: 9, fontWeight: 500, color: "#999999", marginTop: 2, fontFamily: "'Nunito', sans-serif" }}>
-                    Understand what your child is learning
-                  </div>
-                </div>
-                <div style={{ fontSize: 11, color: "#CCCCCC", fontFamily: "'Nunito', sans-serif" }}>
-                  →
-                </div>
-              </Link>
+              {/* Section 7: Parent Guide pill */}
+              <div style={{ textAlign: "center" }}>
+                <Link to="/parent?strategy=split" className="ssl-pg-pill">
+                  Parent Guide
+                  <span className="ssl-pg-arrow">→</span>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
