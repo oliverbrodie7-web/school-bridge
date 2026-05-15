@@ -31,15 +31,16 @@ const AdditionStrategies = () => {
         }
         .strategy-card {
           animation: var(--animation-bounce-in);
-          transition: var(--transition-hover);
+          transition: transform 200ms ease, box-shadow 200ms ease !important;
         }
         .strategy-card:hover {
-          transform: var(--animation-hover-transform);
-          box-shadow: var(--shadow-card-hover);
+          transform: scale(1.04) translateY(-3px) !important;
+          box-shadow: 0 8px 20px rgba(0,0,0,0.10) !important;
+          cursor: pointer;
         }
         .strategy-card:active {
-          transform: var(--animation-press-transform);
-          transition: var(--transition-press);
+          transform: scale(0.95) !important;
+          transition: transform 100ms ease !important;
         }
       `}</style>
 
