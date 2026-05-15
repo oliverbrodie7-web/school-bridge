@@ -40,15 +40,18 @@ const SplitStrategyLanding = () => {
           animation: morphB 4s ease-in-out infinite alternate-reverse;
         }
         .ssl-learn-btn {
-          background: #1A1A1A; color: #ffffff; border: none; border-radius: 16px;
+          background: #ffffff; color: #1A1A1A; border: 2px solid #1A1A1A; border-radius: 16px;
           padding: 18px; font-size: 16px; font-weight: 800; width: 100%; cursor: pointer;
           font-family: 'Nunito', sans-serif; text-align: center; text-decoration: none;
           display: block;
           animation: learnPulse 2.5s ease-in-out infinite;
         }
-        .ssl-learn-sub {
-          font-size: 11px; font-weight: 500; opacity: 0.6; display: block; margin-top: 3px;
+        .ssl-learn-btn-done {
+          background: #F5F5F5; color: #AAAAAA; border: 2px solid #E8E8E8;
+          animation: none;
         }
+        .ssl-learn-sub { font-size: 11px; font-weight: 500; color: #666666; display: block; margin-top: 3px; }
+        .ssl-learn-sub-done { color: #AAAAAA; }
         .ssl-practise-btn {
           background: #ffffff; color: #1A1A1A; border: 2px solid #E8E0D4;
           border-radius: 16px; padding: 16px; font-size: 15px; font-weight: 700;
@@ -125,9 +128,11 @@ const SplitStrategyLanding = () => {
 
               {/* Section 5: Stacked buttons */}
               <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 320, margin: "0 auto 20px" }}>
-                <Link to="/learn/split-strategy" className="ssl-learn-btn">
+                <Link to="/learn/split-strategy" className={learnComplete ? "ssl-learn-btn ssl-learn-btn-done" : "ssl-learn-btn"}>
                   Learn
-                  <span className="ssl-learn-sub">New to this? Start here</span>
+                  <span className={learnComplete ? "ssl-learn-sub ssl-learn-sub-done" : "ssl-learn-sub"}>
+                    {learnComplete ? "Already completed" : "New to this? Start here"}
+                  </span>
                 </Link>
                 <Link to="/practise/split-strategy" className="ssl-practise-btn">
                   Practise
@@ -161,8 +166,8 @@ const SplitStrategyLanding = () => {
                 style={{
                   background: "#ffffff",
                   border: "1.5px solid #E8E0D4",
-                  borderRadius: 14,
-                  padding: "12px 20px",
+                  borderRadius: 10,
+                  padding: "8px 14px",
                   width: "100%",
                   maxWidth: 320,
                   margin: "0 auto",
@@ -185,14 +190,14 @@ const SplitStrategyLanding = () => {
                 }}
               >
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "#1A1A1A", fontFamily: "'Nunito', sans-serif" }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: "#1A1A1A", fontFamily: "'Nunito', sans-serif" }}>
                     Parent Guide
                   </div>
                   <div style={{ fontSize: 10, fontWeight: 500, color: "#999999", marginTop: 2, fontFamily: "'Nunito', sans-serif" }}>
                     Understand what your child is learning
                   </div>
                 </div>
-                <div style={{ fontSize: 16, color: "#999999", fontFamily: "'Nunito', sans-serif" }}>
+                <div style={{ fontSize: 13, color: "#CCCCCC", fontFamily: "'Nunito', sans-serif" }}>
                   →
                 </div>
               </Link>
