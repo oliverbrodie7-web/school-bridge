@@ -155,21 +155,47 @@ const SplitStrategyLanding = () => {
                 </div>
               )}
 
-              {/* Section 7: Parent Guide link */}
-              <div style={{ textAlign: "center" }}>
-                <Link
-                  to="/parent?strategy=split"
-                  style={{
-                    fontSize: 12,
-                    fontWeight: 600,
-                    color: "#999999",
-                    fontFamily: "'Nunito', sans-serif",
-                    textDecoration: "none",
-                  }}
-                >
-                  Parent Guide →
-                </Link>
-              </div>
+              {/* Section 7: Parent Guide card strip */}
+              <Link
+                to="/parent?strategy=split"
+                style={{
+                  background: "#ffffff",
+                  border: "1.5px solid #E8E0D4",
+                  borderRadius: 14,
+                  padding: "12px 20px",
+                  width: "100%",
+                  maxWidth: 320,
+                  margin: "0 auto",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  cursor: "pointer",
+                  textDecoration: "none",
+                  transition: "all 200ms ease",
+                }}
+                onMouseEnter={(e) => {
+                  const el = e.currentTarget;
+                  el.style.background = "#F5F0E8";
+                  el.style.borderColor = "#D4C9B8";
+                }}
+                onMouseLeave={(e) => {
+                  const el = e.currentTarget;
+                  el.style.background = "#ffffff";
+                  el.style.borderColor = "#E8E0D4";
+                }}
+              >
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#1A1A1A", fontFamily: "'Nunito', sans-serif" }}>
+                    Parent Guide
+                  </div>
+                  <div style={{ fontSize: 10, fontWeight: 500, color: "#999999", marginTop: 2, fontFamily: "'Nunito', sans-serif" }}>
+                    Understand what your child is learning
+                  </div>
+                </div>
+                <div style={{ fontSize: 16, color: "#999999", fontFamily: "'Nunito', sans-serif" }}>
+                  →
+                </div>
+              </Link>
             </div>
           </div>
         </div>
