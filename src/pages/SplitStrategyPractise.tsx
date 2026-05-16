@@ -693,12 +693,9 @@ const SplitStrategyPractise = () => {
           <h1 className="text-center text-2xl font-bold text-foreground sm:text-3xl" style={{ fontFamily: "var(--font-heading)" }}>
             Split Strategy — Practise
           </h1>
-          <p className="mt-2 mb-6 text-center text-muted-foreground">
-            Choose your level.
-          </p>
         </div>
 
-        <DifficultySelector level={level} onChange={handleLevelChange} l3Unlocked={l3Unlocked} />
+        <LevelPills level={level} onChange={handleLevelChange} l3Unlocked={l3Unlocked} />
 
         {finished ? (
           <div className="mt-10 text-center space-y-6 animate-fade-in">
