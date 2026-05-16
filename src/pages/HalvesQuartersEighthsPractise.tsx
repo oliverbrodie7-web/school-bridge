@@ -7,6 +7,7 @@ import CurriculumBadge from "@/components/CurriculumBadge";
 import { PractiseHintButton } from "@/components/PractiseHintButton";
 import { Pizza, ChocolateBar } from "@/components/FractionFood";
 import ProgressIndicator from "@/components/ProgressIndicator";
+import LevelPills from "@/components/LevelPills";
 
 const TEAL = "#1D9E75";
 const TEAL_FILL = "#1D9E75";
