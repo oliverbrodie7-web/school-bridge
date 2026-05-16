@@ -6,8 +6,11 @@
 
 @layer base {
   :root {
-    /* Legacy token — do not use for new pages. Use --colour-page-bg (#FFF8EC) instead. */
-    --background: 40 33% 98%;
+    /* Site background — #FFF8EC warm cream.
+       All pages use this as their base.
+       Use var(--colour-page-bg) for
+       explicit overrides. */
+    --background: 39 100% 96%;
     --foreground: 220 20% 20%;
 
     --card: 0 0% 100%;
