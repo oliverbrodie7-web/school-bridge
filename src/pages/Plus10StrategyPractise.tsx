@@ -827,12 +827,9 @@ const Plus10StrategyPractise = () => {
           >
             +10 Strategy — Practise
           </h1>
-          <p className="mt-2 mb-6 text-center text-muted-foreground">
-            Choose your level.
-          </p>
         </div>
 
-        <LevelSelector level={level} onChange={handleLevelChange} l3Unlocked={l3Unlocked} />
+        <LevelPills level={level} onChange={handleLevelChange} l3Unlocked={l3Unlocked} />
 
         {showUnlockBanner && (
           <div className="mt-4 rounded-xl border-2 border-primary bg-secondary p-4 text-center animate-fade-in">
@@ -865,34 +862,36 @@ const Plus10StrategyPractise = () => {
           total={10}
         />
 
-        {level === 1 && (
-          <QuestionCard
-            key={`1-${questionNum}`}
-            q={question}
-            level={1}
-            onCorrect={handleCorrect}
-            consecutiveCorrect={consecutiveCorrect}
-            consecutiveWrong={consecutiveWrong}
-          />
-        )}
-        {level === 2 && (
-          <Level2Card
-            key={`2-${questionNum}`}
-            q={question}
-            onCorrect={handleCorrect}
-            consecutiveCorrect={consecutiveCorrect}
-            consecutiveWrong={consecutiveWrong}
-          />
-        )}
-        {level === 3 && (
-          <Level3Card
-            key={`3-${questionNum}`}
-            q={question}
-            onCorrect={handleCorrect}
-            consecutiveCorrect={consecutiveCorrect}
-            consecutiveWrong={consecutiveWrong}
-          />
-        )}
+        <div key={`lvl-${level}`} className="animate-fade-in">
+          {level === 1 && (
+            <QuestionCard
+              key={`1-${questionNum}`}
+              q={question}
+              level={1}
+              onCorrect={handleCorrect}
+              consecutiveCorrect={consecutiveCorrect}
+              consecutiveWrong={consecutiveWrong}
+            />
+          )}
+          {level === 2 && (
+            <Level2Card
+              key={`2-${questionNum}`}
+              q={question}
+              onCorrect={handleCorrect}
+              consecutiveCorrect={consecutiveCorrect}
+              consecutiveWrong={consecutiveWrong}
+            />
+          )}
+          {level === 3 && (
+            <Level3Card
+              key={`3-${questionNum}`}
+              q={question}
+              onCorrect={handleCorrect}
+              consecutiveCorrect={consecutiveCorrect}
+              consecutiveWrong={consecutiveWrong}
+            />
+          )}
+        </div>
       </div>
       <ParentSignpost strategy="plus10" />
     </div>
