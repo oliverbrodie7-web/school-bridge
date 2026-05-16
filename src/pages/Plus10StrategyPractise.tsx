@@ -6,6 +6,7 @@ import { ProgressIndicator } from "@/components/ProgressIndicator";
 import { getLevel3Unlocked, setLevel3Unlocked } from "@/lib/progress";
 import CurriculumBadge, { AC9M2N04_PROPS } from "@/components/CurriculumBadge";
 import { PractiseHintButton } from "@/components/PractiseHintButton";
+import LevelPills from "@/components/LevelPills";
 
 const BLUE = "#3B82F6";
 const GREEN = "#22C55E";
