@@ -4,6 +4,7 @@ import { Lock } from "lucide-react";
 import { PractiseHintButton } from "@/components/PractiseHintButton";
 import CurriculumBadge, { AC9M2N04_PROPS } from "@/components/CurriculumBadge";
 import ProgressIndicator from "@/components/ProgressIndicator";
+import LevelPills from "@/components/LevelPills";
 
 const BLUE = "#3B82F6";
 const ORANGE = "#F97316";
