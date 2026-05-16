@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Profile, fetchProfiles, migrateLocalProfilesIfNeeded } from "@/lib/profiles";
+import MenuCard from "@/components/MenuCard";
 
 const ContentHome = () => {
   const navigate = useNavigate();
@@ -48,25 +49,6 @@ const ContentHome = () => {
   return (
     <>
       <style>{`
-        @keyframes bounceIn {
-          from { transform: scale(0.6) translateY(30px); opacity: 0; }
-          to   { transform: scale(1) translateY(0); opacity: 1; }
-        }
-        .subject-card {
-          transition: transform 200ms ease, box-shadow 200ms ease !important;
-        }
-        .subject-card:hover {
-          transform: scale(1.04) translateY(-3px) !important;
-          box-shadow: 0 8px 20px rgba(0,0,0,0.10) !important;
-          cursor: pointer;
-        }
-        .subject-card:active {
-          transform: scale(0.95) !important;
-          transition: transform 100ms ease !important;
-        }
-        .subject-card-anim {
-          animation: var(--animation-bounce-in);
-        }
         .icon-tile {
           width: 44px;
           height: 44px;
@@ -143,18 +125,10 @@ const ContentHome = () => {
           <div className="mt-10 grid gap-5 sm:grid-cols-2">
             {/* Maths */}
             {isYear2 ? (
-              <Link
+              <MenuCard
                 to="/student"
-                className="subject-card subject-card-anim group flex flex-col items-center justify-center text-center"
-                style={{
-                  backgroundColor: "var(--colour-card-bg)",
-                  borderRadius: "var(--border-radius-card)",
-                  border: "1.5px solid #D4C9B8",
-                  padding: "var(--card-padding)",
-                  boxShadow: "var(--shadow-card)",
-                  cursor: "pointer",
-                  animationDelay: "0ms",
-                }}
+                delayMs={0}
+                style={{ justifyContent: "center", textAlign: "center" }}
               >
                 <div className="icon-tile" style={{ backgroundColor: "#F0EBE1" }}>
                   <span>🔢</span>
@@ -170,19 +144,9 @@ const ContentHome = () => {
                 >
                   Maths
                 </h2>
-              </Link>
+              </MenuCard>
             ) : (
-              <div
-                className="subject-card-anim flex flex-col items-center justify-center text-center"
-                style={{
-                  backgroundColor: "var(--colour-card-bg-muted)",
-                  borderRadius: "var(--border-radius-card)",
-                  border: "1.5px solid var(--colour-border)",
-                  padding: "var(--card-padding)",
-                  opacity: 0.6,
-                  animationDelay: "0ms",
-                }}
-              >
+              <MenuCard active={false} delayMs={0} style={{ justifyContent: "center", textAlign: "center" }}>
                 <div className="icon-tile" style={{ backgroundColor: "var(--colour-card-bg-muted)" }}>
                   <span className="grayscale">🔢</span>
                 </div>
@@ -211,22 +175,15 @@ const ContentHome = () => {
                 >
                   Coming soon
                 </span>
-              </div>
+              </MenuCard>
             )}
 
-            {/* Literacy */}
-            <button
+            {/* Literacy — coming soon, tap to reveal message */}
+            <MenuCard
+              active={false}
               onClick={() => setLiteracyTapped(true)}
-              className="subject-card-anim flex flex-col items-center justify-center text-center"
-              style={{
-                backgroundColor: "var(--colour-card-bg-muted)",
-                borderRadius: "var(--border-radius-card)",
-                border: "1.5px solid var(--colour-border)",
-                padding: "var(--card-padding)",
-                opacity: 0.6,
-                cursor: "default",
-                animationDelay: "100ms",
-              }}
+              delayMs={100}
+              style={{ justifyContent: "center", textAlign: "center" }}
             >
               <div className="icon-tile" style={{ backgroundColor: "var(--colour-card-bg-muted)" }}>
                 <span className="grayscale">📖</span>
@@ -256,7 +213,7 @@ const ContentHome = () => {
               >
                 Coming soon
               </span>
-            </button>
+            </MenuCard>
           </div>
 
           {/* Literacy tapped message */}
