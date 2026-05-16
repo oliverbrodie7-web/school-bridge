@@ -29,7 +29,7 @@ const Student = () => {
   let activeIndex = -1;
 
   const renderCard = (topic: TopicCard) => {
-    const isActive = topic.active && topic.to;
+    const isActive = Boolean(topic.active && topic.to);
     if (isActive) activeIndex += 1;
     const delayMs = isActive ? activeIndex * 80 : 0;
 
