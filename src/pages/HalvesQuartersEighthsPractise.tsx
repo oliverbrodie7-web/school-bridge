@@ -1560,12 +1560,9 @@ const HalvesQuartersEighthsPractise = () => {
           >
             Halves, Quarters &amp; Eighths — Practise
           </h1>
-          <p className="mt-2 mb-6 text-center text-muted-foreground">
-            Choose your level.
-          </p>
         </div>
 
-        <LevelSelector level={level} onChange={handleLevelChange} l3Unlocked={l3Unlocked} />
+        <LevelPills level={level} onChange={handleLevelChange} l3Unlocked={l3Unlocked} />
 
         {showL2PromoBanner && (
           <div className="mt-4 rounded-xl border-2 border-primary bg-secondary p-4 text-center animate-fade-in">
@@ -1617,57 +1614,59 @@ const HalvesQuartersEighthsPractise = () => {
           total={10}
         />
 
-        {question.type === "shade" && (
-          <ShadeCard
-            key={`${level}-${questionNum}`}
-            q={question}
-            level={level}
-            consecutiveCorrect={consecutiveCorrect}
-            consecutiveWrong={consecutiveWrong}
-            onCorrect={handleCorrect}
-            hintKey={questionNum}
-          />
-        )}
-        {question.type === "l2_identify" && (
-          <L2IdentifyCard
-            key={`${level}-${questionNum}`}
-            q={question}
-            consecutiveCorrect={consecutiveCorrect}
-            consecutiveWrong={consecutiveWrong}
-            onCorrect={handleCorrect}
-            hintKey={questionNum}
-          />
-        )}
-        {question.type === "l2_match" && (
-          <L2MatchCard
-            key={`${level}-${questionNum}`}
-            q={question}
-            consecutiveCorrect={consecutiveCorrect}
-            consecutiveWrong={consecutiveWrong}
-            onCorrect={handleCorrect}
-            hintKey={questionNum}
-          />
-        )}
-        {question.type === "l2_fill" && (
-          <L2FillCard
-            key={`${level}-${questionNum}`}
-            q={question}
-            consecutiveCorrect={consecutiveCorrect}
-            consecutiveWrong={consecutiveWrong}
-            onCorrect={handleCorrect}
-            hintKey={questionNum}
-          />
-        )}
-        {question.type === "l3_word" && (
-          <L3WordCard
-            key={`${level}-${questionNum}`}
-            q={question}
-            consecutiveCorrect={consecutiveCorrect}
-            consecutiveWrong={consecutiveWrong}
-            onCorrect={handleCorrect}
-            hintKey={questionNum}
-          />
-        )}
+        <div key={`lvl-${level}`} className="animate-fade-in">
+          {question.type === "shade" && (
+            <ShadeCard
+              key={`${level}-${questionNum}`}
+              q={question}
+              level={level}
+              consecutiveCorrect={consecutiveCorrect}
+              consecutiveWrong={consecutiveWrong}
+              onCorrect={handleCorrect}
+              hintKey={questionNum}
+            />
+          )}
+          {question.type === "l2_identify" && (
+            <L2IdentifyCard
+              key={`${level}-${questionNum}`}
+              q={question}
+              consecutiveCorrect={consecutiveCorrect}
+              consecutiveWrong={consecutiveWrong}
+              onCorrect={handleCorrect}
+              hintKey={questionNum}
+            />
+          )}
+          {question.type === "l2_match" && (
+            <L2MatchCard
+              key={`${level}-${questionNum}`}
+              q={question}
+              consecutiveCorrect={consecutiveCorrect}
+              consecutiveWrong={consecutiveWrong}
+              onCorrect={handleCorrect}
+              hintKey={questionNum}
+            />
+          )}
+          {question.type === "l2_fill" && (
+            <L2FillCard
+              key={`${level}-${questionNum}`}
+              q={question}
+              consecutiveCorrect={consecutiveCorrect}
+              consecutiveWrong={consecutiveWrong}
+              onCorrect={handleCorrect}
+              hintKey={questionNum}
+            />
+          )}
+          {question.type === "l3_word" && (
+            <L3WordCard
+              key={`${level}-${questionNum}`}
+              q={question}
+              consecutiveCorrect={consecutiveCorrect}
+              consecutiveWrong={consecutiveWrong}
+              onCorrect={handleCorrect}
+              hintKey={questionNum}
+            />
+          )}
+        </div>
       </div>
       <ParentSignpost strategy="halvesQuartersEighths" />
       <Keyframes />
