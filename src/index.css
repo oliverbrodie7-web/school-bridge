@@ -91,6 +91,7 @@
     /* Borders */
     --colour-border: #E8E0D4;
     --colour-border-dashed: #D4C9B8;
+    --colour-card-border: #D4C9B8;
 
     /* Avatar palette — assign by profile index */
     --colour-avatar-0: #F4A261;
@@ -201,3 +202,30 @@
   from { transform: translateY(-40px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
+
+/* Shared MenuCard animations + interactions */
+@keyframes bounceIn {
+  from { opacity: 0; transform: scale(0.6) translateY(30px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.menu-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  font-family: var(--font-family);
+  box-sizing: border-box;
+}
+button.menu-card { font: inherit; text-align: inherit; }
+.menu-card-active {
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+.menu-card-active:hover {
+  transform: scale(1.04) translateY(-3px);
+  box-shadow: var(--shadow-card-hover);
+}
+.menu-card-active:active {
+  transform: scale(0.95);
+  transition: transform 100ms ease;
+}
+
