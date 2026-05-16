@@ -1563,7 +1563,7 @@ const Parent = () => {
   if (strategy === "halvesQuartersEighths") return <HalvesQuartersEighthsParentGuide />;
 
   return (
-    <div className="flex min-h-screen flex-col items-center px-6 py-12">
+    <div className="flex min-h-screen flex-col items-center px-6 py-12" style={{ backgroundColor: '#FFF8EC' }}>
       <div className="w-full max-w-2xl text-center">
         <h1
           className="text-2xl font-bold text-foreground sm:text-3xl"
