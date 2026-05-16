@@ -76,16 +76,17 @@ const CurriculumBadge = ({
         onClick={() => setOpen((o) => !o)}
         className="inline-flex items-center gap-1.5 transition-colors"
         style={{
-          backgroundColor: "#E1F5EE",
-          border: "0.5px solid #5DCAA5",
-          color: "#0F6E56",
+          backgroundColor: "#F5F0E8",
+          border: "1px solid #D4C9B8",
+          color: "#888888",
           padding: "5px 10px",
-          borderRadius: "8px",
+          borderRadius: "var(--border-radius-md)",
           cursor: "pointer",
           textAlign: "left",
+          transition: "background 150ms ease",
         }}
-        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#D2EFE3")}
-        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#E1F5EE")}
+        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#EDE8E0")}
+        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#F5F0E8")}
         aria-expanded={open}
         aria-label={`Curriculum reference ${code}`}
       >
@@ -93,7 +94,7 @@ const CurriculumBadge = ({
           <span style={{ fontSize: "10px", fontWeight: 400, lineHeight: 1.3 }}>
             Australian Curriculum Outcome
           </span>
-          <span style={{ fontSize: "11px", fontWeight: 500, lineHeight: 1.3 }}>
+          <span style={{ fontSize: "11px", fontWeight: 500, lineHeight: 1.3, color: "#1A1A1A" }}>
             {code}
           </span>
         </div>
