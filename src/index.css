@@ -91,6 +91,7 @@
     /* Borders */
     --colour-border: #E8E0D4;
     --colour-border-dashed: #D4C9B8;
+    --colour-card-border: #D4C9B8;
 
     /* Avatar palette — assign by profile index */
     --colour-avatar-0: #F4A261;
