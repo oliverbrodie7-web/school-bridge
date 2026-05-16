@@ -119,11 +119,11 @@ const CurriculumBadge = ({
             zIndex: 50,
             width: "320px",
             maxWidth: "calc(100vw - 32px)",
-            backgroundColor: "hsl(var(--background))",
-            border: "0.5px solid #5DCAA5",
-            borderRadius: "12px",
+            backgroundColor: "#ffffff",
+            border: "1px solid #E8E0D4",
+            borderRadius: "var(--border-radius-md)",
             padding: "14px 16px",
-            boxShadow: "0 8px 24px -8px rgba(0,0,0,0.15)",
+            boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
             animation: "curriculumFadeIn 150ms ease-out",
           }}
         >
@@ -132,9 +132,9 @@ const CurriculumBadge = ({
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="text-muted-foreground hover:text-foreground transition-colors"
+              className="transition-colors"
               aria-label="Close"
-              style={{ lineHeight: 1, fontSize: "16px" }}
+              style={{ lineHeight: 1, fontSize: "16px", color: "#888888" }}
             >
               <X size={14} />
             </button>
@@ -162,10 +162,10 @@ const CurriculumBadge = ({
           <div
             style={{
               fontSize: "11px",
-              color: "#0F6E56",
+              color: "#888888",
               marginTop: "10px",
               paddingTop: "8px",
-              borderTop: "0.5px solid #9FE1CB",
+              borderTop: "0.5px solid #E8E0D4",
             }}
           >
             {year} · {strand} · Australian Curriculum v9.0
