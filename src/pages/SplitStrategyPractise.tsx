@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { Lock } from "lucide-react";
 import { PractiseHintButton } from "@/components/PractiseHintButton";
 import CurriculumBadge, { AC9M2N04_PROPS } from "@/components/CurriculumBadge";
 import ProgressIndicator from "@/components/ProgressIndicator";
+import LevelPills from "@/components/LevelPills";
 
 const BLUE = "#3B82F6";
 const ORANGE = "#F97316";
@@ -79,39 +79,7 @@ const incL2Count = () => {
   return n;
 };
 
-const DifficultySelector = ({ level, onChange, l3Unlocked }: { level: number; onChange: (l: number) => void; l3Unlocked: boolean }) => {
-  const levels = [
-    { n: 1, label: "Level 1", desc: "Beginner", locked: false },
-    { n: 2, label: "Level 2", desc: "Intermediate", locked: false },
-    { n: 3, label: "Level 3", desc: "Advanced", locked: !l3Unlocked },
-  ];
-  return (
-    <div className="flex gap-3 justify-center">
-      {levels.map((l) => (
-        <button
-          key={l.n}
-          onClick={() => !l.locked && onChange(l.n)}
-          disabled={l.locked}
-          className={`flex-1 rounded-xl px-5 py-3 text-sm font-semibold transition-colors border-2 text-center ${
-            l.locked
-              ? "border-border text-muted-foreground opacity-50 cursor-not-allowed"
-              : level === l.n
-                ? "border-primary bg-primary text-primary-foreground"
-                : "border-border text-muted-foreground hover:border-primary hover:text-primary"
-          }`}
-        >
-          <span className="inline-flex items-center justify-center gap-1">
-            {l.label}
-            {l.locked && <Lock className="h-3.5 w-3.5" aria-hidden="true" />}
-          </span>
-          <span className="block text-xs font-normal opacity-70">
-            {l.locked ? "Complete 10 correct Level 2 questions to unlock" : l.desc}
-          </span>
-        </button>
-      ))}
-    </div>
-  );
-};
+/* Level selector moved to shared <LevelPills /> component. */
 
 /* ═══════════════════════════════════════════════════════
    LEVEL 1 — Visual blocks, same as Learn page but interactive
@@ -724,12 +692,9 @@ const SplitStrategyPractise = () => {
           <h1 className="text-center text-2xl font-bold text-foreground sm:text-3xl" style={{ fontFamily: "var(--font-heading)" }}>
             Split Strategy — Practise
           </h1>
-          <p className="mt-2 mb-6 text-center text-muted-foreground">
-            Choose your level.
-          </p>
         </div>
 
-        <DifficultySelector level={level} onChange={handleLevelChange} l3Unlocked={l3Unlocked} />
+        <LevelPills level={level} onChange={handleLevelChange} l3Unlocked={l3Unlocked} />
 
         {finished ? (
           <div className="mt-10 text-center space-y-6 animate-fade-in">
@@ -771,9 +736,11 @@ const SplitStrategyPractise = () => {
               current={currentIndex + 1}
               total={queue.length}
             />
-            {level === 1 && <Level1Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} consecutiveCorrect={consecutiveCorrect} consecutiveWrong={consecutiveWrong} />}
-            {level === 2 && <Level2Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} consecutiveCorrect={consecutiveCorrect} consecutiveWrong={consecutiveWrong} />}
-            {level === 3 && <Level3Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} consecutiveCorrect={consecutiveCorrect} consecutiveWrong={consecutiveWrong} />}
+            <div key={`lvl-${level}`} className="animate-fade-in">
+              {level === 1 && <Level1Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} consecutiveCorrect={consecutiveCorrect} consecutiveWrong={consecutiveWrong} />}
+              {level === 2 && <Level2Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} consecutiveCorrect={consecutiveCorrect} consecutiveWrong={consecutiveWrong} />}
+              {level === 3 && <Level3Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} consecutiveCorrect={consecutiveCorrect} consecutiveWrong={consecutiveWrong} />}
+            </div>
           </>
         )}
       </div>

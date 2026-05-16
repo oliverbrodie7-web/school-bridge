@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Lock } from "lucide-react";
 import ParentSignpost from "@/components/ParentSignpost";
 import { getLevel3Unlocked, setLevel3Unlocked } from "@/lib/progress";
 import CurriculumBadge from "@/components/CurriculumBadge";
 import { PractiseHintButton } from "@/components/PractiseHintButton";
 import { Pizza, ChocolateBar } from "@/components/FractionFood";
 import ProgressIndicator from "@/components/ProgressIndicator";
+import LevelPills from "@/components/LevelPills";
 
 const TEAL = "#1D9E75";
 const TEAL_FILL = "#1D9E75";
@@ -369,47 +369,7 @@ const generateL3 = (subPos: number, avoid: Set<string>): L3WordQ => {
 };
 
 /* ──────────────── LEVEL SELECTOR ──────────────── */
-const LevelSelector = ({
-  level,
-  onChange,
-  l3Unlocked,
-}: {
-  level: number;
-  onChange: (l: number) => void;
-  l3Unlocked: boolean;
-}) => {
-  const levels = [
-    { n: 1, label: "Level 1", desc: "Beginner", locked: false },
-    { n: 2, label: "Level 2", desc: "Intermediate", locked: false },
-    { n: 3, label: "Level 3", desc: "Advanced", locked: !l3Unlocked },
-  ];
-  return (
-    <div className="flex gap-3 justify-center">
-      {levels.map((l) => (
-        <button
-          key={l.n}
-          onClick={() => !l.locked && onChange(l.n)}
-          disabled={l.locked}
-          className={`flex-1 rounded-xl px-5 py-3 text-sm font-semibold transition-colors border-2 text-center ${
-            l.locked
-              ? "border-border text-muted-foreground opacity-50 cursor-not-allowed"
-              : level === l.n
-                ? "border-primary bg-primary text-primary-foreground"
-                : "border-border text-muted-foreground hover:border-primary hover:text-primary"
-          }`}
-        >
-          <span className="inline-flex items-center justify-center gap-1">
-            {l.label}
-            {l.locked && <Lock className="h-3.5 w-3.5" aria-hidden="true" />}
-          </span>
-          <span className="block text-xs font-normal opacity-70">
-            {l.locked ? "Complete 10 correct Level 2 questions to unlock" : l.desc}
-          </span>
-        </button>
-      ))}
-    </div>
-  );
-};
+/* Level selector moved to shared <LevelPills /> component. */
 
 /* ──────────────── FOOD RENDERER (L1 + L2 identify/match) ──────────────── */
 interface ShapeProps {
@@ -1599,12 +1559,9 @@ const HalvesQuartersEighthsPractise = () => {
           >
             Halves, Quarters &amp; Eighths — Practise
           </h1>
-          <p className="mt-2 mb-6 text-center text-muted-foreground">
-            Choose your level.
-          </p>
         </div>
 
-        <LevelSelector level={level} onChange={handleLevelChange} l3Unlocked={l3Unlocked} />
+        <LevelPills level={level} onChange={handleLevelChange} l3Unlocked={l3Unlocked} />
 
         {showL2PromoBanner && (
           <div className="mt-4 rounded-xl border-2 border-primary bg-secondary p-4 text-center animate-fade-in">
@@ -1656,57 +1613,59 @@ const HalvesQuartersEighthsPractise = () => {
           total={10}
         />
 
-        {question.type === "shade" && (
-          <ShadeCard
-            key={`${level}-${questionNum}`}
-            q={question}
-            level={level}
-            consecutiveCorrect={consecutiveCorrect}
-            consecutiveWrong={consecutiveWrong}
-            onCorrect={handleCorrect}
-            hintKey={questionNum}
-          />
-        )}
-        {question.type === "l2_identify" && (
-          <L2IdentifyCard
-            key={`${level}-${questionNum}`}
-            q={question}
-            consecutiveCorrect={consecutiveCorrect}
-            consecutiveWrong={consecutiveWrong}
-            onCorrect={handleCorrect}
-            hintKey={questionNum}
-          />
-        )}
-        {question.type === "l2_match" && (
-          <L2MatchCard
-            key={`${level}-${questionNum}`}
-            q={question}
-            consecutiveCorrect={consecutiveCorrect}
-            consecutiveWrong={consecutiveWrong}
-            onCorrect={handleCorrect}
-            hintKey={questionNum}
-          />
-        )}
-        {question.type === "l2_fill" && (
-          <L2FillCard
-            key={`${level}-${questionNum}`}
-            q={question}
-            consecutiveCorrect={consecutiveCorrect}
-            consecutiveWrong={consecutiveWrong}
-            onCorrect={handleCorrect}
-            hintKey={questionNum}
-          />
-        )}
-        {question.type === "l3_word" && (
-          <L3WordCard
-            key={`${level}-${questionNum}`}
-            q={question}
-            consecutiveCorrect={consecutiveCorrect}
-            consecutiveWrong={consecutiveWrong}
-            onCorrect={handleCorrect}
-            hintKey={questionNum}
-          />
-        )}
+        <div key={`lvl-${level}`} className="animate-fade-in">
+          {question.type === "shade" && (
+            <ShadeCard
+              key={`${level}-${questionNum}`}
+              q={question}
+              level={level}
+              consecutiveCorrect={consecutiveCorrect}
+              consecutiveWrong={consecutiveWrong}
+              onCorrect={handleCorrect}
+              hintKey={questionNum}
+            />
+          )}
+          {question.type === "l2_identify" && (
+            <L2IdentifyCard
+              key={`${level}-${questionNum}`}
+              q={question}
+              consecutiveCorrect={consecutiveCorrect}
+              consecutiveWrong={consecutiveWrong}
+              onCorrect={handleCorrect}
+              hintKey={questionNum}
+            />
+          )}
+          {question.type === "l2_match" && (
+            <L2MatchCard
+              key={`${level}-${questionNum}`}
+              q={question}
+              consecutiveCorrect={consecutiveCorrect}
+              consecutiveWrong={consecutiveWrong}
+              onCorrect={handleCorrect}
+              hintKey={questionNum}
+            />
+          )}
+          {question.type === "l2_fill" && (
+            <L2FillCard
+              key={`${level}-${questionNum}`}
+              q={question}
+              consecutiveCorrect={consecutiveCorrect}
+              consecutiveWrong={consecutiveWrong}
+              onCorrect={handleCorrect}
+              hintKey={questionNum}
+            />
+          )}
+          {question.type === "l3_word" && (
+            <L3WordCard
+              key={`${level}-${questionNum}`}
+              q={question}
+              consecutiveCorrect={consecutiveCorrect}
+              consecutiveWrong={consecutiveWrong}
+              onCorrect={handleCorrect}
+              hintKey={questionNum}
+            />
+          )}
+        </div>
       </div>
       <ParentSignpost strategy="halvesQuartersEighths" />
       <Keyframes />
