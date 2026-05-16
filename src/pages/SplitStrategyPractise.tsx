@@ -737,9 +737,11 @@ const SplitStrategyPractise = () => {
               current={currentIndex + 1}
               total={queue.length}
             />
-            {level === 1 && <Level1Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} consecutiveCorrect={consecutiveCorrect} consecutiveWrong={consecutiveWrong} />}
-            {level === 2 && <Level2Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} consecutiveCorrect={consecutiveCorrect} consecutiveWrong={consecutiveWrong} />}
-            {level === 3 && <Level3Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} consecutiveCorrect={consecutiveCorrect} consecutiveWrong={consecutiveWrong} />}
+            <div key={`lvl-${level}`} className="animate-fade-in">
+              {level === 1 && <Level1Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} consecutiveCorrect={consecutiveCorrect} consecutiveWrong={consecutiveWrong} />}
+              {level === 2 && <Level2Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} consecutiveCorrect={consecutiveCorrect} consecutiveWrong={consecutiveWrong} />}
+              {level === 3 && <Level3Card key={`${currentIndex}-${question.big}`} q={question} onNext={nextQuestion} consecutiveCorrect={consecutiveCorrect} consecutiveWrong={consecutiveWrong} />}
+            </div>
           </>
         )}
       </div>
