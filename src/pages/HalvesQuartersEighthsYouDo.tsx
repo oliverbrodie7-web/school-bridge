@@ -361,7 +361,7 @@ const ShadeCard = ({
       {shadeDone && !correct && (
         <div className="mt-6 space-y-5 animate-fade-in">
           <p className="text-center text-base text-foreground">
-            I took ___ out of ___ equal {unitS} = ___
+            Zara took ___ out of ___ equal {unitS} = ___
           </p>
 
           <ChipRow
