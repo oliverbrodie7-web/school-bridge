@@ -60,8 +60,9 @@ const QUESTIONS: Question[] = [
     shadeCount: 1,
     fraction: "1/2",
     acceptedFractions: ["1/2"],
-    prompt: "Tap the pizza to slice it into 2 equal pieces. Take one slice.",
-    successMessage: "Perfect — you shared it equally!",
+    prompt:
+      "Zara had a pizza. She sliced it into 2 equal pieces and took one slice. Shade the slice Zara took.",
+    successMessage: "That's right — Zara took one half of the pizza!",
   },
   {
     type: "shade",
@@ -72,8 +73,9 @@ const QUESTIONS: Question[] = [
     shadeCount: 1,
     fraction: "1/4",
     acceptedFractions: ["1/4"],
-    prompt: "Tap the bar to break it into 4 equal pieces. Take one piece.",
-    successMessage: "Perfect — you shared it equally!",
+    prompt:
+      "Zara had a chocolate bar. She broke it into 4 equal pieces and took one. Shade the piece Zara took.",
+    successMessage: "Yes! Zara took one quarter of the chocolate bar.",
   },
   {
     type: "shade",
@@ -84,8 +86,9 @@ const QUESTIONS: Question[] = [
     shadeCount: 2,
     fraction: "2/2",
     acceptedFractions: ["2/2", "1", "1/1"],
-    prompt: "Tap the bar to break it into 2 equal pieces. Take both pieces.",
-    successMessage: "Perfect — you shared it equally! 2 out of 2 makes the whole bar.",
+    prompt:
+      "Zara was very hungry! She broke her chocolate bar into 2 equal pieces and ate both pieces. Shade the pieces Zara ate.",
+    successMessage: "Zara ate the whole bar — 2 out of 2 equal pieces!",
   },
   {
     type: "shade",
@@ -96,20 +99,24 @@ const QUESTIONS: Question[] = [
     shadeCount: 1,
     fraction: "1/8",
     acceptedFractions: ["1/8"],
-    prompt: "Tap the pizza three times to slice it into 8 equal pieces. Take one slice.",
-    successMessage: "Perfect — you shared it equally!",
+    prompt:
+      "Zara had a pizza. She sliced it into 8 equal pieces and took one slice. Shade the slice Zara took.",
+    successMessage: "One eighth — that's a very small slice, Zara!",
   },
   {
     type: "choose",
     id: "q5",
-    prompt: "Which pizza shows quarters?",
+    prompt:
+      "Zara had two pizzas. One was cut into 2 slices, one into 4 slices. Which pizza shows quarters?",
     options: [
       { label: "A", parts: 2 },
       { label: "B", parts: 4 },
     ],
     correctParts: 4,
-    successMessage: "Yes! 4 equal slices = quarters.",
-    wrongHint: "Count the slices on each pizza — which one has 4?",
+    successMessage:
+      "That's right — 4 equal slices means each is one quarter. Zara knows her fractions!",
+    wrongHint:
+      "Count the slices on each of Zara's pizzas — which one has 4 equal slices?",
   },
 ];
 
@@ -354,7 +361,7 @@ const ShadeCard = ({
       {shadeDone && !correct && (
         <div className="mt-6 space-y-5 animate-fade-in">
           <p className="text-center text-base text-foreground">
-            I took ___ out of ___ equal {unitS} = ___
+            Zara took ___ out of ___ equal {unitS} = ___
           </p>
 
           <ChipRow
