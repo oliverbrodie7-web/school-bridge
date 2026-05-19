@@ -263,12 +263,46 @@ const QuarterPizzaCard = () => {
       </p>
 
       <div className="mt-6 flex justify-center">
-        <Pizza size={240} slices={slices} shaded={shaded} cutsDrawn={true} filled={filled} />
+        {!filled ? (
+          <Pizza size={240} slices={slices} shaded={shaded} cutsDrawn={true} filled={filled} />
+        ) : (
+          <svg width={220} height={220} viewBox="0 0 220 220" className="animate-fade-in">
+            {/* Slice 1 — Mia's (top right) */}
+            <path d="M110,110 L110,8 A102,102 0 0,1 212,110 Z" fill="#EF4444" stroke="#FFF8EC" strokeWidth={4} />
+            {/* Slice 2 — bottom right */}
+            <path d="M110,110 L212,110 A102,102 0 0,1 110,212 Z" fill="#FDE68A" fillOpacity={0.4} stroke="#FFF8EC" strokeWidth={4} />
+            {/* Slice 3 — bottom left */}
+            <path d="M110,110 L110,212 A102,102 0 0,1 8,110 Z" fill="#FDE68A" fillOpacity={0.4} stroke="#FFF8EC" strokeWidth={4} />
+            {/* Slice 4 — top left */}
+            <path d="M110,110 L8,110 A102,102 0 0,1 110,8 Z" fill="#FDE68A" fillOpacity={0.4} stroke="#FFF8EC" strokeWidth={4} />
+
+            {/* Crust — Mia's slice */}
+            <path d="M110,8 A102,102 0 0,1 212,110" fill="none" stroke="#D97706" strokeWidth={10} strokeLinecap="round" />
+            {/* Crust — remaining */}
+            <path d="M212,110 A102,102 0 0,1 110,212" fill="none" stroke="#D97706" strokeWidth={10} strokeLinecap="round" opacity={0.3} />
+            <path d="M110,212 A102,102 0 0,1 8,110" fill="none" stroke="#D97706" strokeWidth={10} strokeLinecap="round" opacity={0.3} />
+            <path d="M8,110 A102,102 0 0,1 110,8" fill="none" stroke="#D97706" strokeWidth={10} strokeLinecap="round" opacity={0.3} />
+
+            {/* Toppings on Mia's slice */}
+            <circle cx={150} cy={55} r={5} fill="#DC2626" />
+            <circle cx={175} cy={90} r={5} fill="#DC2626" />
+            <circle cx={140} cy={95} r={5} fill="#DC2626" />
+
+            {/* Centre dot */}
+            <circle cx={110} cy={110} r={6} fill="#FFF8EC" />
+
+            {/* 1/4 labels */}
+            <text x={158} y={88} fontFamily="Nunito, sans-serif" fontSize={16} fontWeight={800} textAnchor="middle" dominantBaseline="middle" fill="#ffffff">1/4</text>
+            <text x={158} y={155} fontFamily="Nunito, sans-serif" fontSize={16} fontWeight={800} textAnchor="middle" dominantBaseline="middle" fill="#D97706" opacity={0.5}>1/4</text>
+            <text x={62} y={155} fontFamily="Nunito, sans-serif" fontSize={16} fontWeight={800} textAnchor="middle" dominantBaseline="middle" fill="#D97706" opacity={0.5}>1/4</text>
+            <text x={62} y={88} fontFamily="Nunito, sans-serif" fontSize={16} fontWeight={800} textAnchor="middle" dominantBaseline="middle" fill="#D97706" opacity={0.5}>1/4</text>
+          </svg>
+        )}
       </div>
 
       {filled && (
-        <div className="mt-3 text-center animate-fade-in" style={{ color: LABEL, fontWeight: 600, fontSize: 16 }}>
-          1/4 + 1/4 + 1/4 + 1/4 — 4 equal slices
+        <div className="mt-2 text-center animate-fade-in" style={{ color: "#1D9E75", fontWeight: 800, fontSize: 13 }}>
+          Mia's slice = 1/4 ✓
         </div>
       )}
 
