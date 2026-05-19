@@ -205,6 +205,15 @@ const QuarterPizzaCard = () => {
       ? () => setPhase("quartering")
       : null;
 
+  const handleTap = () => {
+    if (!tappable) return;
+    setButtonFading(true);
+    setTimeout(() => {
+      tappable();
+      setButtonFading(false);
+    }, 200);
+  };
+
   // Render with 2 slices (halves) until second tap, then 4 slices (quarters).
   const slices = quarterDrawn ? 4 : halfDrawn ? 2 : 1;
   const shaded = filled ? [0] : [];
