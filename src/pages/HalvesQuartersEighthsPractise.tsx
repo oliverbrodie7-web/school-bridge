@@ -40,6 +40,7 @@ interface ShadeQ {
   totalParts: number;
   shadeCount: number;
   fraction: FractionStr;
+  character?: Character;
 }
 
 interface L2IdentifyQ {
@@ -47,12 +48,14 @@ interface L2IdentifyQ {
   fraction: FractionStr;
   options: { shape: ShapeKind; totalParts: number; shadedIndices: number[] }[];
   correctIndex: number;
+  character?: Character;
 }
 
 interface L2MatchQ {
   type: "l2_match";
   items: { id: string; shape: AnyShape; totalParts: number; shadedIndices: number[]; fraction: FractionStr }[];
   labels: FractionStr[];
+  character?: Character;
 }
 
 interface L2FillQ {
@@ -61,6 +64,7 @@ interface L2FillQ {
   totalParts: number;
   shadeCount: number;
   fraction: FractionStr;
+  character?: Character;
 }
 
 interface L3WordQ {
@@ -73,6 +77,7 @@ interface L3WordQ {
   fractionType: "halves" | "quarters" | "eighths";
   /** Stable signature for "no repeats" tracking. */
   signature: string;
+  character?: Character;
 }
 
 type Question = ShadeQ | L2IdentifyQ | L2MatchQ | L2FillQ | L3WordQ;
