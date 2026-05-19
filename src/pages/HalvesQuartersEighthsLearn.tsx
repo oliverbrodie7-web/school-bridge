@@ -99,31 +99,15 @@ const HalfChocolateCard = ({ onNext }: { onNext: () => void }) => {
         Mia had a chocolate bar. She wanted to share it equally with her friend.
       </p>
 
-      {phase === "prompt" && (
-        <p className="mt-3 text-center text-sm font-medium text-muted-foreground">
-          Tap the bar to break it into equal pieces.
-        </p>
-      )}
-
       <div className="mt-6 flex justify-center">
-
-        <button
-          type="button"
-          onClick={() => phase === "prompt" && setPhase("splitting")}
-          disabled={phase !== "prompt"}
-          aria-label="Tap the bar to break it"
-          className={phase === "prompt" ? "cursor-pointer transition-transform hover:scale-105 active:scale-95" : "cursor-default"}
-          style={{ background: "transparent", border: "none", padding: 0 }}
-        >
-          <ChocolateBar
-            width={280}
-            height={120}
-            segments={2}
-            shaded={[0]}
-            breaksDrawn={split}
-            filled={filled}
-          />
-        </button>
+        <ChocolateBar
+          width={280}
+          height={120}
+          segments={2}
+          shaded={[0]}
+          breaksDrawn={split}
+          filled={filled}
+        />
       </div>
 
       {filled && (
@@ -134,9 +118,18 @@ const HalfChocolateCard = ({ onNext }: { onNext: () => void }) => {
       )}
 
       {phase === "prompt" && (
-        <p className="mt-6 text-center text-lg font-medium text-muted-foreground animate-fade-in">
-          How many equal pieces does she need to break it into?
-        </p>
+        <>
+          <p className="mt-6 text-center text-lg font-medium text-muted-foreground animate-fade-in">
+            How many equal pieces does she need to break it into?
+          </p>
+          <button
+            type="button"
+            onClick={() => setPhase("splitting")}
+            className="hqe-tap-button"
+          >
+            Tap the bar to break it
+          </button>
+        </>
       )}
 
       {(phase === "pictorial" || phase === "abstract") && (
@@ -219,24 +212,8 @@ const QuarterPizzaCard = () => {
         Mia had a pizza. She wanted to share it equally between herself and 3 friends — 4 people in total.
       </p>
 
-      {phase === "prompt" && (
-        <p className="mt-3 text-center text-sm font-medium text-muted-foreground">
-          Tap the pizza to slice it into equal pieces.
-        </p>
-      )}
-
       <div className="mt-6 flex justify-center">
-
-        <button
-          type="button"
-          onClick={() => tappable?.()}
-          disabled={!tappable}
-          aria-label="Tap the pizza to slice it"
-          className={tappable ? "cursor-pointer transition-transform hover:scale-105 active:scale-95" : "cursor-default"}
-          style={{ background: "transparent", border: "none", padding: 0 }}
-        >
-          <Pizza size={240} slices={slices} shaded={shaded} cutsDrawn={true} filled={filled} />
-        </button>
+        <Pizza size={240} slices={slices} shaded={shaded} cutsDrawn={true} filled={filled} />
       </div>
 
       {filled && (
@@ -246,14 +223,24 @@ const QuarterPizzaCard = () => {
       )}
 
       {phase === "prompt" && (
-        <p className="mt-6 text-center text-lg font-medium text-muted-foreground animate-fade-in">
-          How many equal slices does she need to cut it into?
-        </p>
+        <>
+          <p className="mt-6 text-center text-lg font-medium text-muted-foreground animate-fade-in">
+            How many equal slices does she need to cut it into?
+          </p>
+          <button type="button" onClick={() => tappable?.()} className="hqe-tap-button">
+            Tap the pizza to slice it
+          </button>
+        </>
       )}
       {phase === "promptQuarter" && (
-        <p className="mt-6 text-center text-lg font-medium text-muted-foreground animate-fade-in">
-          Now tap again to slice each half in half.
-        </p>
+        <>
+          <p className="mt-6 text-center text-lg font-medium text-muted-foreground animate-fade-in">
+            Now tap again to slice each half in half.
+          </p>
+          <button type="button" onClick={() => tappable?.()} className="hqe-tap-button">
+            Tap the pizza to slice it
+          </button>
+        </>
       )}
 
       {(phase === "pictorial" || phase === "abstract") && (
@@ -319,6 +306,26 @@ const Keyframes = () => (
       from { opacity: 0; }
       to { opacity: 1; }
     }
+    @keyframes learnPulse {
+      0%, 100% { box-shadow: 0 4px 12px rgba(29,158,117,0.3); }
+      50% { box-shadow: 0 4px 20px rgba(29,158,117,0.5), 0 0 0 4px rgba(29,158,117,0.15); }
+    }
+    .hqe-tap-button {
+      background: #1D9E75;
+      color: #ffffff;
+      border: none;
+      border-radius: 99px;
+      padding: 10px 28px;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'Nunito', sans-serif;
+      display: block;
+      margin: 16px auto 0;
+      cursor: pointer;
+      animation: learnPulse 2s ease-in-out infinite, fade-in 0.3s ease-out;
+      transition: opacity 200ms ease;
+    }
+    .hqe-tap-button:active { opacity: 0; }
   `}</style>
 );
 
