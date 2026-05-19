@@ -74,6 +74,11 @@ const HalvesQuartersEighthsLearn = () => {
 /* ──────────────── EXAMPLE 1: HALF (CHOCOLATE BAR) ──────────────── */
 const HalfChocolateCard = ({ onNext }: { onNext: () => void }) => {
   const [phase, setPhase] = useState<SquarePhase>("prompt");
+  const [buttonFading, setButtonFading] = useState(false);
+  const handleTap = () => {
+    setButtonFading(true);
+    setTimeout(() => setPhase("splitting"), 200);
+  };
 
   useEffect(() => {
     if (phase === "splitting") {
@@ -124,8 +129,9 @@ const HalfChocolateCard = ({ onNext }: { onNext: () => void }) => {
           </p>
           <button
             type="button"
-            onClick={() => setPhase("splitting")}
+            onClick={handleTap}
             className="hqe-tap-button"
+            style={{ opacity: buttonFading ? 0 : 1, transition: "opacity 200ms ease" }}
           >
             Tap the bar to break it
           </button>
@@ -171,6 +177,7 @@ const HalfChocolateCard = ({ onNext }: { onNext: () => void }) => {
 /* ──────────────── EXAMPLE 2: QUARTER (PIZZA) ──────────────── */
 const QuarterPizzaCard = () => {
   const [phase, setPhase] = useState<CirclePhase>("prompt");
+  const [buttonFading, setButtonFading] = useState(false);
 
   useEffect(() => {
     if (phase === "halving") {
@@ -197,6 +204,15 @@ const QuarterPizzaCard = () => {
       : phase === "promptQuarter"
       ? () => setPhase("quartering")
       : null;
+
+  const handleTap = () => {
+    if (!tappable) return;
+    setButtonFading(true);
+    setTimeout(() => {
+      tappable();
+      setButtonFading(false);
+    }, 200);
+  };
 
   // Render with 2 slices (halves) until second tap, then 4 slices (quarters).
   const slices = quarterDrawn ? 4 : halfDrawn ? 2 : 1;
@@ -227,7 +243,7 @@ const QuarterPizzaCard = () => {
           <p className="mt-6 text-center text-lg font-medium text-muted-foreground animate-fade-in">
             How many equal slices does she need to cut it into?
           </p>
-          <button type="button" onClick={() => tappable?.()} className="hqe-tap-button">
+          <button type="button" onClick={handleTap} className="hqe-tap-button" style={{ opacity: buttonFading ? 0 : 1, transition: "opacity 200ms ease" }}>
             Tap the pizza to slice it
           </button>
         </>
@@ -237,7 +253,7 @@ const QuarterPizzaCard = () => {
           <p className="mt-6 text-center text-lg font-medium text-muted-foreground animate-fade-in">
             Now tap again to slice each half in half.
           </p>
-          <button type="button" onClick={() => tappable?.()} className="hqe-tap-button">
+          <button type="button" onClick={handleTap} className="hqe-tap-button" style={{ opacity: buttonFading ? 0 : 1, transition: "opacity 200ms ease" }}>
             Tap the pizza to slice it
           </button>
         </>
