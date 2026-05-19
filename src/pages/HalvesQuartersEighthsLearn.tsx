@@ -77,7 +77,7 @@ const HalfChocolateCard = ({ onNext }: { onNext: () => void }) => {
   const [buttonFading, setButtonFading] = useState(false);
   const handleTap = () => {
     setButtonFading(true);
-    setTimeout(() => setPhase("splitting"), 200);
+    setTimeout(() => setPhase("splitting"), 300);
   };
 
   useEffect(() => {
