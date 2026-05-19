@@ -1355,6 +1355,7 @@ const L2FillCard = ({
   const [hadWrong, setHadWrong] = useState(false);
 
   const shapeWord = q.shape;
+  const charName = q.character?.name ?? "";
 
   const togglePart = (i: number) => {
     if (done) return;
@@ -1368,7 +1369,11 @@ const L2FillCard = ({
       setHint("");
     } else {
       setHadWrong(true);
-      setHint("Count the equal parts first — how many do you need to shade?");
+      setHint(
+        charName
+          ? `Look at ${charName}'s ${shapeWord} carefully — count the equal parts again.`
+          : "Count the equal parts first — how many do you need to shade?"
+      );
     }
   };
 
@@ -1383,7 +1388,9 @@ const L2FillCard = ({
       />
 
       <p className="mt-6 text-center text-lg font-semibold text-foreground" style={{ paddingRight: 80 }}>
-        Shade {q.fraction} of this {shapeWord}.
+        {charName
+          ? `${charName} wants to take ${q.fraction} of this ${shapeWord}. Shade the correct amount.`
+          : `Shade ${q.fraction} of this ${shapeWord}.`}
       </p>
 
       <div className="mt-6 flex justify-center">
