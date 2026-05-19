@@ -1312,7 +1312,7 @@ const L2MatchCard = ({
       {done && (
         <div className="mt-6 space-y-4 text-center animate-fade-in">
           <div className="rounded-xl bg-secondary p-4 font-medium text-secondary-foreground">
-            Perfect matching!
+            {charName ? `That's right — ${charName} would be impressed!` : "Perfect matching!"}
           </div>
           <button
             onClick={() => onCorrect(hadWrong)}
