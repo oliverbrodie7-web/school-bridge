@@ -797,6 +797,12 @@ const ShadeCard = ({
         />
       )}
 
+      {scenarioText && (
+        <p className="mt-6 text-center text-base text-foreground">
+          {scenarioText}
+        </p>
+      )}
+
       <div className="mt-6 flex justify-center">
         <ShapeRenderer
           shape={q.shape}
