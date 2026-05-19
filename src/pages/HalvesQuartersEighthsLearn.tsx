@@ -95,6 +95,10 @@ const HalfChocolateCard = ({ onNext }: { onNext: () => void }) => {
         <span className="text-muted-foreground">Example 1: </span>One half
       </p>
 
+      <p className="mt-4 text-center text-base text-foreground">
+        Mia had a chocolate bar. She wanted to share it equally with her friend.
+      </p>
+
       <div className="mt-6 flex justify-center">
         <button
           type="button"
@@ -124,13 +128,13 @@ const HalfChocolateCard = ({ onNext }: { onNext: () => void }) => {
 
       {phase === "prompt" && (
         <p className="mt-6 text-center text-lg font-medium text-muted-foreground animate-fade-in">
-          Tap the bar to break it into 2 equal pieces.
+          How many equal pieces does she need to break it into?
         </p>
       )}
 
       {(phase === "pictorial" || phase === "abstract") && (
         <p className="mt-6 text-center text-base text-foreground animate-fade-in">
-          Each piece is the same size. We call each piece <strong>one half</strong>.
+          Mia broke the bar into 2 equal pieces. Each piece is <strong>one half</strong>. Mia and her friend each get 1/2.
         </p>
       )}
 
@@ -144,9 +148,9 @@ const HalfChocolateCard = ({ onNext }: { onNext: () => void }) => {
           </p>
 
           <Callout>
-            A half is only a half if both pieces are exactly the same size.
-            Unequal pieces are <em>not</em> halves.
+            A half only works if both pieces are exactly the same size — just like Mia's chocolate bar.
           </Callout>
+
 
           <div className="mt-6 text-center animate-fade-in">
             <button
