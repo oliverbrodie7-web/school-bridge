@@ -99,7 +99,14 @@ const HalfChocolateCard = ({ onNext }: { onNext: () => void }) => {
         Mia had a chocolate bar. She wanted to share it equally with her friend.
       </p>
 
+      {phase === "prompt" && (
+        <p className="mt-3 text-center text-sm font-medium text-muted-foreground">
+          Tap the bar to break it into equal pieces.
+        </p>
+      )}
+
       <div className="mt-6 flex justify-center">
+
         <button
           type="button"
           onClick={() => phase === "prompt" && setPhase("splitting")}
@@ -212,7 +219,14 @@ const QuarterPizzaCard = () => {
         Mia had a pizza. She wanted to share it equally between herself and 3 friends — 4 people in total.
       </p>
 
+      {phase === "prompt" && (
+        <p className="mt-3 text-center text-sm font-medium text-muted-foreground">
+          Tap the pizza to slice it into equal pieces.
+        </p>
+      )}
+
       <div className="mt-6 flex justify-center">
+
         <button
           type="button"
           onClick={() => tappable?.()}
