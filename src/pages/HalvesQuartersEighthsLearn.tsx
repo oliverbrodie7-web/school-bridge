@@ -74,6 +74,11 @@ const HalvesQuartersEighthsLearn = () => {
 /* ──────────────── EXAMPLE 1: HALF (CHOCOLATE BAR) ──────────────── */
 const HalfChocolateCard = ({ onNext }: { onNext: () => void }) => {
   const [phase, setPhase] = useState<SquarePhase>("prompt");
+  const [buttonFading, setButtonFading] = useState(false);
+  const handleTap = () => {
+    setButtonFading(true);
+    setTimeout(() => setPhase("splitting"), 200);
+  };
 
   useEffect(() => {
     if (phase === "splitting") {
