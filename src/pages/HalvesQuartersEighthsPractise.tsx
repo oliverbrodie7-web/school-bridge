@@ -344,7 +344,7 @@ const EIGHTHS_TEMPLATES: L3Template[] = [
   },
 ];
 
-const generateL3 = (subPos: number, avoid: Set<string>): L3WordQ => {
+const generateL3 = (subPos: number, avoid: Set<string>, characterName?: string): L3WordQ => {
   // First 8 of every 10 questions: concrete templates only (denominator stated in text).
   // Last 2 (positions 9–10): full pool, allowing abstract phrasings.
   const concreteOnly = subPos <= 8;
