@@ -264,7 +264,18 @@ const QuarterPizzaCard = () => {
   const shaded = filled ? [0] : [];
 
   return (
-    <div className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
+    <div
+      className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8"
+      style={{
+        minHeight: 420,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        scrollBehavior: "auto",
+        overflowAnchor: "none",
+      }}
+    >
       <p className="text-center text-lg font-semibold text-foreground">
         <span className="text-muted-foreground">Example 2: </span>One quarter
       </p>
