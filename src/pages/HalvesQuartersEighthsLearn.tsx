@@ -177,6 +177,7 @@ const HalfChocolateCard = ({ onNext }: { onNext: () => void }) => {
 /* ──────────────── EXAMPLE 2: QUARTER (PIZZA) ──────────────── */
 const QuarterPizzaCard = () => {
   const [phase, setPhase] = useState<CirclePhase>("prompt");
+  const [buttonFading, setButtonFading] = useState(false);
 
   useEffect(() => {
     if (phase === "halving") {
