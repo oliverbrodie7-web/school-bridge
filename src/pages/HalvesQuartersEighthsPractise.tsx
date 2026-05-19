@@ -40,6 +40,7 @@ interface ShadeQ {
   totalParts: number;
   shadeCount: number;
   fraction: FractionStr;
+  character?: Character;
 }
 
 interface L2IdentifyQ {
@@ -47,12 +48,14 @@ interface L2IdentifyQ {
   fraction: FractionStr;
   options: { shape: ShapeKind; totalParts: number; shadedIndices: number[] }[];
   correctIndex: number;
+  character?: Character;
 }
 
 interface L2MatchQ {
   type: "l2_match";
   items: { id: string; shape: AnyShape; totalParts: number; shadedIndices: number[]; fraction: FractionStr }[];
   labels: FractionStr[];
+  character?: Character;
 }
 
 interface L2FillQ {
@@ -61,6 +64,7 @@ interface L2FillQ {
   totalParts: number;
   shadeCount: number;
   fraction: FractionStr;
+  character?: Character;
 }
 
 interface L3WordQ {
@@ -73,9 +77,37 @@ interface L3WordQ {
   fractionType: "halves" | "quarters" | "eighths";
   /** Stable signature for "no repeats" tracking. */
   signature: string;
+  character?: Character;
 }
 
 type Question = ShadeQ | L2IdentifyQ | L2MatchQ | L2FillQ | L3WordQ;
+
+/* ──────────────── CHARACTER / SCENARIO ──────────────── */
+type Pronouns = { subject: string; possessive: string };
+const NAME_BANK: { name: string; pronouns: Pronouns }[] = [
+  { name: "Mia", pronouns: { subject: "She", possessive: "her" } },
+  { name: "Jack", pronouns: { subject: "He", possessive: "his" } },
+  { name: "Zara", pronouns: { subject: "She", possessive: "her" } },
+  { name: "Noah", pronouns: { subject: "He", possessive: "his" } },
+  { name: "Ruby", pronouns: { subject: "She", possessive: "her" } },
+  { name: "Liam", pronouns: { subject: "He", possessive: "his" } },
+  { name: "Aisha", pronouns: { subject: "She", possessive: "her" } },
+  { name: "Ethan", pronouns: { subject: "He", possessive: "his" } },
+  { name: "Sofia", pronouns: { subject: "She", possessive: "her" } },
+  { name: "Marcus", pronouns: { subject: "He", possessive: "his" } },
+  { name: "Priya", pronouns: { subject: "She", possessive: "her" } },
+  { name: "Tyler", pronouns: { subject: "They", possessive: "their" } },
+];
+type Character = { name: string; pronouns: Pronouns };
+
+// Session-scoped "last name used" to prevent immediate repeats.
+let lastNameUsed: string | null = null;
+const pickCharacter = (): Character => {
+  const pool = NAME_BANK.filter((c) => c.name !== lastNameUsed);
+  const choice = pool[Math.floor(Math.random() * pool.length)];
+  lastNameUsed = choice.name;
+  return { name: choice.name, pronouns: choice.pronouns };
+};
 
 /* ──────────────── HELPERS ──────────────── */
 const randInt = (min: number, max: number) =>
@@ -312,7 +344,7 @@ const EIGHTHS_TEMPLATES: L3Template[] = [
   },
 ];
 
-const generateL3 = (subPos: number, avoid: Set<string>): L3WordQ => {
+const generateL3 = (subPos: number, avoid: Set<string>, characterName?: string): L3WordQ => {
   // First 8 of every 10 questions: concrete templates only (denominator stated in text).
   // Last 2 (positions 9–10): full pool, allowing abstract phrasings.
   const concreteOnly = subPos <= 8;
@@ -336,7 +368,7 @@ const generateL3 = (subPos: number, avoid: Set<string>): L3WordQ => {
       bucket = pick(pools);
     }
     const tmpl = pick(bucket);
-    const name = pick(NAMES);
+    const name = characterName ?? pick(NAMES);
     const object = pick(OBJECTS);
     const built = tmpl.build(name, object);
     const sig = `l3:${built.key}:${name}:${object}`;
@@ -357,7 +389,7 @@ const generateL3 = (subPos: number, avoid: Set<string>): L3WordQ => {
     ? HALVES_TEMPLATES.filter((t) => t.concrete)
     : HALVES_TEMPLATES;
   const tmpl = pick(fallbackPool.length > 0 ? fallbackPool : HALVES_TEMPLATES);
-  const built = tmpl.build(pick(NAMES), pick(OBJECTS));
+  const built = tmpl.build(characterName ?? pick(NAMES), pick(OBJECTS));
   return {
     type: "l3_word",
     text: built.text,
@@ -709,13 +741,13 @@ const ShadeCard = ({
       return;
     }
     setHadWrong(true);
-    if (shadeChip !== q.shadeCount) {
-      setHint("Almost — count just the shaded parts.");
-    } else if (partsChip !== q.totalParts) {
-      setHint("Almost — count all the equal parts altogether.");
-    } else {
-      setHint(`Not quite — ${q.shadeCount} out of ${q.totalParts} equal parts.`);
-    }
+    const charName = q.character?.name ?? "";
+    const obj = q.shape === "pizza" ? "pizza" : "bar";
+    setHint(
+      charName
+        ? `Look at ${charName}'s ${obj} carefully — count the equal parts again.`
+        : "Look carefully — count the equal parts again."
+    );
   };
 
   const tryAgain = () => {
@@ -727,20 +759,31 @@ const ShadeCard = ({
 
   const isPizza = q.shape === "pizza";
   const unitWord = isPizza ? "slices" : "pieces";
-  const verbWord = isPizza ? "slice" : "break";
-  const objectWord = isPizza ? "pizza" : "bar";
 
-  const splitPrompt = `Tap the ${objectWord} to ${verbWord} it into ${q.totalParts} equal ${unitWord}.`;
+  const character = q.character;
+  const name = character?.name ?? "";
+  const pSubject = character?.pronouns.subject ?? "They";
+
+  // L1 scenarios: halves only.
+  const scenarioText = character
+    ? isPizza
+      ? `${name} had a pizza. ${pSubject} wanted to share it equally with one friend.`
+      : `${name} had a chocolate bar. ${pSubject} broke it in half to share with a friend.`
+    : "";
+
+  const splitPrompt = isPizza
+    ? `Slice the pizza into ${q.totalParts} equal ${unitWord}.`
+    : `Break the bar into ${q.totalParts} equal ${unitWord}.`;
   const takePrompt = isPizza
     ? "Now tap a slice to take it."
     : "Now tap a piece to take it.";
 
   const correctMessage =
     level === 1
-      ? "Equal pieces — perfect sharing!"
+      ? `${name} shared it equally — well done!`
       : level === 2
-        ? "Four equal pieces — that's quarters!"
-        : "You're thinking in equal parts like a mathematician.";
+        ? `That's right — ${name} would be impressed!`
+        : `Perfect — you solved ${name}'s fraction problem!`;
 
   return (
     <div className="relative mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
@@ -752,6 +795,12 @@ const ShadeCard = ({
           consecutiveWrong={consecutiveWrong}
           hintKey={hintKey}
         />
+      )}
+
+      {scenarioText && (
+        <p className="mt-6 text-center text-base text-foreground">
+          {scenarioText}
+        </p>
       )}
 
       <div className="mt-6 flex justify-center">
@@ -784,7 +833,7 @@ const ShadeCard = ({
       {shadeDone && !done && (
         <div className="mt-6 space-y-5 animate-fade-in">
           <p className="text-center text-base text-foreground">
-            I took ___ out of ___ equal {unitWord} = ___
+            {name || "I"} took ___ out of ___ equal {unitWord} = ___
           </p>
           <ChipRow<number>
             label={`How many did you take?`}
@@ -870,6 +919,12 @@ const L2IdentifyCard = ({
   const [done, setDone] = useState(false);
   const [hadWrong, setHadWrong] = useState(false);
 
+  const isPizza = q.options[0]?.shape === "pizza";
+  const noun = isPizza ? "pizza" : "chocolate bar";
+  const charName = q.character?.name ?? "";
+  const possessive = q.character?.pronouns.possessive ?? "their";
+  const unit = isPizza ? "slices" : "pieces";
+
   const handlePick = (i: number) => {
     if (done) return;
     setPicked(i);
@@ -878,11 +933,13 @@ const L2IdentifyCard = ({
       setHint("");
     } else {
       setHadWrong(true);
-      setHint("Look carefully — are all the parts equal? How many parts are there?");
+      setHint(
+        charName
+          ? `Look at ${charName}'s ${noun} carefully — count the equal parts again.`
+          : "Look carefully — count the equal parts again."
+      );
     }
   };
-
-  const noun = q.options[0]?.shape === "pizza" ? "pizza" : "chocolate bar";
 
   return (
     <div className="relative mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
@@ -895,7 +952,9 @@ const L2IdentifyCard = ({
       />
 
       <p className="mt-6 text-center text-lg font-semibold text-foreground" style={{ paddingRight: 80 }}>
-        Which {noun} shows {q.fraction}?
+        {charName
+          ? `${charName} cut ${possessive} ${noun} into equal ${unit}. Which ${noun} shows ${q.fraction}?`
+          : `Which ${noun} shows ${q.fraction}?`}
       </p>
 
       <div className="mt-6 flex flex-wrap justify-center gap-4">
@@ -934,7 +993,7 @@ const L2IdentifyCard = ({
       {done && (
         <div className="mt-6 space-y-4 text-center animate-fade-in">
           <div className="rounded-xl bg-secondary p-4 font-medium text-secondary-foreground">
-            Yes — that one shows {q.fraction}.
+            {charName ? `That's right — ${charName} would be impressed!` : `Yes — that one shows ${q.fraction}.`}
           </div>
           <button
             onClick={() => onCorrect(hadWrong)}
@@ -999,8 +1058,14 @@ const L2MatchCard = ({
   const usedLabels = Object.values(matched);
   const availableLabels = q.labels.filter((l) => !usedLabels.includes(l));
 
+  const charName = q.character?.name ?? "";
+
   const showSoftHint = () => {
-    setHint("Count the equal parts on the shape — that's the bottom number.");
+    setHint(
+      charName
+        ? `Look at ${charName}'s shapes carefully — count the equal parts again.`
+        : "Count the equal parts on the shape — that's the bottom number."
+    );
     if (hintTimerRef.current) window.clearTimeout(hintTimerRef.current);
     hintTimerRef.current = window.setTimeout(() => setHint(""), 3000);
   };
@@ -1099,7 +1164,9 @@ const L2MatchCard = ({
       />
 
       <p className="mt-6 text-center text-lg font-semibold text-foreground" style={{ paddingRight: 80 }}>
-        Match each shape to its fraction.
+        {charName
+          ? `${charName} has these shapes. Match each shape to the fraction it shows.`
+          : "Match each shape to its fraction."}
       </p>
 
       {/* Done stack — small thumbnails of shapes already matched */}
@@ -1245,7 +1312,7 @@ const L2MatchCard = ({
       {done && (
         <div className="mt-6 space-y-4 text-center animate-fade-in">
           <div className="rounded-xl bg-secondary p-4 font-medium text-secondary-foreground">
-            Perfect matching!
+            {charName ? `That's right — ${charName} would be impressed!` : "Perfect matching!"}
           </div>
           <button
             onClick={() => onCorrect(hadWrong)}
@@ -1288,6 +1355,7 @@ const L2FillCard = ({
   const [hadWrong, setHadWrong] = useState(false);
 
   const shapeWord = q.shape;
+  const charName = q.character?.name ?? "";
 
   const togglePart = (i: number) => {
     if (done) return;
@@ -1301,7 +1369,11 @@ const L2FillCard = ({
       setHint("");
     } else {
       setHadWrong(true);
-      setHint("Count the equal parts first — how many do you need to shade?");
+      setHint(
+        charName
+          ? `Look at ${charName}'s ${shapeWord} carefully — count the equal parts again.`
+          : "Count the equal parts first — how many do you need to shade?"
+      );
     }
   };
 
@@ -1316,7 +1388,9 @@ const L2FillCard = ({
       />
 
       <p className="mt-6 text-center text-lg font-semibold text-foreground" style={{ paddingRight: 80 }}>
-        Shade {q.fraction} of this {shapeWord}.
+        {charName
+          ? `${charName} wants to take ${q.fraction} of this ${shapeWord}. Shade the correct amount.`
+          : `Shade ${q.fraction} of this ${shapeWord}.`}
       </p>
 
       <div className="mt-6 flex justify-center">
@@ -1348,7 +1422,7 @@ const L2FillCard = ({
       {done && (
         <div className="mt-6 space-y-4 text-center animate-fade-in">
           <div className="rounded-xl bg-secondary p-4 font-medium text-secondary-foreground">
-            Yes! You shaded {q.fraction} of the {shapeWord}.
+            {charName ? `That's right — ${charName} would be impressed!` : `Yes! You shaded ${q.fraction} of the ${shapeWord}.`}
           </div>
           <button
             onClick={() => onCorrect(hadWrong)}
@@ -1386,6 +1460,8 @@ const L3WordCard = ({
   const [done, setDone] = useState(false);
   const [hadWrong, setHadWrong] = useState(false);
 
+  const charName = q.character?.name ?? "";
+
   const check = () => {
     const candidate = num && den ? `${num.trim()}/${den.trim()}` : "";
     const normalised = normaliseAnswer(candidate);
@@ -1396,13 +1472,16 @@ const L3WordCard = ({
     } else {
       setHadWrong(true);
       setHint(
-        "Read the problem again carefully. How many equal parts are there altogether? That's your bottom number.",
+        charName
+          ? `Look at ${charName}'s problem carefully — count the equal parts again.`
+          : "Read the problem again carefully. How many equal parts are there altogether? That's your bottom number.",
       );
     }
   };
 
-  const correctMsg =
-    q.fractionType === "halves"
+  const correctMsg = charName
+    ? `Perfect — you solved ${charName}'s fraction problem!`
+    : q.fractionType === "halves"
       ? "That's right — equal sharing means each person gets one half."
       : q.fractionType === "quarters"
         ? "Correct! When something is cut into 4 equal pieces, each piece is one quarter."
@@ -1499,13 +1578,18 @@ const HalvesQuartersEighthsPractise = () => {
   const seenL3 = useRef<Set<string>>(new Set());
 
   const genFor = useCallback((lvl: 1 | 2 | 3, qNum: number): Question => {
-    if (lvl === 1) return generateL1();
-    if (lvl === 2) {
+    const character = pickCharacter();
+    let q: Question;
+    if (lvl === 1) q = generateL1();
+    else if (lvl === 2) {
       const subPos = ((qNum - 1) % 10) + 1;
-      return generateL2(subPos, seenL2.current);
+      q = generateL2(subPos, seenL2.current);
+    } else {
+      const subPos = ((qNum - 1) % 10) + 1;
+      q = generateL3(subPos, seenL3.current, character.name);
     }
-    const subPos = ((qNum - 1) % 10) + 1;
-    return generateL3(subPos, seenL3.current);
+    q.character = character;
+    return q;
   }, []);
 
   const [question, setQuestion] = useState<Question>(() => genFor(1, 1));
