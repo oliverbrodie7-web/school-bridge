@@ -1164,7 +1164,9 @@ const L2MatchCard = ({
       />
 
       <p className="mt-6 text-center text-lg font-semibold text-foreground" style={{ paddingRight: 80 }}>
-        Match each shape to its fraction.
+        {charName
+          ? `${charName} has these shapes. Match each shape to the fraction it shows.`
+          : "Match each shape to its fraction."}
       </p>
 
       {/* Done stack — small thumbnails of shapes already matched */}
