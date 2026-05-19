@@ -27,11 +27,15 @@ interface QSpec {
   acceptedFraction: string;
   taps: number;
   unit: "piece" | "slice";
+  setupMessage: string;
   computerMessage: string;
   promptMessage: string;
   successMessage: string;
   wrongHint: string;
 }
+
+const NOAH_WRONG_HINT =
+  "Count the pieces carefully — how many equal parts did Noah end up with?";
 
 const QUESTIONS: QSpec[] = [
   {
@@ -41,13 +45,14 @@ const QUESTIONS: QSpec[] = [
     acceptedFraction: "1/2",
     taps: 1,
     unit: "piece",
+    setupMessage:
+      "Noah had a chocolate bar. He broke it into equal pieces to share with his sister.",
     computerMessage:
-      "I broke the bar into 2 equal pieces. Each piece is one half.",
+      "I broke Noah's bar into 2 equal pieces. Each piece is one half.",
     promptMessage: "Tap the bar to break it.",
     successMessage:
-      "That's right! 2 equal pieces means each piece is one half.",
-    wrongHint:
-      "Count the pieces — how many sections did the break make?",
+      "That's right — Noah and his sister each get one half!",
+    wrongHint: NOAH_WRONG_HINT,
   },
   {
     kind: "quarterPizza",
@@ -56,13 +61,14 @@ const QUESTIONS: QSpec[] = [
     acceptedFraction: "1/4",
     taps: 2,
     unit: "slice",
+    setupMessage:
+      "Noah had a pizza. He sliced it equally for himself and 3 classmates.",
     computerMessage:
-      "I sliced the pizza in half, then in half again to make 4 equal slices. Each slice is one quarter.",
+      "I sliced Noah's pizza in half, then in half again — 4 equal slices. Each slice is one quarter.",
     promptMessage: "Tap the pizza twice to slice into quarters.",
     successMessage:
-      "That's right! Slicing twice makes 4 equal slices — each is one quarter.",
-    wrongHint:
-      "Remember — we sliced it twice. How many slices did we end up with?",
+      "Yes! Noah and his 3 classmates each get one quarter of the pizza.",
+    wrongHint: NOAH_WRONG_HINT,
   },
   {
     kind: "eighthBar",
@@ -71,13 +77,14 @@ const QUESTIONS: QSpec[] = [
     acceptedFraction: "1/8",
     taps: 3,
     unit: "piece",
+    setupMessage:
+      "Noah had a big chocolate bar. He wanted to share it equally with 7 friends — 8 people in total.",
     computerMessage:
-      "I broke the bar three times to make 8 equal pieces. Each piece is one eighth.",
+      "I broke Noah's bar into 8 equal pieces. Each piece is one eighth.",
     promptMessage: "Tap the bar three times to break into eighths.",
     successMessage:
-      "That's right! Breaking 3 times makes 8 equal pieces — each is one eighth.",
-    wrongHint:
-      "We broke it 3 times — 2, then 4, then 8. How many pieces are there?",
+      "Perfect — 8 equal pieces means each person gets one eighth!",
+    wrongHint: NOAH_WRONG_HINT,
   },
 ];
 
