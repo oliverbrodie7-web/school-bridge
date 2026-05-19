@@ -256,7 +256,7 @@ const QuarterPizzaCard = () => {
     setTimeout(() => {
       tappable();
       setButtonFading(false);
-    }, 200);
+    }, 300);
   };
 
   // Render with 2 slices (halves) until second tap, then 4 slices (quarters).
