@@ -993,7 +993,7 @@ const L2IdentifyCard = ({
       {done && (
         <div className="mt-6 space-y-4 text-center animate-fade-in">
           <div className="rounded-xl bg-secondary p-4 font-medium text-secondary-foreground">
-            Yes — that one shows {q.fraction}.
+            {charName ? `That's right — ${charName} would be impressed!` : `Yes — that one shows ${q.fraction}.`}
           </div>
           <button
             onClick={() => onCorrect(hadWrong)}
