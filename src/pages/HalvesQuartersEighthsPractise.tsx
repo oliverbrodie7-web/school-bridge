@@ -389,7 +389,7 @@ const generateL3 = (subPos: number, avoid: Set<string>, characterName?: string):
     ? HALVES_TEMPLATES.filter((t) => t.concrete)
     : HALVES_TEMPLATES;
   const tmpl = pick(fallbackPool.length > 0 ? fallbackPool : HALVES_TEMPLATES);
-  const built = tmpl.build(pick(NAMES), pick(OBJECTS));
+  const built = tmpl.build(characterName ?? pick(NAMES), pick(OBJECTS));
   return {
     type: "l3_word",
     text: built.text,
