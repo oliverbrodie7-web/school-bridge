@@ -95,7 +95,18 @@ const HalfChocolateCard = ({ onNext }: { onNext: () => void }) => {
   const filled = phase === "pictorial" || phase === "abstract";
 
   return (
-    <div className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
+    <div
+      className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8"
+      style={{
+        minHeight: 420,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        scrollBehavior: "auto",
+        overflowAnchor: "none",
+      }}
+    >
       <p className="text-center text-lg font-semibold text-foreground">
         <span className="text-muted-foreground">Example 1: </span>One half
       </p>
