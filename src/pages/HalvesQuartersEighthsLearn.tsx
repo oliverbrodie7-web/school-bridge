@@ -105,22 +105,56 @@ const HalfChocolateCard = ({ onNext }: { onNext: () => void }) => {
       </p>
 
       <div className="mt-6 flex justify-center">
-        <ChocolateBar
-          width={280}
-          height={120}
-          segments={2}
-          shaded={[0]}
-          breaksDrawn={split}
-          filled={filled}
-        />
+        {!filled ? (
+          <ChocolateBar
+            width={280}
+            height={120}
+            segments={2}
+            shaded={[0]}
+            breaksDrawn={split}
+            filled={filled}
+          />
+        ) : (
+          <div
+            className="animate-fade-in"
+            style={{
+              display: "flex",
+              gap: 16,
+              justifyContent: "center",
+              alignItems: "flex-start",
+              margin: "0 auto 8px",
+            }}
+          >
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+              <div
+                style={{
+                  width: 100,
+                  height: 90,
+                  background: "#7B4A2A",
+                  borderRadius: 10,
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+                }}
+              />
+              <div style={{ fontSize: 22, fontWeight: 800, color: "#1D9E75" }}>1/2</div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#1D9E75" }}>Mia's piece ✓</div>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+              <div
+                style={{
+                  width: 100,
+                  height: 90,
+                  background: "#B07040",
+                  opacity: 0.5,
+                  borderRadius: 10,
+                }}
+              />
+              <div style={{ fontSize: 22, fontWeight: 800, color: "#CCCCCC" }}>1/2</div>
+              <div style={{ fontSize: 11, fontWeight: 600, color: "#999999" }}>Friend's piece</div>
+            </div>
+          </div>
+        )}
       </div>
 
-      {filled && (
-        <div className="mt-3 flex justify-center gap-[140px] animate-fade-in">
-          <span style={{ color: LABEL, fontWeight: 600, fontSize: 18 }}>1/2</span>
-          <span style={{ color: LABEL, fontWeight: 600, fontSize: 18 }}>1/2</span>
-        </div>
-      )}
 
       {phase === "prompt" && (
         <>
