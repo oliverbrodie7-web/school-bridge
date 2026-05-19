@@ -99,31 +99,15 @@ const HalfChocolateCard = ({ onNext }: { onNext: () => void }) => {
         Mia had a chocolate bar. She wanted to share it equally with her friend.
       </p>
 
-      {phase === "prompt" && (
-        <p className="mt-3 text-center text-sm font-medium text-muted-foreground">
-          Tap the bar to break it into equal pieces.
-        </p>
-      )}
-
       <div className="mt-6 flex justify-center">
-
-        <button
-          type="button"
-          onClick={() => phase === "prompt" && setPhase("splitting")}
-          disabled={phase !== "prompt"}
-          aria-label="Tap the bar to break it"
-          className={phase === "prompt" ? "cursor-pointer transition-transform hover:scale-105 active:scale-95" : "cursor-default"}
-          style={{ background: "transparent", border: "none", padding: 0 }}
-        >
-          <ChocolateBar
-            width={280}
-            height={120}
-            segments={2}
-            shaded={[0]}
-            breaksDrawn={split}
-            filled={filled}
-          />
-        </button>
+        <ChocolateBar
+          width={280}
+          height={120}
+          segments={2}
+          shaded={[0]}
+          breaksDrawn={split}
+          filled={filled}
+        />
       </div>
 
       {filled && (
@@ -134,9 +118,18 @@ const HalfChocolateCard = ({ onNext }: { onNext: () => void }) => {
       )}
 
       {phase === "prompt" && (
-        <p className="mt-6 text-center text-lg font-medium text-muted-foreground animate-fade-in">
-          How many equal pieces does she need to break it into?
-        </p>
+        <>
+          <p className="mt-6 text-center text-lg font-medium text-muted-foreground animate-fade-in">
+            How many equal pieces does she need to break it into?
+          </p>
+          <button
+            type="button"
+            onClick={() => setPhase("splitting")}
+            className="hqe-tap-button"
+          >
+            Tap the bar to break it
+          </button>
+        </>
       )}
 
       {(phase === "pictorial" || phase === "abstract") && (
