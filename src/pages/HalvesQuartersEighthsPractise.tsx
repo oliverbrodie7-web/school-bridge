@@ -1531,13 +1531,18 @@ const HalvesQuartersEighthsPractise = () => {
   const seenL3 = useRef<Set<string>>(new Set());
 
   const genFor = useCallback((lvl: 1 | 2 | 3, qNum: number): Question => {
-    if (lvl === 1) return generateL1();
-    if (lvl === 2) {
+    const character = pickCharacter();
+    let q: Question;
+    if (lvl === 1) q = generateL1();
+    else if (lvl === 2) {
       const subPos = ((qNum - 1) % 10) + 1;
-      return generateL2(subPos, seenL2.current);
+      q = generateL2(subPos, seenL2.current);
+    } else {
+      const subPos = ((qNum - 1) % 10) + 1;
+      q = generateL3(subPos, seenL3.current, character.name);
     }
-    const subPos = ((qNum - 1) % 10) + 1;
-    return generateL3(subPos, seenL3.current);
+    q.character = character;
+    return q;
   }, []);
 
   const [question, setQuestion] = useState<Question>(() => genFor(1, 1));
