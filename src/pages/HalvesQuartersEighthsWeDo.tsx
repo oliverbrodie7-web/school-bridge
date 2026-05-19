@@ -238,6 +238,9 @@ const QuestionCard = ({
           <span className="text-muted-foreground">Question {qNum}: </span>
           My turn
         </p>
+        <p className="mt-4 text-center text-base text-foreground">
+          {spec.setupMessage}
+        </p>
         <div className="mt-6 flex justify-center">
           <FoodSVG kind={spec.kind} taps={computerTaps} filled={computerFilled} />
         </div>
