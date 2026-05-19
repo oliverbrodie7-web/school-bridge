@@ -266,42 +266,51 @@ const QuarterPizzaCard = () => {
         {!filled ? (
           <Pizza size={240} slices={slices} shaded={shaded} cutsDrawn={true} filled={filled} />
         ) : (
-          <svg width={220} height={220} viewBox="0 0 220 220" className="animate-fade-in">
-            {/* Slice 1 — Mia's (top right) */}
-            <path d="M110,110 L110,8 A102,102 0 0,1 212,110 Z" fill="#EF4444" stroke="#FFF8EC" strokeWidth={4} />
-            {/* Slice 2 — bottom right */}
-            <path d="M110,110 L212,110 A102,102 0 0,1 110,212 Z" fill="#FDE68A" fillOpacity={0.4} stroke="#FFF8EC" strokeWidth={4} />
-            {/* Slice 3 — bottom left */}
-            <path d="M110,110 L110,212 A102,102 0 0,1 8,110 Z" fill="#FDE68A" fillOpacity={0.4} stroke="#FFF8EC" strokeWidth={4} />
-            {/* Slice 4 — top left */}
-            <path d="M110,110 L8,110 A102,102 0 0,1 110,8 Z" fill="#FDE68A" fillOpacity={0.4} stroke="#FFF8EC" strokeWidth={4} />
+          <svg width={220} height={220} viewBox="0 0 220 220" style={{ display: "block", margin: "0 auto" }} className="animate-fade-in">
+            {/* Outer crust ring */}
+            <circle cx={110} cy={110} r={104} fill="#C45E0A" />
+            <circle cx={110} cy={110} r={96} fill="#FDE68A" />
 
-            {/* Crust — Mia's slice */}
-            <path d="M110,8 A102,102 0 0,1 212,110" fill="none" stroke="#D97706" strokeWidth={10} strokeLinecap="round" />
-            {/* Crust — remaining */}
-            <path d="M212,110 A102,102 0 0,1 110,212" fill="none" stroke="#D97706" strokeWidth={10} strokeLinecap="round" opacity={0.3} />
-            <path d="M110,212 A102,102 0 0,1 8,110" fill="none" stroke="#D97706" strokeWidth={10} strokeLinecap="round" opacity={0.3} />
-            <path d="M8,110 A102,102 0 0,1 110,8" fill="none" stroke="#D97706" strokeWidth={10} strokeLinecap="round" opacity={0.3} />
-
+            {/* SLICE 1 — Mia's (top right, red/taken) */}
+            <path d="M110,110 L110,14 A96,96 0 0,1 206,110 Z" fill="#EF4444" stroke="#FFF8EC" strokeWidth={8} />
             {/* Toppings on Mia's slice */}
-            <circle cx={150} cy={55} r={5} fill="#DC2626" />
-            <circle cx={175} cy={90} r={5} fill="#DC2626" />
-            <circle cx={140} cy={95} r={5} fill="#DC2626" />
+            <circle cx={153} cy={52} r={5.5} fill="#B91C1C" opacity={0.9} />
+            <circle cx={170} cy={75} r={5} fill="#B91C1C" opacity={0.85} />
+            <circle cx={150} cy={80} r={4.5} fill="#B91C1C" opacity={0.8} />
+            <circle cx={172} cy={55} r={4} fill="#B91C1C" opacity={0.75} />
+            {/* Crust arc slice 1 */}
+            <path d="M110,14 A96,96 0 0,1 206,110" fill="none" stroke="#C45E0A" strokeWidth={12} strokeLinecap="butt" />
+
+            {/* SLICE 2 — bottom right (faded) */}
+            <path d="M110,110 L206,110 A96,96 0 0,1 110,206 Z" fill="#FDE68A" stroke="#FFF8EC" strokeWidth={8} opacity={0.45} />
+            <path d="M206,110 A96,96 0 0,1 110,206" fill="none" stroke="#C45E0A" strokeWidth={12} strokeLinecap="butt" opacity={0.3} />
+
+            {/* SLICE 3 — bottom left (faded) */}
+            <path d="M110,110 L110,206 A96,96 0 0,1 14,110 Z" fill="#FDE68A" stroke="#FFF8EC" strokeWidth={8} opacity={0.45} />
+            <path d="M110,206 A96,96 0 0,1 14,110" fill="none" stroke="#C45E0A" strokeWidth={12} strokeLinecap="butt" opacity={0.3} />
+
+            {/* SLICE 4 — top left (faded) */}
+            <path d="M110,110 L14,110 A96,96 0 0,1 110,14 Z" fill="#FDE68A" stroke="#FFF8EC" strokeWidth={8} opacity={0.45} />
+            <path d="M14,110 A96,96 0 0,1 110,14" fill="none" stroke="#C45E0A" strokeWidth={12} strokeLinecap="butt" opacity={0.3} />
+
+            {/* Pronounced cut lines */}
+            <line x1={14} y1={110} x2={206} y2={110} stroke="#FFF8EC" strokeWidth={9} />
+            <line x1={110} y1={14} x2={110} y2={206} stroke="#FFF8EC" strokeWidth={9} />
 
             {/* Centre dot */}
-            <circle cx={110} cy={110} r={6} fill="#FFF8EC" />
+            <circle cx={110} cy={110} r={8} fill="#FFF8EC" />
 
             {/* 1/4 labels */}
-            <text x={158} y={88} fontFamily="Nunito, sans-serif" fontSize={16} fontWeight={800} textAnchor="middle" dominantBaseline="middle" fill="#ffffff">1/4</text>
-            <text x={158} y={155} fontFamily="Nunito, sans-serif" fontSize={16} fontWeight={800} textAnchor="middle" dominantBaseline="middle" fill="#D97706" opacity={0.5}>1/4</text>
-            <text x={62} y={155} fontFamily="Nunito, sans-serif" fontSize={16} fontWeight={800} textAnchor="middle" dominantBaseline="middle" fill="#D97706" opacity={0.5}>1/4</text>
-            <text x={62} y={88} fontFamily="Nunito, sans-serif" fontSize={16} fontWeight={800} textAnchor="middle" dominantBaseline="middle" fill="#D97706" opacity={0.5}>1/4</text>
+            <text x={163} y={76} fontFamily="Nunito,sans-serif" fontSize={17} fontWeight={800} fill="white" textAnchor="middle" dominantBaseline="middle">1/4</text>
+            <text x={163} y={148} fontFamily="Nunito,sans-serif" fontSize={17} fontWeight={800} fill="#C45E0A" textAnchor="middle" dominantBaseline="middle" opacity={0.5}>1/4</text>
+            <text x={57} y={148} fontFamily="Nunito,sans-serif" fontSize={17} fontWeight={800} fill="#C45E0A" textAnchor="middle" dominantBaseline="middle" opacity={0.5}>1/4</text>
+            <text x={57} y={76} fontFamily="Nunito,sans-serif" fontSize={17} fontWeight={800} fill="#C45E0A" textAnchor="middle" dominantBaseline="middle" opacity={0.5}>1/4</text>
           </svg>
         )}
       </div>
 
       {filled && (
-        <div className="mt-2 text-center animate-fade-in" style={{ color: "#1D9E75", fontWeight: 800, fontSize: 13 }}>
+        <div className="text-center animate-fade-in" style={{ color: "#1D9E75", fontWeight: 800, fontSize: 13, marginTop: 12, marginBottom: 16 }}>
           Mia's slice = 1/4 ✓
         </div>
       )}
