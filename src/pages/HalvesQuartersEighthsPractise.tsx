@@ -1058,8 +1058,14 @@ const L2MatchCard = ({
   const usedLabels = Object.values(matched);
   const availableLabels = q.labels.filter((l) => !usedLabels.includes(l));
 
+  const charName = q.character?.name ?? "";
+
   const showSoftHint = () => {
-    setHint("Count the equal parts on the shape — that's the bottom number.");
+    setHint(
+      charName
+        ? `Look at ${charName}'s shapes carefully — count the equal parts again.`
+        : "Count the equal parts on the shape — that's the bottom number."
+    );
     if (hintTimerRef.current) window.clearTimeout(hintTimerRef.current);
     hintTimerRef.current = window.setTimeout(() => setHint(""), 3000);
   };
