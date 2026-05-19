@@ -741,13 +741,13 @@ const ShadeCard = ({
       return;
     }
     setHadWrong(true);
-    if (shadeChip !== q.shadeCount) {
-      setHint("Almost — count just the shaded parts.");
-    } else if (partsChip !== q.totalParts) {
-      setHint("Almost — count all the equal parts altogether.");
-    } else {
-      setHint(`Not quite — ${q.shadeCount} out of ${q.totalParts} equal parts.`);
-    }
+    const charName = q.character?.name ?? "";
+    const obj = q.shape === "pizza" ? "pizza" : "bar";
+    setHint(
+      charName
+        ? `Look at ${charName}'s ${obj} carefully — count the equal parts again.`
+        : "Look carefully — count the equal parts again."
+    );
   };
 
   const tryAgain = () => {
