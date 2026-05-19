@@ -129,8 +129,9 @@ const HalfChocolateCard = ({ onNext }: { onNext: () => void }) => {
           </p>
           <button
             type="button"
-            onClick={() => setPhase("splitting")}
+            onClick={handleTap}
             className="hqe-tap-button"
+            style={{ opacity: buttonFading ? 0 : 1, transition: "opacity 200ms ease" }}
           >
             Tap the bar to break it
           </button>
