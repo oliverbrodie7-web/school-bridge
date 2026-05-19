@@ -762,17 +762,30 @@ const ShadeCard = ({
   const verbWord = isPizza ? "slice" : "break";
   const objectWord = isPizza ? "pizza" : "bar";
 
-  const splitPrompt = `Tap the ${objectWord} to ${verbWord} it into ${q.totalParts} equal ${unitWord}.`;
+  const character = q.character;
+  const name = character?.name ?? "";
+  const pSubject = character?.pronouns.subject ?? "They";
+
+  // L1 scenarios: halves only.
+  const scenarioText = character
+    ? isPizza
+      ? `${name} had a pizza. ${pSubject} wanted to share it equally with one friend.`
+      : `${name} had a chocolate bar. ${pSubject} broke it in half to share with a friend.`
+    : "";
+
+  const splitPrompt = isPizza
+    ? `Slice the pizza into ${q.totalParts} equal ${unitWord}.`
+    : `Break the bar into ${q.totalParts} equal ${unitWord}.`;
   const takePrompt = isPizza
     ? "Now tap a slice to take it."
     : "Now tap a piece to take it.";
 
   const correctMessage =
     level === 1
-      ? "Equal pieces — perfect sharing!"
+      ? `${name} shared it equally — well done!`
       : level === 2
-        ? "Four equal pieces — that's quarters!"
-        : "You're thinking in equal parts like a mathematician.";
+        ? `That's right — ${name} would be impressed!`
+        : `Perfect — you solved ${name}'s fraction problem!`;
 
   return (
     <div className="relative mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
