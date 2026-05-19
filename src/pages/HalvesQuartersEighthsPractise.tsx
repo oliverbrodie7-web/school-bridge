@@ -77,6 +77,33 @@ interface L3WordQ {
 
 type Question = ShadeQ | L2IdentifyQ | L2MatchQ | L2FillQ | L3WordQ;
 
+/* ──────────────── CHARACTER / SCENARIO ──────────────── */
+type Pronouns = { subject: string; possessive: string };
+const NAME_BANK: { name: string; pronouns: Pronouns }[] = [
+  { name: "Mia", pronouns: { subject: "She", possessive: "her" } },
+  { name: "Jack", pronouns: { subject: "He", possessive: "his" } },
+  { name: "Zara", pronouns: { subject: "She", possessive: "her" } },
+  { name: "Noah", pronouns: { subject: "He", possessive: "his" } },
+  { name: "Ruby", pronouns: { subject: "She", possessive: "her" } },
+  { name: "Liam", pronouns: { subject: "He", possessive: "his" } },
+  { name: "Aisha", pronouns: { subject: "She", possessive: "her" } },
+  { name: "Ethan", pronouns: { subject: "He", possessive: "his" } },
+  { name: "Sofia", pronouns: { subject: "She", possessive: "her" } },
+  { name: "Marcus", pronouns: { subject: "He", possessive: "his" } },
+  { name: "Priya", pronouns: { subject: "She", possessive: "her" } },
+  { name: "Tyler", pronouns: { subject: "They", possessive: "their" } },
+];
+type Character = { name: string; pronouns: Pronouns };
+
+// Session-scoped "last name used" to prevent immediate repeats.
+let lastNameUsed: string | null = null;
+const pickCharacter = (): Character => {
+  const pool = NAME_BANK.filter((c) => c.name !== lastNameUsed);
+  const choice = pool[Math.floor(Math.random() * pool.length)];
+  lastNameUsed = choice.name;
+  return { name: choice.name, pronouns: choice.pronouns };
+};
+
 /* ──────────────── HELPERS ──────────────── */
 const randInt = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
