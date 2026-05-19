@@ -294,8 +294,8 @@ const QuarterPizzaCard = () => {
             <path d="M14,110 A96,96 0 0,1 110,14" fill="none" stroke="#C45E0A" strokeWidth={12} strokeLinecap="butt" opacity={0.3} />
 
             {/* Pronounced cut lines */}
-            <line x1={14} y1={110} x2={206} y2={110} stroke="#FFF8EC" strokeWidth={9} />
-            <line x1={110} y1={14} x2={110} y2={206} stroke="#FFF8EC" strokeWidth={9} />
+            <line x1={0} y1={110} x2={220} y2={110} stroke="#FFF8EC" strokeWidth={10} />
+            <line x1={110} y1={0} x2={110} y2={220} stroke="#FFF8EC" strokeWidth={10} />
 
             {/* Centre dot */}
             <circle cx={110} cy={110} r={8} fill="#FFF8EC" />
