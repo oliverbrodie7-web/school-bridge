@@ -77,7 +77,7 @@ const HalfChocolateCard = ({ onNext }: { onNext: () => void }) => {
   const [buttonFading, setButtonFading] = useState(false);
   const handleTap = () => {
     setButtonFading(true);
-    setTimeout(() => setPhase("splitting"), 200);
+    setTimeout(() => setPhase("splitting"), 300);
   };
 
   useEffect(() => {
@@ -95,7 +95,18 @@ const HalfChocolateCard = ({ onNext }: { onNext: () => void }) => {
   const filled = phase === "pictorial" || phase === "abstract";
 
   return (
-    <div className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
+    <div
+      className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8"
+      style={{
+        minHeight: 420,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        scrollBehavior: "auto",
+        overflowAnchor: "none",
+      }}
+    >
       <p className="text-center text-lg font-semibold text-foreground">
         <span className="text-muted-foreground">Example 1: </span>One half
       </p>
@@ -245,7 +256,7 @@ const QuarterPizzaCard = () => {
     setTimeout(() => {
       tappable();
       setButtonFading(false);
-    }, 200);
+    }, 300);
   };
 
   // Render with 2 slices (halves) until second tap, then 4 slices (quarters).
@@ -253,7 +264,18 @@ const QuarterPizzaCard = () => {
   const shaded = filled ? [0] : [];
 
   return (
-    <div className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
+    <div
+      className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8"
+      style={{
+        minHeight: 420,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        scrollBehavior: "auto",
+        overflowAnchor: "none",
+      }}
+    >
       <p className="text-center text-lg font-semibold text-foreground">
         <span className="text-muted-foreground">Example 2: </span>One quarter
       </p>
