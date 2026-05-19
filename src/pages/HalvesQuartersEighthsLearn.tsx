@@ -212,24 +212,8 @@ const QuarterPizzaCard = () => {
         Mia had a pizza. She wanted to share it equally between herself and 3 friends — 4 people in total.
       </p>
 
-      {phase === "prompt" && (
-        <p className="mt-3 text-center text-sm font-medium text-muted-foreground">
-          Tap the pizza to slice it into equal pieces.
-        </p>
-      )}
-
       <div className="mt-6 flex justify-center">
-
-        <button
-          type="button"
-          onClick={() => tappable?.()}
-          disabled={!tappable}
-          aria-label="Tap the pizza to slice it"
-          className={tappable ? "cursor-pointer transition-transform hover:scale-105 active:scale-95" : "cursor-default"}
-          style={{ background: "transparent", border: "none", padding: 0 }}
-        >
-          <Pizza size={240} slices={slices} shaded={shaded} cutsDrawn={true} filled={filled} />
-        </button>
+        <Pizza size={240} slices={slices} shaded={shaded} cutsDrawn={true} filled={filled} />
       </div>
 
       {filled && (
@@ -239,14 +223,24 @@ const QuarterPizzaCard = () => {
       )}
 
       {phase === "prompt" && (
-        <p className="mt-6 text-center text-lg font-medium text-muted-foreground animate-fade-in">
-          How many equal slices does she need to cut it into?
-        </p>
+        <>
+          <p className="mt-6 text-center text-lg font-medium text-muted-foreground animate-fade-in">
+            How many equal slices does she need to cut it into?
+          </p>
+          <button type="button" onClick={() => tappable?.()} className="hqe-tap-button">
+            Tap the pizza to slice it
+          </button>
+        </>
       )}
       {phase === "promptQuarter" && (
-        <p className="mt-6 text-center text-lg font-medium text-muted-foreground animate-fade-in">
-          Now tap again to slice each half in half.
-        </p>
+        <>
+          <p className="mt-6 text-center text-lg font-medium text-muted-foreground animate-fade-in">
+            Now tap again to slice each half in half.
+          </p>
+          <button type="button" onClick={() => tappable?.()} className="hqe-tap-button">
+            Tap the pizza to slice it
+          </button>
+        </>
       )}
 
       {(phase === "pictorial" || phase === "abstract") && (
