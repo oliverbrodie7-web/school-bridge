@@ -833,7 +833,7 @@ const ShadeCard = ({
       {shadeDone && !done && (
         <div className="mt-6 space-y-5 animate-fade-in">
           <p className="text-center text-base text-foreground">
-            I took ___ out of ___ equal {unitWord} = ___
+            {name || "I"} took ___ out of ___ equal {unitWord} = ___
           </p>
           <ChipRow<number>
             label={`How many did you take?`}
