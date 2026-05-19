@@ -368,7 +368,7 @@ const generateL3 = (subPos: number, avoid: Set<string>, characterName?: string):
       bucket = pick(pools);
     }
     const tmpl = pick(bucket);
-    const name = pick(NAMES);
+    const name = characterName ?? pick(NAMES);
     const object = pick(OBJECTS);
     const built = tmpl.build(name, object);
     const sig = `l3:${built.key}:${name}:${object}`;
