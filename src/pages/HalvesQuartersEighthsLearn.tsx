@@ -253,7 +253,7 @@ const QuarterPizzaCard = () => {
           <p className="mt-6 text-center text-lg font-medium text-muted-foreground animate-fade-in">
             Now tap again to slice each half in half.
           </p>
-          <button type="button" onClick={() => tappable?.()} className="hqe-tap-button">
+          <button type="button" onClick={handleTap} className="hqe-tap-button" style={{ opacity: buttonFading ? 0 : 1, transition: "opacity 200ms ease" }}>
             Tap the pizza to slice it
           </button>
         </>
