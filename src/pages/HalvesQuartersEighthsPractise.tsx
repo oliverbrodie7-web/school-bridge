@@ -1422,7 +1422,7 @@ const L2FillCard = ({
       {done && (
         <div className="mt-6 space-y-4 text-center animate-fade-in">
           <div className="rounded-xl bg-secondary p-4 font-medium text-secondary-foreground">
-            Yes! You shaded {q.fraction} of the {shapeWord}.
+            {charName ? `That's right — ${charName} would be impressed!` : `Yes! You shaded ${q.fraction} of the ${shapeWord}.`}
           </div>
           <button
             onClick={() => onCorrect(hadWrong)}
