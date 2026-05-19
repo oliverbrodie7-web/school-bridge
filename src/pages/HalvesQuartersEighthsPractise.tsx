@@ -759,8 +759,6 @@ const ShadeCard = ({
 
   const isPizza = q.shape === "pizza";
   const unitWord = isPizza ? "slices" : "pieces";
-  const verbWord = isPizza ? "slice" : "break";
-  const objectWord = isPizza ? "pizza" : "bar";
 
   const character = q.character;
   const name = character?.name ?? "";
