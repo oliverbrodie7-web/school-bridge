@@ -919,6 +919,12 @@ const L2IdentifyCard = ({
   const [done, setDone] = useState(false);
   const [hadWrong, setHadWrong] = useState(false);
 
+  const isPizza = q.options[0]?.shape === "pizza";
+  const noun = isPizza ? "pizza" : "chocolate bar";
+  const charName = q.character?.name ?? "";
+  const possessive = q.character?.pronouns.possessive ?? "their";
+  const unit = isPizza ? "slices" : "pieces";
+
   const handlePick = (i: number) => {
     if (done) return;
     setPicked(i);
@@ -927,11 +933,13 @@ const L2IdentifyCard = ({
       setHint("");
     } else {
       setHadWrong(true);
-      setHint("Look carefully — are all the parts equal? How many parts are there?");
+      setHint(
+        charName
+          ? `Look at ${charName}'s ${noun} carefully — count the equal parts again.`
+          : "Look carefully — count the equal parts again."
+      );
     }
   };
-
-  const noun = q.options[0]?.shape === "pizza" ? "pizza" : "chocolate bar";
 
   return (
     <div className="relative mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
@@ -944,7 +952,9 @@ const L2IdentifyCard = ({
       />
 
       <p className="mt-6 text-center text-lg font-semibold text-foreground" style={{ paddingRight: 80 }}>
-        Which {noun} shows {q.fraction}?
+        {charName
+          ? `${charName} cut ${possessive} ${noun} into equal ${unit}. Which ${noun} shows ${q.fraction}?`
+          : `Which ${noun} shows ${q.fraction}?`}
       </p>
 
       <div className="mt-6 flex flex-wrap justify-center gap-4">
