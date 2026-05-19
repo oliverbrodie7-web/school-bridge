@@ -1460,6 +1460,8 @@ const L3WordCard = ({
   const [done, setDone] = useState(false);
   const [hadWrong, setHadWrong] = useState(false);
 
+  const charName = q.character?.name ?? "";
+
   const check = () => {
     const candidate = num && den ? `${num.trim()}/${den.trim()}` : "";
     const normalised = normaliseAnswer(candidate);
@@ -1470,13 +1472,16 @@ const L3WordCard = ({
     } else {
       setHadWrong(true);
       setHint(
-        "Read the problem again carefully. How many equal parts are there altogether? That's your bottom number.",
+        charName
+          ? `Look at ${charName}'s problem carefully — count the equal parts again.`
+          : "Read the problem again carefully. How many equal parts are there altogether? That's your bottom number.",
       );
     }
   };
 
-  const correctMsg =
-    q.fractionType === "halves"
+  const correctMsg = charName
+    ? `Perfect — you solved ${charName}'s fraction problem!`
+    : q.fractionType === "halves"
       ? "That's right — equal sharing means each person gets one half."
       : q.fractionType === "quarters"
         ? "Correct! When something is cut into 4 equal pieces, each piece is one quarter."
