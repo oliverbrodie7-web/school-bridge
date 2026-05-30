@@ -65,11 +65,20 @@ const Index = () => {
 
   const hasProfiles = profiles.length > 0;
 
-  const handleAddProfile = async (profile: Omit<Profile, "id">) => {
+  const handleAddProfile = async (profile: Omit<Profile, "id">, andStart?: boolean) => {
     try {
       const created = await insertProfile(profile);
-      setProfiles((prev) => [...prev, created]);
-      setShowSetup(false);
+      let newIndex = 0;
+      setProfiles((prev) => {
+        newIndex = prev.length;
+        return [...prev, created];
+      });
+      if (andStart) {
+        localStorage.setItem("selectedProfileIndex", String(newIndex));
+        navigate("/home");
+      } else {
+        setShowSetup(false);
+      }
     } catch {
       // silent — could add toast later
     }
