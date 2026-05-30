@@ -413,7 +413,7 @@ const ProfileSetup = ({
   onCancel,
 }: {
   colourIndex: number;
-  onSave: (profile: Omit<Profile, "id">) => void;
+  onSave: (profile: Omit<Profile, "id">, andStart?: boolean) => void | Promise<void>;
   onCancel?: () => void;
 }) => {
   const [step, setStep] = useState(1);
@@ -453,23 +453,23 @@ const ProfileSetup = ({
 
   const yearLabel = yearLevel !== null ? YEAR_LEVELS.find((y) => y.value === yearLevel)?.label : "";
 
-  const doSave = async () => {
+  const doSave = async (andStart?: boolean) => {
     if (submitting) return;
     if (!name.trim() || yearLevel === null) return;
     setSubmitting(true);
     try {
-      await onSave({ name: name.trim(), yearLevel, colour });
+      await onSave({ name: name.trim(), yearLevel, colour }, andStart);
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleStartLearning = () => {
-    doSave();
+    doSave(true);
   };
 
   const handleAddAnother = async () => {
-    await doSave();
+    await doSave(false);
     setName("");
     setYearLevel(null);
     setYearMessage("");
