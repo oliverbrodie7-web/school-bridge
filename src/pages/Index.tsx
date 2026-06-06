@@ -66,21 +66,24 @@ const Index = () => {
   const hasProfiles = profiles.length > 0;
 
   const handleAddProfile = async (profile: Omit<Profile, "id">, andStart?: boolean) => {
+    let created: Profile | null = null;
     try {
-      const created = await insertProfile(profile);
-      let newIndex = 0;
-      setProfiles((prev) => {
-        newIndex = prev.length;
-        return [...prev, created];
-      });
-      if (andStart) {
-        localStorage.setItem("selectedProfileIndex", String(newIndex));
-        navigate("/home");
-      } else {
-        setShowSetup(false);
-      }
-    } catch {
-      // silent — could add toast later
+      created = await insertProfile(profile);
+    } catch (err) {
+      console.error("insertProfile failed:", err);
+    }
+
+    // Compute new index based on current list length (works whether insert succeeded or not).
+    const newIndex = profiles.length;
+    if (created) {
+      setProfiles((prev) => [...prev, created!]);
+    }
+
+    if (andStart) {
+      localStorage.setItem("selectedProfileIndex", String(newIndex));
+      navigate("/home");
+    } else {
+      setShowSetup(false);
     }
   };
 
