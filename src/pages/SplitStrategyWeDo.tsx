@@ -4,6 +4,7 @@ import ParentSignpost from "@/components/ParentSignpost";
 import { ProgressIndicator } from "@/components/ProgressIndicator";
 import CurriculumBadge, { AC9M2N04_PROPS } from "@/components/CurriculumBadge";
 import SplitWorkspace, { StepMode } from "@/components/SplitWorkspace";
+import DevPanel from "@/components/DevPanel";
 
 // Year-2-safe sums (ones never carry). We Do = 3 examples, Noah fades light -> half -> handover.
 interface WeDoExample {
@@ -34,6 +35,11 @@ const SplitStrategyWeDo = () => {
   const next = () => {
     setDone(false);
     setQIndex((i) => i + 1);
+  };
+
+  const jumpTo = (i: number) => {
+    setDone(false);
+    setQIndex(i);
   };
 
   return (
@@ -101,6 +107,13 @@ const SplitStrategyWeDo = () => {
         )}
       </div>
       <ParentSignpost strategy="split" />
+      <DevPanel
+        jumps={[
+          { label: "Ex 1", onJump: () => jumpTo(0) },
+          { label: "Ex 2", onJump: () => jumpTo(1) },
+          { label: "Ex 3", onJump: () => jumpTo(2) },
+        ]}
+      />
     </div>
   );
 };
