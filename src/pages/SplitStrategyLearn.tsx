@@ -16,6 +16,8 @@ const EXAMPLES = [
 ];
 
 const STEP_MS = 900;
+const FLY_MS = 620;
+
 const tensOf = (n: number) => Math.floor(n / 10) * 10;
 const onesOf = (n: number) => n % 10;
 const prefersReduced = () =>
@@ -23,12 +25,36 @@ const prefersReduced = () =>
   window.matchMedia &&
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+const rodVisual: React.CSSProperties = {
+  borderRadius: 3,
+  background: BLUE,
+  backgroundImage:
+    "repeating-linear-gradient(to bottom, transparent 0 5.2px, rgba(255,255,255,0.5) 5.2px 6px)",
+  boxShadow: "0 2px 4px rgba(59,130,246,0.35)",
+};
+const cubeVisual: React.CSSProperties = {
+  borderRadius: 3,
+  background: ORANGE,
+  boxShadow: "0 2px 4px rgba(245,158,11,0.35)",
+};
+
 type Phase =
   | "breakA" | "countingA"
   | "breakB" | "countingB"
   | "combineTens" | "combiningT"
   | "combineOnes" | "combiningO"
   | "done";
+
+interface Flyer {
+  id: string;
+  kind: "rod" | "cube";
+  left: number;
+  top: number;
+  w: number;
+  h: number;
+  dx: number;
+  dy: number;
+}
 
 const SplitStrategyLearn = () => {
   const [exIndex, setExIndex] = useState(0);
@@ -68,39 +94,38 @@ const SplitStrategyLearn = () => {
   );
 };
 
-/* ── one ten-rod (10 stacked segments) and one ones-cube ── */
 const Rod = ({ dim }: { dim?: boolean }) => (
-  <div
-    style={{
-      width: 13,
-      height: 60,
-      borderRadius: 3,
-      background: BLUE,
-      backgroundImage:
-        "repeating-linear-gradient(to bottom, transparent 0 5.2px, rgba(255,255,255,0.5) 5.2px 6px)",
-      boxShadow: "0 2px 4px rgba(59,130,246,0.35)",
-      opacity: dim ? 0.38 : 1,
-      transition: "opacity 0.2s",
-    }}
-  />
+  <div style={{ width: 13, height: 60, ...rodVisual, opacity: dim ? 0.38 : 1, transition: "opacity 0.2s" }} />
 );
-
 const Cube = ({ dim }: { dim?: boolean }) => (
-  <div
-    style={{
-      width: 14,
-      height: 14,
-      borderRadius: 3,
-      background: ORANGE,
-      boxShadow: "0 2px 4px rgba(245,158,11,0.35)",
-      opacity: dim ? 0.38 : 1,
-      transition: "opacity 0.2s",
-    }}
-  />
+  <div style={{ width: 14, height: 14, ...cubeVisual, opacity: dim ? 0.38 : 1, transition: "opacity 0.2s" }} />
 );
 
-const Pile = ({ count, kind, litCount }: { count: number; kind: "rod" | "cube"; litCount: number }) => (
-  <div style={{ flex: 1, display: "flex", flexWrap: "wrap", gap: 5, alignContent: "flex-start", justifyContent: "center" }}>
+const Pile = ({
+  count,
+  kind,
+  litCount,
+  pileRef,
+  hidden,
+}: {
+  count: number;
+  kind: "rod" | "cube";
+  litCount: number;
+  pileRef?: React.Ref<HTMLDivElement>;
+  hidden?: boolean;
+}) => (
+  <div
+    ref={pileRef}
+    style={{
+      flex: 1,
+      display: "flex",
+      flexWrap: "wrap",
+      gap: 5,
+      alignContent: "flex-start",
+      justifyContent: "center",
+      opacity: hidden ? 0 : 1,
+    }}
+  >
     {Array.from({ length: count }).map((_, i) =>
       kind === "rod" ? (
         <Rod key={i} dim={litCount > 0 && i >= litCount} />
@@ -195,14 +220,29 @@ const ExampleCard = ({
   const [bOnesLit, setBOnesLit] = useState(0);
   const [aChips, setAChips] = useState(false);
   const [bChips, setBChips] = useState(false);
+
+  const [tSourceHidden, setTSourceHidden] = useState(false);
+  const [oSourceHidden, setOSourceHidden] = useState(false);
   const [tCombined, setTCombined] = useState(false);
   const [tLit, setTLit] = useState(0);
   const [tChip, setTChip] = useState(false);
   const [oCombined, setOCombined] = useState(false);
   const [oLit, setOLit] = useState(0);
   const [oChip, setOChip] = useState(false);
+
+  const [flyers, setFlyers] = useState<Flyer[]>([]);
+  const [flyGo, setFlyGo] = useState(false);
+
   const [coachExpr, setCoachExpr] = useState<CoachExpression>("neutral");
-  const [coachMsg, setCoachMsg] = useState(`Let\u2019s add ${a} and ${b}! Tap ${a} to start.`);
+  const [coachMsg, setCoachMsg] = useState(`Let's add ${a} and ${b}! Tap ${a} to start.`);
+
+  const cardRef = useRef<HTMLDivElement>(null);
+  const aTensRef = useRef<HTMLDivElement>(null);
+  const bTensRef = useRef<HTMLDivElement>(null);
+  const aOnesRef = useRef<HTMLDivElement>(null);
+  const bOnesRef = useRef<HTMLDivElement>(null);
+  const tTensCellRef = useRef<HTMLDivElement>(null);
+  const tOnesCellRef = useRef<HTMLDivElement>(null);
 
   const timers = useRef<number[]>([]);
   const addT = useCallback((fn: () => void, ms: number) => {
@@ -236,9 +276,9 @@ const ExampleCard = ({
     setPhase("countingA");
     setABroken(true);
     setCoachExpr("pleased");
-    setCoachMsg("Count the tens with me\u2026");
+    setCoachMsg("Count the tens with me…");
     countSeq(tA / 10, setATensLit, () => {
-      setCoachMsg("\u2026and the ones.");
+      setCoachMsg("…and the ones.");
       countSeq(oA, setAOnesLit, () => {
         setAChips(true);
         setCoachExpr("neutral");
@@ -253,9 +293,9 @@ const ExampleCard = ({
     setPhase("countingB");
     setBBroken(true);
     setCoachExpr("pleased");
-    setCoachMsg("Count the tens\u2026");
+    setCoachMsg("Count the tens…");
     countSeq(tB / 10, setBTensLit, () => {
-      setCoachMsg("\u2026and the ones.");
+      setCoachMsg("…and the ones.");
       countSeq(oB, setBOnesLit, () => {
         setBChips(true);
         setCoachExpr("neutral");
@@ -265,41 +305,115 @@ const ExampleCard = ({
     });
   };
 
+  // Measure source blocks + a target cell, build flyers that converge into the cell.
+  const buildFlyers = (
+    idPrefix: string,
+    kind: "rod" | "cube",
+    srcPiles: (HTMLDivElement | null)[],
+    targetCell: HTMLDivElement | null
+  ): Flyer[] | null => {
+    const cont = cardRef.current;
+    if (!cont || !targetCell) return null;
+    const els: HTMLElement[] = [];
+    srcPiles.forEach((p) => {
+      if (p) els.push(...(Array.from(p.children) as HTMLElement[]));
+    });
+    if (els.length === 0) return null;
+    const cr = cont.getBoundingClientRect();
+    const tcr = targetCell.getBoundingClientRect();
+    const targetCX = tcr.left - cr.left + tcr.width / 2;
+    const targetCY = tcr.top - cr.top + tcr.height / 2;
+    const n = els.length;
+    return els.map((el, i) => {
+      const r = el.getBoundingClientRect();
+      const left = r.left - cr.left;
+      const top = r.top - cr.top;
+      return {
+        id: idPrefix + i,
+        kind,
+        left,
+        top,
+        w: r.width,
+        h: r.height,
+        dx: targetCX - r.width / 2 - left + (i - (n - 1) / 2) * 7,
+        dy: targetCY - r.height / 2 - top,
+      };
+    });
+  };
+
+  const afterTens = () => {
+    setTChip(true);
+    setCoachExpr("pleased");
+    setCoachMsg(`${tA / 10} tens and ${tB / 10} tens — that's ${tSum}!`);
+    addT(() => {
+      setCoachExpr("neutral");
+      setCoachMsg("Now put all the ones together.");
+      setPhase("combineOnes");
+    }, 1100);
+  };
+
+  const afterOnes = () => {
+    setOChip(true);
+    setCoachExpr("pleased");
+    setCoachMsg(`${tSum} and ${oSum}… that's ${total}!`);
+    setPhase("done");
+  };
+
   const combineTens = () => {
     if (phase !== "combineTens") return;
     setPhase("combiningT");
-    setTCombined(true);
-    setCoachMsg("Count all the tens together\u2026");
-    countSeq(tSum / 10, setTLit, () => {
-      setTChip(true);
-      setCoachExpr("pleased");
-      setCoachMsg(`${tA / 10} tens and ${tB / 10} tens \u2014 that\u2019s ${tSum}!`);
-      addT(() => {
-        setCoachExpr("neutral");
-        setCoachMsg("Now put all the ones together.");
-        setPhase("combineOnes");
-      }, 1100);
-    });
+    const fl = prefersReduced()
+      ? null
+      : buildFlyers("t", "rod", [aTensRef.current, bTensRef.current], tTensCellRef.current);
+    setTSourceHidden(true);
+    if (!fl) {
+      setTCombined(true);
+      setCoachMsg("Count all the tens together…");
+      countSeq(tSum / 10, setTLit, afterTens);
+      return;
+    }
+    setFlyers(fl);
+    setFlyGo(false);
+    setCoachMsg("Watch the tens come together…");
+    requestAnimationFrame(() => requestAnimationFrame(() => setFlyGo(true)));
+    addT(() => {
+      setFlyers([]);
+      setFlyGo(false);
+      setTCombined(true);
+      setCoachMsg("Count all the tens together…");
+      countSeq(tSum / 10, setTLit, afterTens);
+    }, FLY_MS + 100);
   };
 
   const combineOnes = () => {
     if (phase !== "combineOnes") return;
     setPhase("combiningO");
-    setOCombined(true);
-    setCoachMsg("And count the ones\u2026");
-    countSeq(oSum, setOLit, () => {
-      setOChip(true);
-      setCoachExpr("pleased");
-      setCoachMsg(`${tSum} and ${oSum}\u2026 that\u2019s ${total}!`);
-      setPhase("done");
-    });
+    const fl = prefersReduced()
+      ? null
+      : buildFlyers("o", "cube", [aOnesRef.current, bOnesRef.current], tOnesCellRef.current);
+    setOSourceHidden(true);
+    if (!fl) {
+      setOCombined(true);
+      setCoachMsg("Count the ones together…");
+      countSeq(oSum, setOLit, afterOnes);
+      return;
+    }
+    setFlyers(fl);
+    setFlyGo(false);
+    setCoachMsg("Watch the ones come together…");
+    requestAnimationFrame(() => requestAnimationFrame(() => setFlyGo(true)));
+    addT(() => {
+      setFlyers([]);
+      setFlyGo(false);
+      setOCombined(true);
+      setCoachMsg("Count the ones together…");
+      countSeq(oSum, setOLit, afterOnes);
+    }, FLY_MS + 100);
   };
 
-  const aTensDim = tCombined;
-  const aOnesDim = oCombined;
-
-  const cell = (children: React.ReactNode, glow: boolean) => (
+  const cell = (children: React.ReactNode, glow: boolean, cref?: React.Ref<HTMLDivElement>) => (
     <div
+      ref={cref}
       style={{
         background: "#FCFAF4",
         border: `1.5px ${glow ? "solid" : "dashed"} ${glow ? TEAL : "#E8E0D4"}`,
@@ -316,17 +430,17 @@ const ExampleCard = ({
     </div>
   );
 
-  const tGlow = phase === "combiningT";
-  const oGlow = phase === "combiningO";
-
   const chipSlot = (show: boolean, value: number, kind: "t" | "o") => (
     <div style={{ minHeight: 26, display: "flex", justifyContent: "center", alignItems: "center", marginBottom: 4 }}>
       {show && <Chip value={value} kind={kind} />}
     </div>
   );
 
+  const tGlow = phase === "combiningT";
+  const oGlow = phase === "combiningO";
+
   return (
-    <div className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
+    <div ref={cardRef} className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8" style={{ position: "relative" }}>
       <style>{`
         @keyframes coachpulse {0%{box-shadow:0 0 0 0 rgba(46,157,142,.5)}70%{box-shadow:0 0 0 13px rgba(46,157,142,0)}100%{box-shadow:0 0 0 0 rgba(46,157,142,0)}}
       `}</style>
@@ -361,14 +475,14 @@ const ExampleCard = ({
         {cell(
           <>
             {chipSlot(aChips, tA, "t")}
-            {aBroken && <Pile count={tA / 10} kind="rod" litCount={aTensDim ? tA / 10 : aTensLit} />}
+            {aBroken && <Pile count={tA / 10} kind="rod" litCount={aTensLit} pileRef={aTensRef} hidden={tSourceHidden} />}
           </>,
           false
         )}
         {cell(
           <>
             {chipSlot(aChips, oA, "o")}
-            {aBroken && <Pile count={oA} kind="cube" litCount={aOnesDim ? oA : aOnesLit} />}
+            {aBroken && <Pile count={oA} kind="cube" litCount={aOnesLit} pileRef={aOnesRef} hidden={oSourceHidden} />}
           </>,
           false
         )}
@@ -385,14 +499,14 @@ const ExampleCard = ({
         {cell(
           <>
             {chipSlot(bChips, tB, "t")}
-            {bBroken && <Pile count={tB / 10} kind="rod" litCount={tCombined ? tB / 10 : bTensLit} />}
+            {bBroken && <Pile count={tB / 10} kind="rod" litCount={bTensLit} pileRef={bTensRef} hidden={tSourceHidden} />}
           </>,
           false
         )}
         {cell(
           <>
             {chipSlot(bChips, oB, "o")}
-            {bBroken && <Pile count={oB} kind="cube" litCount={oCombined ? oB : bOnesLit} />}
+            {bBroken && <Pile count={oB} kind="cube" litCount={bOnesLit} pileRef={bOnesRef} hidden={oSourceHidden} />}
           </>,
           false
         )}
@@ -407,16 +521,38 @@ const ExampleCard = ({
             {chipSlot(tChip, tSum, "t")}
             {tCombined && <Pile count={tSum / 10} kind="rod" litCount={tLit} />}
           </>,
-          tGlow
+          tGlow,
+          tTensCellRef
         )}
         {cell(
           <>
             {chipSlot(oChip, oSum, "o")}
             {oCombined && <Pile count={oSum} kind="cube" litCount={oLit} />}
           </>,
-          oGlow
+          oGlow,
+          tOnesCellRef
         )}
       </div>
+
+      {/* flying blocks (tens, then ones) */}
+      {flyers.map((f) => (
+        <div
+          key={f.id}
+          aria-hidden
+          style={{
+            position: "absolute",
+            left: f.left,
+            top: f.top,
+            width: f.w,
+            height: f.h,
+            ...(f.kind === "rod" ? rodVisual : cubeVisual),
+            transform: flyGo ? `translate(${f.dx}px, ${f.dy}px)` : "translate(0px, 0px)",
+            transition: `transform ${FLY_MS}ms cubic-bezier(.3,.85,.3,1)`,
+            zIndex: 5,
+            pointerEvents: "none",
+          }}
+        />
+      ))}
 
       {/* final line */}
       {phase === "done" && (
