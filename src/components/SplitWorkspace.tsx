@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Coach, CoachName, CoachExpression } from "@/components/Coach";
+import { isInstant, subscribeInstant } from "@/components/DevPanel";
 
 /* ============================================================
    SplitWorkspace — the shared Split Strategy engine.
@@ -398,9 +399,12 @@ export const SplitWorkspace = ({
   }, []);
   useEffect(() => () => { timers.current.forEach(clearTimeout); }, []);
 
+  const [instant, setInstantState] = useState(isInstant());
+  useEffect(() => subscribeInstant(setInstantState), []);
+
   const countSeq = useCallback(
     (n: number, setLit: (v: number) => void, after: () => void) => {
-      if (prefersReduced()) { setLit(n); after(); return; }
+      if (prefersReduced() || isInstant()) { setLit(n); after(); return; }
       let i = 0;
       const tick = () => {
         i += 1;
@@ -500,7 +504,7 @@ export const SplitWorkspace = ({
     const oIn = side === "A" ? aOnesIn : bOnesIn;
     const tVal = side === "A" ? tA : tB;
     const oVal = side === "A" ? oA : oB;
-    const ok = Number(tIn) === tVal && Number(oIn) === oVal;
+    const ok = isInstant() || (Number(tIn) === tVal && Number(oIn) === oVal);
     if (!ok) {
       if (side === "A") { setAFlash(true); } else { setBFlash(true); }
       setCoachExpr("gentle");
@@ -528,7 +532,7 @@ export const SplitWorkspace = ({
     const srcPiles =
       place === "tens" ? [aTensRef.current, bTensRef.current] : [aOnesRef.current, bOnesRef.current];
     const targetCell = place === "tens" ? tTensCellRef.current : tOnesCellRef.current;
-    const fl = prefersReduced() ? null : buildFlyers(place, kind, srcPiles, targetCell);
+    const fl = prefersReduced() || isInstant() ? null : buildFlyers(place, kind, srcPiles, targetCell);
 
     if (place === "tens") setTSourceHidden(true);
     else setOSourceHidden(true);
@@ -563,7 +567,7 @@ export const SplitWorkspace = ({
   const combineTensAction = () => {
     if (busy) return;
     if (combine === "input") {
-      if (Number(tSumIn) !== tSum) {
+      if (!isInstant() && Number(tSumIn) !== tSum) {
         setTFlash(true); setCoachExpr("gentle"); setCoachMsg(L.retryTens);
         addT(() => { setTFlash(false); setTSumIn(""); }, 600);
         return;
@@ -575,7 +579,7 @@ export const SplitWorkspace = ({
   const combineOnesAction = () => {
     if (busy) return;
     if (combine === "input") {
-      if (Number(oSumIn) !== oSum) {
+      if (!isInstant() && Number(oSumIn) !== oSum) {
         setOFlash(true); setCoachExpr("gentle"); setCoachMsg(L.retryOnes);
         addT(() => { setOFlash(false); setOSumIn(""); }, 600);
         return;
@@ -726,8 +730,8 @@ export const SplitWorkspace = ({
         {step === "splitA" && splitA === "input" && !aBroken && (
           <button
             onClick={() => submitSplit("A")}
-            disabled={!aTensIn || !aOnesIn}
-            style={{ ...btnStyle, opacity: !aTensIn || !aOnesIn ? 0.4 : 1, cursor: !aTensIn || !aOnesIn ? "not-allowed" : "pointer" }}
+            disabled={(!aTensIn || !aOnesIn) && !instant}
+            style={{ ...btnStyle, opacity: (!aTensIn || !aOnesIn) && !instant ? 0.4 : 1, cursor: (!aTensIn || !aOnesIn) && !instant ? "not-allowed" : "pointer" }}
           >
             Check
           </button>
@@ -737,8 +741,8 @@ export const SplitWorkspace = ({
         {step === "splitB" && splitB === "input" && !bBroken && (
           <button
             onClick={() => submitSplit("B")}
-            disabled={!bTensIn || !bOnesIn}
-            style={{ ...btnStyle, opacity: !bTensIn || !bOnesIn ? 0.4 : 1, cursor: !bTensIn || !bOnesIn ? "not-allowed" : "pointer" }}
+            disabled={(!bTensIn || !bOnesIn) && !instant}
+            style={{ ...btnStyle, opacity: (!bTensIn || !bOnesIn) && !instant ? 0.4 : 1, cursor: (!bTensIn || !bOnesIn) && !instant ? "not-allowed" : "pointer" }}
           >
             Check
           </button>
@@ -761,8 +765,8 @@ export const SplitWorkspace = ({
             </div>
             <button
               onClick={combineTensAction}
-              disabled={!tSumIn}
-              style={{ ...btnStyle, opacity: !tSumIn ? 0.4 : 1, cursor: !tSumIn ? "not-allowed" : "pointer" }}
+              disabled={!tSumIn && !instant}
+              style={{ ...btnStyle, opacity: !tSumIn && !instant ? 0.4 : 1, cursor: !tSumIn && !instant ? "not-allowed" : "pointer" }}
             >
               Check
             </button>
@@ -786,8 +790,8 @@ export const SplitWorkspace = ({
             </div>
             <button
               onClick={combineOnesAction}
-              disabled={!oSumIn}
-              style={{ ...btnStyle, opacity: !oSumIn ? 0.4 : 1, cursor: !oSumIn ? "not-allowed" : "pointer" }}
+              disabled={!oSumIn && !instant}
+              style={{ ...btnStyle, opacity: !oSumIn && !instant ? 0.4 : 1, cursor: !oSumIn && !instant ? "not-allowed" : "pointer" }}
             >
               Check
             </button>
